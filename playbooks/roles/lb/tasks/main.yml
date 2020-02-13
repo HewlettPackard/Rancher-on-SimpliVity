@@ -1,0 +1,95 @@
+# Copyright (2019) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+### 
+---
+- name: Install Pkgs
+  become: true
+  package:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+    - firewalld
+
+- name: Enable firewall
+  become: true
+  systemd:
+    name: firewalld
+    enabled: yes
+    state: started
+
+- name: Configure required ports in public zone
+  become: true
+  firewalld:
+    zone: public
+    port: "{{ item }}"
+    immediate: yes
+    permanent: yes
+    state: enabled
+  with_items:
+   - 80/tcp     # http traffic
+   - 443/tcp    # https traffic
+
+
+- name: Add interface to public zone
+  become: true
+  firewalld:
+    zone: public
+    interface: ens192
+    permanent: yes
+    immediate: yes
+    state: enabled
+
+# address issue with multihomed servers
+- name: Configure rp_filter
+  become: true
+  sysctl:
+    name: net.ipv4.conf.all.rp_filter
+    value: "2"
+    state: present
+    sysctl_set: yes
+
+- name: Install epel repository
+  become: true
+  package:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - epel-release
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+- name: Install nginx
+  become: true
+  package:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - nginx
+
+- name: Update nginx.conf
+  become: true
+  template:
+     src: nginx.conf.{{ ansible_distribution_file_variety | lower }}.j2
+     dest: /etc/nginx/nginx.conf
+  notify: Restart nginx
+
+- name: start nginx
+  become: true
+  systemd:
+    name: nginx
+    enabled: yes
+    state: started
+

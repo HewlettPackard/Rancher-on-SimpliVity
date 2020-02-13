@@ -1,0 +1,12 @@
+#cloud-config
+
+package_update: true
+packages: []
+users:
+  - name: core
+    gecos: Chris Lehy
+    lock-passwd: false
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    passwd: $6$rounds=4096$jRX0nXQjqVVTbz0M$zBsWeSRGjbX3pO8aR0Pw6Tb.9oK6bE3D4LT8CwT3G4ERGiqYzSt6iHu0zLsCSFxqf/U33egWenNVMOOALbyZX1
+    ssh_authorized_keys:
+      - {{ ssh_key }}

@@ -1,0 +1,31 @@
+---
+- name: Create cloud-init folder
+  file:
+    path: "{{ cloudinit_folder }}/{{ inventory_hostname }}"
+    state: directory
+  delegate_to: localhost
+
+- name: Generate meta-data
+  template:
+    src: meta-data.j2
+    dest: "{{ cloudinit_folder }}/{{ inventory_hostname }}/meta-data"
+  delegate_to: localhost
+
+- name: generate user-data
+  template:
+    src: user-data.j2
+    dest: "{{ cloudinit_folder}}/{{ inventory_hostname }}/user-data"
+  delegate_to: localhost
+
+- name: generate network config
+  template:
+    src: network-config.j2
+    dest: "{{ cloudinit_folder }}/{{ inventory_hostname }}/network-config"
+  delegate_to: localhost
+
+- name: Generate ISO image
+  shell: |
+     cd {{ cloudinit_folder }}/{{ inventory_hostname }}
+     genisoimage  -output {{ inventory_hostname }}.iso -volid cidata -joliet -rock meta-data user-data network-config
+  delegate_to: localhost
+

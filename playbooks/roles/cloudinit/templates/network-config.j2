@@ -1,0 +1,9 @@
+version: 2
+ethernets:
+  {{ internal_iface }}:
+     addresses:
+     - {{ hostvars[inventory_hostname].ansible_host }}/{{ rancher_subnet | ipaddr('prefix') }}
+     gateway4: {{ gateway }}
+     nameservers:
+       search: {{ dns_suffixes }}
+       addresses: {{ dns_servers }}

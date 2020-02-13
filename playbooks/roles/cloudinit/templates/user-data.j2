@@ -1,0 +1,14 @@
+#cloud-config
+
+package_update: true
+packages: []
+users:
+  - name: core
+    gecos: Chris Lehy
+    lock-passwd: false
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - {{ ssh_key }}
+ntp:
+  enabled: true
+  servers: {{ ntp_servers }}
