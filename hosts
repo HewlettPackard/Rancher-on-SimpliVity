@@ -1,0 +1,11 @@
+[local]
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python3
+
+[loadbalancer]
+clh-lb1 ansible_host=10.15.152.11
+
+[controlplane]
+clh-rke1   ansible_host=10.15.152.21
+clh-rke2   ansible_host=10.15.152.22
+clh-rke3   ansible_host=10.15.152.23
+
