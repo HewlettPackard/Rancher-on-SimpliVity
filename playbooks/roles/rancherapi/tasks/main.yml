@@ -1,12 +1,12 @@
 ---
 - name: Create Cloud Credentials for use with our vCenter Server
   uri:
-    url: "{{ rancher_url }}/v3/cloudcredentials"
-    validate_certs: "{{ rancher_validate_certs }}"
+    url: "{{ rancher.url }}/{{ rancher.apiversion }}/cloudcredentials"
+    validate_certs: "{{ rancher.validate_certs }}"
     headers:
       Accept: application/json
       Content-Type: application/json
-      Authorization: Bearer {{ rancher_bearer_token }}
+      Authorization: Bearer {{ rancher.bearer_token }}
     method: POST
     timeout: 4
     status_code:
@@ -26,12 +26,12 @@
 
 - name: Create the Node Template
   uri:
-    url: "{{ rancher_url }}/v3/nodetemplates"
-    validate_certs: "{{ rancher_validate_certs }}"
+    url: "{{ rancher.url }}/{{ rancher.apiversion }}/nodetemplates"
+    validate_certs: "{{ rancher.validate_certs }}"
     headers:
       Accept: application/json
       Content-Type: application/json
-      Authorization: Bearer {{ rancher_bearer_token }}
+      Authorization: Bearer {{ rancher.bearer_token }}
     method: POST
     timeout: 4
     status_code:
@@ -44,13 +44,13 @@
       - paint: itblack
       vmwarevsphereConfig:
         cloneFrom: mytemplate
-        cpuCount: "{{ cpu_count }}"
+        cpuCount: "{{rancher.cpu_count }}"
         customAttribute: ""
         datacenter: DEVOPS
         datastore: "{{ datacenter }}"
-        diskSize: "{{ disk_size }}"
+        diskSize: "{{ rancher.disk_size }}"
         folder: "{{ vcenter_userfolder }}"
-        memorySize: "{{ memory_size }}"
+        memorySize: "{{ rancher.memory_size }}"
         network: clh2964
         password: "{{ vcenter_password }}"
         pool: "{{ vcenter_pool }}"

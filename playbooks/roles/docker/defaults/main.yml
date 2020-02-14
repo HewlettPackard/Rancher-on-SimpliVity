@@ -1,2 +1,8 @@
 ---
 # defaults file for docker
+
+
+proxy:
+  http:  "http://10.12.7.21:8080/"     #  http:  "http://user:password@10.12.7.21:8080/"
+  https:  "http://10.12.7.21:8080/"
+  except: "localhost;.am2.cloudra.local;.clh.org" 

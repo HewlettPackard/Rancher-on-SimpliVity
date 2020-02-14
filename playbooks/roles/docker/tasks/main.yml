@@ -1,3 +1,12 @@
+- name: Configure Proxy
+  include_tasks: proxy_{{ ansible_distribution }}.yml
+
+- name: Update Package Manager
+  become: true
+  apt:
+    update_cache: yes
+  when: ansible_distribution == "Ubuntu"
+
 - name: Install Pkgs 
   become: true
   package:
@@ -51,6 +60,9 @@
 - name: Install Docker
   become: true
   shell: |
+    export HTTP_PROXY={{ proxy.http }}
+    export HTTPS_PROXY={{ proxy.http }}
+    export NO_PROXY={{ proxy.except }}
     curl https://releases.rancher.com/install-docker/19.03.sh | sh
 
 - name: Add user to Docker group

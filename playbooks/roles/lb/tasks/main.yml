@@ -13,6 +13,19 @@
 # limitations under the License.
 ### 
 ---
+- name: Configure Proxy
+  become: true
+  template:
+    src: proxy.conf.j2
+    dest: /etc/apt/apt.conf.d/proxy.conf
+  when: ansible_distribution == "Ubuntu"
+
+- name: Update Package Manager
+  become: true
+  apt:
+    update_cache: yes
+  when: ansible_distribution == "Ubuntu"
+
 - name: Install Pkgs
   become: true
   package:
