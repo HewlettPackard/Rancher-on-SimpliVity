@@ -1,10 +1,10 @@
 cat >/tmp/csi-vsphere.conf <<EOF
 [Global]
 cluster-id = "ClusterClh2964"
-[VirtualCenter "vcentergen9.am2.cloudra.local"]
+[VirtualCenter "vcentergen10.am2.cloudra.local"]
 insecure-flag = "true"
 user = "Administrator@vsphere.local"
-password = "Just4m\$hpe20!9"
+password = "Just4m\$hpe20!8"
 port = "443"
 datacenters = "DEVOPS"
 EOF

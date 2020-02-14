@@ -1,0 +1,5 @@
+---
+# defaults file for rancher
+cpu_count: 2
+disk_size: 20000
+memory_size: 4096

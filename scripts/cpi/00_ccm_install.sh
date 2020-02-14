@@ -2,9 +2,9 @@ cat >/tmp/vsphere.conf <<EOF
 [Global]
 insecure-flag = "true"
 
-[VirtualCenter "vcentergen9.am2.cloudra.local"]
+[VirtualCenter "vcentergen10.am2.cloudra.local"]
 user = "Administrator@vsphere.local"
-password = "Just4m\$hpe20!9"
+password = "Just4m\$hpe20!8"
 port = "443"
 datacenters = "DEVOPS"
 

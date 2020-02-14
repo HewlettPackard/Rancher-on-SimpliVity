@@ -8,4 +8,3 @@ clh-lb1 ansible_host=10.15.152.11
 clh-rke1   ansible_host=10.15.152.21
 clh-rke2   ansible_host=10.15.152.22
 clh-rke3   ansible_host=10.15.152.23
-

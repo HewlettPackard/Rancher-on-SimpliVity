@@ -1,0 +1,62 @@
+---
+- name: Create Cloud Credentials for use with our vCenter Server
+  uri:
+    url: "{{ rancher_url }}/v3/cloudcredentials"
+    validate_certs: "{{ rancher_validate_certs }}"
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Authorization: Bearer {{ rancher_bearer_token }}
+    method: POST
+    timeout: 4
+    status_code:
+    - 201
+    body_format: json
+    body:
+      name: mycreds
+      vmwarevspherecredentialConfig:
+        password: "{{ vcenter_password }}"
+        username: "{{ vcenter_username }}"
+        vcenter: "{{ vcenter_hostname }}"
+        vcenterPort: "443"
+  delegate_to: localhost
+  register: res
+- debug: var=res
+
+
+- name: Create the Node Template
+  uri:
+    url: "{{ rancher_url }}/v3/nodetemplates"
+    validate_certs: "{{ rancher_validate_certs }}"
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Authorization: Bearer {{ rancher_bearer_token }}
+    method: POST
+    timeout: 4
+    status_code:
+    - 201
+    body_format: json
+    body:
+      name: mytemplate
+      nodeTaints:
+      - foo: bar
+      - paint: itblack
+      vmwarevsphereConfig:
+        cloneFrom: mytemplate
+        cpuCount: "{{ cpu_count }}"
+        customAttribute: ""
+        datacenter: DEVOPS
+        datastore: "{{ datacenter }}"
+        diskSize: "{{ disk_size }}"
+        folder: "{{ vcenter_userfolder }}"
+        memorySize: "{{ memory_size }}"
+        network: clh2964
+        password: "{{ vcenter_password }}"
+        pool: "{{ vcenter_pool }}"
+        username: "{{ vcenter_username }}"
+        vcenter: "{{ vcenter_hostname }}"
+        vcenterPort: "443"
+  register: res
+
+- debug: var=res

@@ -5,7 +5,7 @@ metadata:
     storageclass.kubernetes.io/is-default-class: "false"
   name: clhcsi
 parameters:
-  datastoreurl: "ds:///vmfs/volumes/d3c863fd-02b9a0ac/"  # this is the clhcsi datastore
+  datastoreurl: "ds:///vmfs/volumes/998b3bca-696fac74/"
 provisioner: csi.vsphere.vmware.com
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
