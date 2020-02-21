@@ -1,5 +1,5 @@
 ###
-# Copyright (2019) Hewlett Packard Enterprise Development LP
+# Copyright (2020) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # You may not use this file except in compliance with the License.
@@ -12,18 +12,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-### 
----
-#######################################################################
-#
-# Play: run boostrap_complete
-#
-#######################################################################
-- name: Bootstrap Complete
-  hosts: localhost
-  gather_facts: false
+###
 
-  roles:
-  - role: ocpinstaller
-    vars:
-      bootstrap_complete: yes
+- name: Configure Proxy
+  become: true
+  template:
+    src: proxy.conf.j2
+    dest: /etc/apt/apt.conf.d/proxy.conf
+  when: proxy is defined

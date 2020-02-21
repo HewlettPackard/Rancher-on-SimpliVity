@@ -1,5 +1,5 @@
 ###
-# Copyright (2019) Hewlett Packard Enterprise Development LP
+# Copyright (2020) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # You may not use this file except in compliance with the License.
@@ -14,52 +14,44 @@
 # limitations under the License.
 ###
 ---
-prepare_required_files:
-- /home/core/kits/rke
-- /home/core/kits/rancher
-prepare_client_tools:
-- /home/core/kits/rke
-- /home/core/kits/rancher
 cloudinit_folder: /home/core/.svtrancher
-vm_portgroup: clh2964                                           # portgroup that the VMS connect to (must exist)
-rancher_subnet: 10.15.152.0/24                                  # subnet to use on the above VLAN (see your net admin)
-gateway: '10.15.152.1'                                          # gateway for the above subnet (see your net admin)
-domain_name: clh.orh
+
+domain_name: clh.org
+rancher_subnet: 10.15.152.0/24                            # subnet to use on the 'vm_portgroup' VLAN
+gateway: '10.15.152.1'                                    # gateway for the above subnet (see your net admin)
+ntp_servers: ['10.12.2.1']                                # List of NTP servers
+dns_servers: ['10.10.173.1','10.10.173.31']               # list of DNS servers
+dns_suffixes: ['am2.cloudra.local','clh.org']             # list of DNS suffixes
 
 #
 # vcenter related settings
 #
-vcenter_hostname: vcentergen10.am2.cloudra.local                 # name of your vCenter server
-vcenter_username: Administrator@vsphere.local                   # Admin user for your vCenter environment
-vcenter_password: 'Just4m$hpe20!8'
-vcenter_validate_certs: false                                   # true not implemented/tested
-vcenter_cluster: OCP                                            # Name of your SimpliVity Cluster (must exist)
-datacenter: DEVOPS                                              # Name of your DATACENTER (must exist)
-datastore: clhRancher                                           # where to store the VMs
-datastore_size: 1024                                            # size in GiB of the VM datastore, only applies if the playbook creates the datastore
-cluster_name: clh                                               # Name of the K8S Cluster. A VM folder with the same name is created if needed
-ntp_servers:
-- '10.12.2.1'
-dns_servers:
-- 10.10.173.1
-- 10.10.173.31
-dns_suffixes:
-- am2.cloudra.local
-- clh.org
+vcenter_hostname: vcentergen10.am2.cloudra.local          # name of your vCenter server
+vcenter_username: Administrator@vsphere.local             # Admin user for your vCenter environment
+vcenter_password: "{{ vault_vcenter_password }}"          # Encrypted in group_vars/all/vault.yml
+vcenter_validate_certs: false                             # true not implemented/tested
+vcenter_cluster: OCP                                      # Name of your SimpliVity Cluster (must exist)
+vm_portgroup: clh2964                                     # portgroup that the VMS connect to (must exist)
+datacenter: DEVOPS                                        # Name of your DATACENTER (must exist)
+datastore: clhRancher                                     # where to store the VMs
+datastore_size: 1024                                      # size in GiB of the VM datastore, only applies if the playbook creates the datastore
+cluster_name: clh                                         # Name of the K8S Cluster. A VM folder with the same name is created if needed
 
 #
 # folders, templates and OVAs, templates are created using the corresponding OVA if they cannot be found (and only if they cannot be found)
 #
-support_folder: clhSupport                                      # Folder for non-OCP VMs and templates (created if needed)
-support_ova_path: /home/core/mykits/misc/clh-ubuntu-rev15-tpl.ova
-support_template: clh-ubuntu-rev15-tpl
-#support_ova_path: /home/core/kits/centos760.ova
-#support_template: clh-centos-tpl
+vcenter_pool: clh
+user_folder: clh
+admin_folder: clhRancher                                # Folder for Rancher Cluster and VM Templates
+admin_ova_path: /home/core/kits/ubuntu1804.ova
+admin_template: clh-ubuntu-tpl
+#admin_ova_path: /home/core/kits/centos760.ova
+#admin_template: clh-centos-tpl
 
 #
 # passwordless login
 #
-ssh_key: '{{ vault.ssh_key }}'                                  # ssh public key for all VMs, strictly speaking this is public info and should not be in the vault
+ssh_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUAPiKRsniRNFeAsbwxY1/dfAG6Bhhsc+Z45j3Cn+K6rQ06L8sVvCCVglzL0uXjhAoVwaapMDSpYNTUOy4ukvSq99Cil97UdKQxV9nPkhghjFGMt3XIHeddX994F0Ma5W/6Y/fKWOuPRsoV+3bj4LmAK634ISmEAEYdh4mbczSsLTDTQcafREnzTJGAlx4GqFiHr1isK+CWLEFcJGbjbULgtJGGkprfMX/UZS0LNV5QYGiiw5/jkQQZ6jl7aKJwaRT/4jlW8Jbg4YbPddUnicxOeVDmU2lpi42S4lBxJC5f9VH8S9NzdcX43R5dleRjKdtEbMRFhsBlx7vkvRJ2upx core@hpe-ansible'
 
 #
 # VMWare CSI Storage plugin
@@ -72,15 +64,25 @@ csi_datastore_size: 20
 #
 # SimpliVity
 #
+simplivity_validate_certs: false
 simplivity_appliances:
 - 10.10.173.116
 - 10.10.173.117
 - 10.10.173.118
 
-simplivity_validate_certs: false
-
 
 proxy:
   http:  "http://10.12.7.21:8080/"     #  http:  "http://user:password@10.12.7.21:8080/"
   https:  "http://10.12.7.21:8080/"
-  except: "localhost;.am2.cloudra.local;.clh.org" 
+  except: "localhost,.am2.cloudra.local,.clh.org" 
+
+
+rancher:
+  url: https://lb1.clh.org
+  bearer_token: "{{ vault_rancher_token }}"
+  validate_certs: False  
+  apiversion: v3
+  cpu_count: 2
+  disk_size: 20000
+  memory_size: 4096
+  engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'

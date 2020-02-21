@@ -1,5 +1,5 @@
 ###
-# Copyright (2019) Hewlett Packard Enterprise Development LP
+# Copyright (2020) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # You may not use this file except in compliance with the License.
@@ -25,23 +25,8 @@
     folder: "{{ datacenter }}/vm/{{ folder }}"
     name: "{{ inventory_hostname }}"
     state: poweredon
+    wait_for_ip_address: true
   register: res
-
-# using using ansible_host to avoid name resolution issues with inventory_hostname 
-- name: Wait for Port 22. It may take a few minutes (~2mns)
-  delegate_to: localhost
-  wait_for:
-    port: 22
-    host: "{{ hostvars[inventory_hostname].ansible_host }}"
-    delay: 10
-    state: started
-    timeout: 300
-
-# Terminate if timed out
-- name: Wait 5s
-  delegate_to: localhost
-  wait_for:
-    timeout=5
 
 - name: cloud-init-status
   become: true
@@ -52,5 +37,3 @@
   retries: 20
   until: |
     res.stdout == "status: done"
-
-

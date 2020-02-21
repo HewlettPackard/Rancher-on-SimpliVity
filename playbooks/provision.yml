@@ -1,5 +1,5 @@
 ###
-# Copyright (2019) Hewlett Packard Enterprise Development LP
+# Copyright (2020) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # You may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@
   gather_facts: false 
   roles:
   - role: cloudinit
+    vars:
+      cloudinit_iface: "{{ rancher_iface }}" 
 #######################################################################
 #
 # Play: Provision VMs
@@ -37,4 +39,13 @@
     vars:
       provision: yes
       poweron: yes
-
+#######################################################################
+#
+# Play: Update Pkg Manager
+#
+#######################################################################
+- name: Provision VMs
+  hosts: all:!local
+  gather_facts: true
+  roles:
+  - role: osupdate

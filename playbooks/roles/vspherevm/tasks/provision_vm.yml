@@ -1,5 +1,5 @@
 ###
-# Copyright (2019) Hewlett Packard Enterprise Development LP
+# Copyright (2020) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # You may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@
     name: "{{ inventory_hostname }}"
     template: "{{ template }}"
     state: present
+    customvalues: "{{ customvalues }}"
     hardware:
       memory_mb: "{{ ram }}"
       memory_reservation: "{{ ram }}"
@@ -37,6 +38,12 @@
       "{{ disks_specs }}"
   register: res
 
+- name: Find the name of the folder containing the VM files
+  set_fact:
+    fname: "{{ fpath.split(' ')[1] }}"
+  vars:
+    fpath: "{{ res.instance.hw_files[0].split('/')[0] }}"
+
 - name: Copy iso image to datastore if VM is Powered Off
   vsphere_copy:
     hostname: '{{ vcenter_hostname }}'
@@ -45,7 +52,7 @@
     src: "{{ cloudinit_folder }}/{{ inventory_hostname }}/{{ inventory_hostname }}.iso"
     datacenter: "{{ datacenter }}"
     datastore: "{{ datastore }}"
-    path: "{{ inventory_hostname}}/cloud-init.iso"
+    path: "{{ fname }}/cloud-init.iso"
     validate_certs: "{{ vcenter_validate_certs }}"
   delegate_to: localhost
   when: res.instance.hw_power_status == "poweredOff"
@@ -61,7 +68,7 @@
     cdrom: 
       state: present
       type: iso
-      iso_path: "[{{ datastore }}] {{ inventory_hostname }}/cloud-init.iso"
+      iso_path: "[{{ datastore }}] {{ fname }}/cloud-init.iso"
     name: "{{ inventory_hostname }}"
     disk:
       "{{ disks_specs }}"

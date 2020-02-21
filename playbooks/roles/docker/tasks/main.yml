@@ -1,12 +1,19 @@
-- name: Configure Proxy
-  include_tasks: proxy_{{ ansible_distribution }}.yml
-
-- name: Update Package Manager
-  become: true
-  apt:
-    update_cache: yes
-  when: ansible_distribution == "Ubuntu"
-
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+###
+---
 - name: Install Pkgs 
   become: true
   package:
@@ -15,7 +22,7 @@
   vars:
     packages:
     - firewalld
-
+  register: res
 
 - name: Enable firewall
   become: true
@@ -52,10 +59,24 @@
   become: true
   firewalld:
     zone: public
-    interface: ens192
+    interface: "{{ rancher_iface }}"
     permanent: yes
     immediate: yes
     state: enabled
+
+- name: Create Docker service directory
+  become: true
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+
+- name: Add proxy details
+  become: true
+  template:
+    src: http-proxy.conf.j2
+    dest: /etc/systemd/system/docker.service.d/http-proxy.conf
+  when: proxy is defined
+  notify: Restart Docker
 
 - name: Install Docker
   become: true

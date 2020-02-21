@@ -1,5 +1,5 @@
 ###
-# Copyright (2019) Hewlett Packard Enterprise Development LP
+# Copyright (2020) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # You may not use this file except in compliance with the License.
@@ -14,5 +14,9 @@
 # limitations under the License.
 ###
 ---
-prepare_required_files: []
-prepare_client_tools: []
+prepare_required_files:
+- /home/core/kits/rke
+- /home/core/kits/rancher
+prepare_client_tools:
+- /home/core/kits/rke
+- /home/core/kits/rancher

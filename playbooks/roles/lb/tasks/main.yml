@@ -1,4 +1,4 @@
-# Copyright (2019) Hewlett Packard Enterprise Development LP
+# Copyright (2020) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # You may not use this file except in compliance with the License.
@@ -13,19 +13,6 @@
 # limitations under the License.
 ### 
 ---
-- name: Configure Proxy
-  become: true
-  template:
-    src: proxy.conf.j2
-    dest: /etc/apt/apt.conf.d/proxy.conf
-  when: ansible_distribution == "Ubuntu"
-
-- name: Update Package Manager
-  become: true
-  apt:
-    update_cache: yes
-  when: ansible_distribution == "Ubuntu"
-
 - name: Install Pkgs
   become: true
   package:
@@ -59,7 +46,7 @@
   become: true
   firewalld:
     zone: public
-    interface: ens192
+    interface: "{{ lb_backend_iface }}"
     permanent: yes
     immediate: yes
     state: enabled
@@ -81,7 +68,7 @@
   vars:
     packages:
       - epel-release
-  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+  when: ansible_os_family == "RedHat"
 
 - name: Install nginx
   become: true

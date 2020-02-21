@@ -1,62 +1,9 @@
----
-- name: Create Cloud Credentials for use with our vCenter Server
-  uri:
-    url: "{{ rancher.url }}/{{ rancher.apiversion }}/cloudcredentials"
-    validate_certs: "{{ rancher.validate_certs }}"
-    headers:
-      Accept: application/json
-      Content-Type: application/json
-      Authorization: Bearer {{ rancher.bearer_token }}
-    method: POST
-    timeout: 4
-    status_code:
-    - 201
-    body_format: json
-    body:
-      name: mycreds
-      vmwarevspherecredentialConfig:
-        password: "{{ vcenter_password }}"
-        username: "{{ vcenter_username }}"
-        vcenter: "{{ vcenter_hostname }}"
-        vcenterPort: "443"
-  delegate_to: localhost
-  register: res
-- debug: var=res
+- include_tasks: node_template.yml
+  when: define_node_template is defined
 
 
-- name: Create the Node Template
-  uri:
-    url: "{{ rancher.url }}/{{ rancher.apiversion }}/nodetemplates"
-    validate_certs: "{{ rancher.validate_certs }}"
-    headers:
-      Accept: application/json
-      Content-Type: application/json
-      Authorization: Bearer {{ rancher.bearer_token }}
-    method: POST
-    timeout: 4
-    status_code:
-    - 201
-    body_format: json
-    body:
-      name: mytemplate
-      nodeTaints:
-      - foo: bar
-      - paint: itblack
-      vmwarevsphereConfig:
-        cloneFrom: mytemplate
-        cpuCount: "{{rancher.cpu_count }}"
-        customAttribute: ""
-        datacenter: DEVOPS
-        datastore: "{{ datacenter }}"
-        diskSize: "{{ rancher.disk_size }}"
-        folder: "{{ vcenter_userfolder }}"
-        memorySize: "{{ rancher.memory_size }}"
-        network: clh2964
-        password: "{{ vcenter_password }}"
-        pool: "{{ vcenter_pool }}"
-        username: "{{ vcenter_username }}"
-        vcenter: "{{ vcenter_hostname }}"
-        vcenterPort: "443"
-  register: res
+- include_tasks: token.yml
+  when: define_token is defined
 
-- debug: var=res
+- include_tasks: pool.yml
+  when: define_pool is defined

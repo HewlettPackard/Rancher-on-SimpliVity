@@ -3,9 +3,10 @@
 
 rancher:
   url: https://lb1.clh.org
-  bearer_token: xxx 
+  bearer_token: token-52hc6:w87gvh66xjwpz8rzzh99zwr9mvhx49dq787dq9bslq2tgc26sj9864
   validate_certs: False  
   apiversion: v3
   cpu_count: 2
   disk_size: 20000
   memory_size: 4096
+  engineInstallURL: 'https\://releases.rancher.com/install-docker/19.03.sh'

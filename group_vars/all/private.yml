@@ -1,5 +1,5 @@
 ###
-# Copyright (2019) Hewlett Packard Enterprise Development LP
+# Copyright (2020) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # You may not use this file except in compliance with the License.
@@ -17,23 +17,15 @@
 #
 # Don't change anything in this file unless you know what you are doing
 #
-#
-# Default value
-#
-ignition_file: /dev/null
+
 #
 # Rely on DRS to place VMs, if DRS is not enabled, this variable can be specified in the inventory file for each host
 #
 esxi_host: ''
 
 #
-# list of kubernetes labels
+# We only support Ubuntu
 #
-k8s_labels: {}
-
-#
-# api and api_int point to loadbalancer[0] IP if loadbalancers is not defined
-#
-lb_api_ip:      "{% if loadbalancers.frontend.vip is defined %}{{ loadbalancers.frontend.vip }}{% else %}{{ hostvars[groups.loadbalancer.0].frontend_ipaddr }}{% endif %}"
-lb_api_int_ip:  "{% if loadbalancers.backend.vip  is defined %}{{ loadbalancers.backend.vip  }}{% else %}{{ hostvars[groups.loadbalancer.0].ansible_host }}/{{ dhcp_subnet|ipaddr('prefix') }}{% endif %}"
-lb_apps_ip:     "{% if loadbalancers.apps.vip     is defined %}{{ loadbalancers.apps.vip     }}{% else %}{{ hostvars[groups.loadbalancer.0].frontend_ipaddr }}{% endif %}"
+ubuntu_ifname1: ens160
+centos_ifname1: ens192
+rancher_iface: "{{ ubuntu_ifname1 }}"

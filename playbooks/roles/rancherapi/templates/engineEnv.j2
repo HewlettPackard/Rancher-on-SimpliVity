@@ -1,0 +1,10 @@
+{% if proxy is defined %}
+HTTP_PROXY: {{ proxy.http }}
+HTTPS_PROXY: {{ proxy.https }}
+NO_PROXY: localhost,127.0.0.0/8,10.0.0.0/8,{{ proxy.except }},{{ rancher_subnet }}
+http_proxy: {{ proxy.http }}
+https_proxy: {{ proxy.https }}
+no_proxy: localhost,127.0.0.0/8,10.0.0.0/8,{{ proxy.except }},{{ rancher_subnet }}
+{% else %}
+{}
+{% endif %}

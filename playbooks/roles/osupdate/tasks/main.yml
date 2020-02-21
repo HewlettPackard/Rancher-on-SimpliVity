@@ -1,5 +1,5 @@
 ###
-# Copyright (2019) Hewlett Packard Enterprise Development LP
+# Copyright (2020) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # You may not use this file except in compliance with the License.
@@ -13,22 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###
----
-- name: Resize system partition (Linux)
+
+- name: Configure Proxy
+  include_tasks: proxy_{{ ansible_os_family | lower }}.yml
+  when: proxy is defined
+
+# for some reason apt is not available for some time after boot
+- name: Update Package Manager
   become: true
-  shell: |
-    start=$(parted /dev/sda unit mb print free | tail -2 | awk "/Free Space/ { print \$1 }")
-    if [ "$start" == "" ]
-    then
-      echo "changed: false"
-    else
-      parted /dev/sda mkpart primary ext4 $start 100%
-      partprobe -s
-      pvcreate /dev/sda3
-      vgextend rhel /dev/sda3
-      lvextend -l +100%FREE /dev/rhel/root
-      xfs_growfs /
-      echo "changed: true"
-    fi
+  apt:
+    update_cache: yes
+  failed_when: false
+  retries: 50
   register: res
-  changed_when: '"changed: true" in res.stdout_lines'
+  until: res.cache_update_time is defined
+  when: ansible_distribution == "Ubuntu"
+

@@ -1,5 +1,5 @@
 ###
-# Copyright (2019) Hewlett Packard Enterprise Development LP
+# Copyright (2020) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # You may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
 # limitations under the License.
 ###
 
-cpus: '2'                                               # Number of vCPUs
-ram: '8192'                                             # RAM size in MBs
-disk1_size: '60'                                        # Disk size in Gbs
-folder: "{{ support_folder }}"                          # Where the VM will be stored
-template: "{{ support_template }}"                      # Override the default CoreOS template
-ova_path: "{{ support_ova_path }}"                      # Name of the OVA used to import the template
+cpus: '2'                                # Number of vCPUs
+ram: '8192'                              # RAM size in MBs
+disk1_size: '60'                         # Disk size in Gbs
+folder: "{{ admin_folder }}"             # Where the VM will be stored
+template: "{{ admin_template }}"         # Override the default CoreOS template
+ova_path: "{{ admin_ova_path }}"         # Name of the OVA used to import the template
 
 networks:
   - name: '{{ vm_portgroup }}'
@@ -28,4 +28,4 @@ disks_specs:
     type: thin
     datastore: "{{ datastore }}"
 
-internal_iface: ens160
+customvalues: []

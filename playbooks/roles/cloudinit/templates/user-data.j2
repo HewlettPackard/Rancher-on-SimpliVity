@@ -1,10 +1,8 @@
 #cloud-config
 
-package_update: false
-packages: []
 users:
-  - name: core
-    gecos: Chris Lehy
+  - name: {{ ansible_user }}
+    gecos: HPE Rancher on SimpliVity ansible account
     lock-passwd: false
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:

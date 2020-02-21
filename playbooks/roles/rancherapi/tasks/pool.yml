@@ -1,0 +1,30 @@
+- name: Create Node Pool
+  uri:
+    url: "{{ rancher.url }}/{{ rancher.apiversion }}/NodePools"
+    validate_certs: "{{ rancher.validate_certs }}"
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Authorization: Bearer {{ rancher.bearer_token }}
+    method: POST
+    timeout: 4
+    status_code:
+    - 201
+    body_format: json
+    body:
+      clusterId: c-llxqc
+      controlPlane: false
+      deleteNotReadyAfterSecs: 0
+      displayName: "pool1"
+      etcd: false
+      hostnamePrefix: "clh3-mas"
+      name: "pool2"
+      namespaceId: ""
+      nodeTaints: []
+      nodeTemplateId: "cattle-global-nt:nt-zhmcp"
+      quantity: 1
+      worker: true
+  delegate_to: localhost
+  register: res
+
+- debug: var=res

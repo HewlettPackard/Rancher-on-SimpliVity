@@ -1,0 +1,93 @@
+---
+- name: See if the Cloud Credential is already existing
+  uri: 
+    url: "{{ rancher.url }}/{{ rancher.apiversion }}/cloudcredentials?name=mycreds"
+    validate_certs: "{{ rancher.validate_certs }}"
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Authorization: Bearer {{ rancher.bearer_token }}
+    method: GET
+    timeout: 4
+    status_code:
+    - 200
+    body_format: form-urlencoded
+    body:
+      name: mycreds2
+  register: creds
+
+- set_fact:
+    cred_id: "{{ creds.json.data[0].id }}"
+  when: creds.json.data | count > 0
+
+- name: Create Cloud Credentials if necessary
+  uri:
+    url: "{{ rancher.url }}/{{ rancher.apiversion }}/cloudcredentials"
+    validate_certs: "{{ rancher.validate_certs }}"
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Authorization: Bearer {{ rancher.bearer_token }}
+    method: POST
+    timeout: 4
+    status_code:
+    - 201
+    body_format: json
+    body:
+      name: mycreds
+      vmwarevspherecredentialConfig:
+        password: 'Just4m3hp_'
+        username: 'chris@vsphere.local'
+        vcenter: "{{ vcenter_hostname }}"
+        vcenterPort: "443"
+  delegate_to: localhost
+  register: res
+  when: creds.json.data | count <= 0
+
+- set_fact:
+    cred_id: "{{ res.json.id }}"
+  when: creds.json.data | count <= 0
+
+- name: Create the Node Template
+  uri:
+    url: "{{ rancher.url }}/{{ rancher.apiversion }}/nodetemplates"
+    validate_certs: "{{ rancher.validate_certs }}"
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Authorization: Bearer {{ rancher.bearer_token }}
+    method: POST
+    timeout: 4
+    status_code:
+    - 201
+    body_format: json
+    body:
+      baseType: nodeTemplate
+      driver: vmwarevsphere
+      description: "My template"
+      name: "{{ admin_template }}"
+      cloudCredentialId: "{{ cred_id }}"
+      labels:
+        hpe.io/creator: cloudbusters
+      engineEnv: "{{ lookup('template','engineEnv.j2') | from_yaml }}"
+      engineInstallURL: "{{ rancher.engineInstallURL }}"
+      vmwarevsphereConfig:
+        boot2dockerUrl": ""
+        cfgparam:
+          - "disk.enableUUID=TRUE"
+        cloneFrom: "/{{ datacenter }}/vm/{{ datastore }}/{{ admin_template }}"
+        creationType: vm
+        cloudConfig: "{{ lookup('template','cloud-config.j2') }}"
+        cloudinit: ""
+        cpuCount: "{{rancher.cpu_count }}"
+        customAttribute: ""
+        datacenter: "/{{ datacenter }}"
+        datastore: "/{{ datacenter }}/datastore/{{ datastore }}"
+        diskSize: "{{ rancher.disk_size }}"
+        folder: "/{{ datacenter }}/vm/{{ user_folder }}"
+        memorySize: "{{ rancher.memory_size }}"
+        network:
+          - "/{{ datacenter }}/network/{{ vm_portgroup }}"
+        pool: "/{{ datacenter }}/host/{{ vcenter_cluster }}/Resources/{{ user_folder }}"
+  register: res
+- debug: var=res

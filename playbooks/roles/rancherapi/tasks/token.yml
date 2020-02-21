@@ -1,0 +1,24 @@
+- name: Create Cloud Credentials if necessary
+  uri:
+    url: "{{ rancher.url }}/{{ rancher.apiversion }}/tokens"
+    validate_certs: "{{ rancher.validate_certs }}"
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Authorization: Bearer {{ rancher.bearer_token }}
+    method: POST
+    timeout: 4
+    status_code:
+    - 201
+    body_format: json
+    body:
+      current: false
+      description: "test"
+      expired: false
+      groupPrincipals: []
+      isDerived: true
+      ttl: 0
+  delegate_to: localhost
+  register: res
+
+- debug: var=res
