@@ -1,3 +1,9 @@
+- set_fact:
+    user_cluster_id: c-zqhp7
+    user_pool_master_prefix: user-mas
+    user_pool_worker_prefix: user-wrk
+
+
 - name: Create Node Pool
   uri:
     url: "{{ rancher.url }}/{{ rancher.apiversion }}/NodePools"
@@ -12,16 +18,16 @@
     - 201
     body_format: json
     body:
-      clusterId: c-llxqc
+      clusterId: "{{ user_cluster_id }}"
       controlPlane: false
-      deleteNotReadyAfterSecs: 0
-      displayName: "pool1"
       etcd: false
-      hostnamePrefix: "clh3-mas"
-      name: "pool2"
+      deleteNotReadyAfterSecs: 0
+      displayName: "Pool"
+      hostnamePrefix: "{{ user_pool_worker_prefix }}"
+      name: "worker-pool"
       namespaceId: ""
       nodeTaints: []
-      nodeTemplateId: "cattle-global-nt:nt-zhmcp"
+      nodeTemplateId: "{{ node_template_id }}"
       quantity: 1
       worker: true
   delegate_to: localhost

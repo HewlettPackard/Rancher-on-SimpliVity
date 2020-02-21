@@ -1,7 +1,6 @@
 - include_tasks: node_template.yml
   when: define_node_template is defined
 
-
 - include_tasks: token.yml
   when: define_token is defined
 

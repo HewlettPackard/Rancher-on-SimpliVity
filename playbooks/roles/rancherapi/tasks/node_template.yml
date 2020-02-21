@@ -48,6 +48,20 @@
     cred_id: "{{ res.json.id }}"
   when: creds.json.data | count <= 0
 
+- name: See if the node template is already existing
+  uri:
+    url:  "{{ rancher.url }}/{{ rancher.apiversion }}/nodetemplates?name={{ rancher.node_template }}"
+    validate_certs: "{{ rancher.validate_certs }}"
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Authorization: Bearer {{ rancher.bearer_token }}
+    method: GET
+    timeout: 4
+    status_code:
+    - 200
+  register: node_templates
+
 - name: Create the Node Template
   uri:
     url: "{{ rancher.url }}/{{ rancher.apiversion }}/nodetemplates"
@@ -65,7 +79,7 @@
       baseType: nodeTemplate
       driver: vmwarevsphere
       description: "My template"
-      name: "{{ admin_template }}"
+      name: "{{ rancher.node_template }}"
       cloudCredentialId: "{{ cred_id }}"
       labels:
         hpe.io/creator: cloudbusters
@@ -89,5 +103,9 @@
         network:
           - "/{{ datacenter }}/network/{{ vm_portgroup }}"
         pool: "/{{ datacenter }}/host/{{ vcenter_cluster }}/Resources/{{ user_folder }}"
-  register: res
-- debug: var=res
+  register: new_node_template
+  when: node_templates.json.data | count <= 0
+
+- set_fact:
+    node_template_id: "{% if node_templates.json.data | count > 0 %}{{ node_templates.json.data[0].id }}{% else %}{{ new_node_template.json.id }}{% endif %}"
+- debug: var=node_template_id
