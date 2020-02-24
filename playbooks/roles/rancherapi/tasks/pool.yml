@@ -22,8 +22,8 @@
       worker: false
       deleteNotReadyAfterSecs: 0
       displayName: "Pool"
-      hostnamePrefix: "{{ user_pool_worker_prefix }}"
-      name: "worker-pool"
+      hostnamePrefix: "{{ user_pool_master_prefix }}"
+      name: "master-pool"
       namespaceId: ""
       nodeTaints: []
       nodeTemplateId: "{{ node_templates.json.data[0].id }}"
