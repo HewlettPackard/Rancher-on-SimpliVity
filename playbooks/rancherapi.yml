@@ -20,5 +20,6 @@
   - role: rancherapi
     vars:
       define_node_template: true
-      define_pool: true
+      define_cluster: true
+#      define_pool: true
 

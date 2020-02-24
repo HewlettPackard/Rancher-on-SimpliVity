@@ -87,3 +87,4 @@ rancher:
   memory_size: 4096
   engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'
   node_template: user-template
+  user_cluster: api

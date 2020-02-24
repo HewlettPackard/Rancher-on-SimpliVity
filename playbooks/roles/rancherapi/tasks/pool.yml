@@ -1,10 +1,8 @@
 - set_fact:
-    user_cluster_id: c-zqhp7
-    user_pool_master_prefix: user-mas
-    user_pool_worker_prefix: user-wrk
+    user_pool_master_prefix: clh-user-mas
+    user_pool_worker_prefix: clh-user-wrk
 
-
-- name: Create Node Pool
+- name: Create master Pool
   uri:
     url: "{{ rancher.url }}/{{ rancher.apiversion }}/NodePools"
     validate_certs: "{{ rancher.validate_certs }}"
@@ -18,18 +16,47 @@
     - 201
     body_format: json
     body:
-      clusterId: "{{ user_cluster_id }}"
-      controlPlane: false
-      etcd: false
+      clusterId: "{{ clusters.json.data[0].id }}"
+      etcd: true
+      controlPlane: true
+      worker: false
       deleteNotReadyAfterSecs: 0
       displayName: "Pool"
       hostnamePrefix: "{{ user_pool_worker_prefix }}"
       name: "worker-pool"
       namespaceId: ""
       nodeTaints: []
-      nodeTemplateId: "{{ node_template_id }}"
+      nodeTemplateId: "{{ node_templates.json.data[0].id }}"
       quantity: 1
+  delegate_to: localhost
+  register: res
+
+- name: Create worker Pool
+  uri:
+    url: "{{ rancher.url }}/{{ rancher.apiversion }}/NodePools"
+    validate_certs: "{{ rancher.validate_certs }}"
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Authorization: Bearer {{ rancher.bearer_token }}
+    method: POST
+    timeout: 4
+    status_code:
+    - 201
+    body_format: json
+    body:
+      clusterId: "{{ clusters.json.data[0].id }}"
+      etcd: false
+      controlPlane: false
       worker: true
+      deleteNotReadyAfterSecs: 0
+      displayName: "Pool"
+      hostnamePrefix: "{{ user_pool_worker_prefix }}"
+      name: "worker-pool"
+      namespaceId: ""
+      nodeTaints: []
+      nodeTemplateId: "{{ node_templates.json.data[0].id }}"
+      quantity: 1
   delegate_to: localhost
   register: res
 

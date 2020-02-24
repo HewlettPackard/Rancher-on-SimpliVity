@@ -1,8 +1,7 @@
-- include_tasks: node_template.yml
-  when: define_node_template is defined
+- include_tasks: cloudcreds.yml
 
-- include_tasks: token.yml
-  when: define_token is defined
+- include_tasks: node_template.yml
+
+- include_tasks: cluster.yml
 
 - include_tasks: pool.yml
-  when: define_pool is defined

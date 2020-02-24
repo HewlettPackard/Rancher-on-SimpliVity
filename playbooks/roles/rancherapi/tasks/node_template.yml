@@ -1,53 +1,20 @@
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+###
+
 ---
-- name: See if the Cloud Credential is already existing
-  uri: 
-    url: "{{ rancher.url }}/{{ rancher.apiversion }}/cloudcredentials?name=mycreds"
-    validate_certs: "{{ rancher.validate_certs }}"
-    headers:
-      Accept: application/json
-      Content-Type: application/json
-      Authorization: Bearer {{ rancher.bearer_token }}
-    method: GET
-    timeout: 4
-    status_code:
-    - 200
-    body_format: form-urlencoded
-    body:
-      name: mycreds2
-  register: creds
-
-- set_fact:
-    cred_id: "{{ creds.json.data[0].id }}"
-  when: creds.json.data | count > 0
-
-- name: Create Cloud Credentials if necessary
-  uri:
-    url: "{{ rancher.url }}/{{ rancher.apiversion }}/cloudcredentials"
-    validate_certs: "{{ rancher.validate_certs }}"
-    headers:
-      Accept: application/json
-      Content-Type: application/json
-      Authorization: Bearer {{ rancher.bearer_token }}
-    method: POST
-    timeout: 4
-    status_code:
-    - 201
-    body_format: json
-    body:
-      name: mycreds
-      vmwarevspherecredentialConfig:
-        password: 'Just4m3hp_'
-        username: 'chris@vsphere.local'
-        vcenter: "{{ vcenter_hostname }}"
-        vcenterPort: "443"
-  delegate_to: localhost
-  register: res
-  when: creds.json.data | count <= 0
-
-- set_fact:
-    cred_id: "{{ res.json.id }}"
-  when: creds.json.data | count <= 0
-
 - name: See if the node template is already existing
   uri:
     url:  "{{ rancher.url }}/{{ rancher.apiversion }}/nodetemplates?name={{ rancher.node_template }}"
@@ -80,9 +47,9 @@
       driver: vmwarevsphere
       description: "My template"
       name: "{{ rancher.node_template }}"
-      cloudCredentialId: "{{ cred_id }}"
-      labels:
-        hpe.io/creator: cloudbusters
+      cloudCredentialId: "{{ cloudcreds.json.data[0].id }}"
+#      labels:
+#        hpe.io/creator: cloudbusters
       engineEnv: "{{ lookup('template','engineEnv.j2') | from_yaml }}"
       engineInstallURL: "{{ rancher.engineInstallURL }}"
       vmwarevsphereConfig:
@@ -103,9 +70,25 @@
         network:
           - "/{{ datacenter }}/network/{{ vm_portgroup }}"
         pool: "/{{ datacenter }}/host/{{ vcenter_cluster }}/Resources/{{ user_folder }}"
-  register: new_node_template
+  register: res
   when: node_templates.json.data | count <= 0
 
-- set_fact:
-    node_template_id: "{% if node_templates.json.data | count > 0 %}{{ node_templates.json.data[0].id }}{% else %}{{ new_node_template.json.id }}{% endif %}"
-- debug: var=node_template_id
+- name: Verify the the Node Template exists
+  uri:
+    url:  "{{ rancher.url }}/{{ rancher.apiversion }}/nodetemplates?name={{ rancher.node_template }}"
+    validate_certs: "{{ rancher.validate_certs }}"
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Authorization: Bearer {{ rancher.bearer_token }}
+    method: GET
+    timeout: 4
+    status_code:
+    - 200
+  register: node_templates
+
+- name: Fail if Node Template not found
+  fail:
+  when: node_templates.json.data | count <= 0
+
+- debug: var=node_templates.json.data[0].id
