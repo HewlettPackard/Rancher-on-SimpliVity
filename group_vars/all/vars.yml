@@ -83,8 +83,22 @@ rancher:
   validate_certs: False  
   apiversion: v3
   cpu_count: 2
-  disk_size: 20000
+  disk_size: 30000
   memory_size: 4096
   engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'
   node_template: user-template
-  user_cluster: api
+  user_cluster:
+    name: api
+    pools:
+     - name: master-pool
+       etcd: true
+       master: true
+       worker: false
+       count: 1
+       hostPrefix: clh-mas
+     - name: worker-pool
+       etcd: false
+       master: fale
+       worker: true
+       count: 3
+       hostPrefix: clh-wrk

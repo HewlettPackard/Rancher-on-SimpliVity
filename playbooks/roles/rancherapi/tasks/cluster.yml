@@ -16,7 +16,7 @@
 ---
 - name: See if the user cluster is already deployed
   uri:
-    url: "{{ rancher.url }}/{{ rancher.apiversion }}/clusters?name={{ rancher.user_cluster }}"
+    url: "{{ rancher.url }}/{{ rancher.apiversion }}/clusters?name={{ rancher.user_cluster.name }}"
     validate_certs: "{{ rancher.validate_certs }}"
     headers:
       Accept: application/json
@@ -49,7 +49,7 @@
 
 - name: Make sure the cluster was created
   uri:
-    url: "{{ rancher.url }}/{{ rancher.apiversion }}/clusters?name={{ rancher.user_cluster }}"
+    url: "{{ rancher.url }}/{{ rancher.apiversion }}/clusters?name={{ rancher.user_cluster.name }}"
     validate_certs: "{{ rancher.validate_certs }}"
     headers:
       Accept: application/json
