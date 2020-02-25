@@ -25,6 +25,7 @@
   roles:
   - role: cloudinit
     vars:
+      cloudinit_folder: "{{ install_dir }}"
       cloudinit_iface: "{{ rancher_iface }}" 
 #######################################################################
 #
@@ -37,6 +38,7 @@
   roles:
   - role: vspherevm
     vars:
+      cloudinit_folder: "{{ install_dir }}"
       provision: yes
       poweron: yes
 #######################################################################

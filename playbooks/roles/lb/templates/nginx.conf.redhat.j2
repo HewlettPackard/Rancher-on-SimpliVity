@@ -9,7 +9,7 @@ worker_connections 8192;
 stream {
     upstream rancher_servers_http {
         least_conn;
-        {% for host in groups['controlplane'] %}
+        {% for host in groups['ranchernodes'] %}
         server {{ hostvars[host].ansible_host }}:80 max_fails=3 fail_timeout=5s;
         {% endfor %}
     }
@@ -20,7 +20,7 @@ stream {
 
     upstream rancher_servers_https {
         least_conn;
-        {% for host in groups['controlplane'] %}
+        {% for host in groups['ranchernodes'] %}
         server {{ hostvars[host].ansible_host }}:443 max_fails=3 fail_timeout=5s;
         {% endfor %}
     }

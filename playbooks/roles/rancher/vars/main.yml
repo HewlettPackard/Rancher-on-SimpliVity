@@ -13,26 +13,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###
-
-#
-# Don't change anything in this file unless you know what you are doing
-#
-
-#
-# Rely on DRS to place VMs, if DRS is not enabled, this variable can be specified in the inventory file for each host
-#
-esxi_host: ''
-
-#
-# We only support Ubuntu
-#
-ubuntu_ifname1: ens160
-centos_ifname1: ens192
-rancher_iface: "{{ ubuntu_ifname1 }}"
-
-
-#
-# 
-#
-
-install_dir: "{{ lookup('env','HOME') }}/.svtrancher" 
+---
