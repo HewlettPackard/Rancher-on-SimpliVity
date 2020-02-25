@@ -14,6 +14,24 @@
 # limitations under the License.
 ###
 ---
+- name: See if the node template is already existing
+  uri:
+    url:  "{{ rancher.url }}/{{ rancher.apiversion }}/nodetemplates?name={{ item.node_template.name }}"
+    validate_certs: "{{ rancher.validate_certs }}"
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Authorization: Bearer {{ rancher.bearer_token }}
+    method: GET
+    timeout: 4
+    status_code:
+    - 200
+  register: pool_template
+
+- name: Fail if template not found
+  fail:
+  when: pool_template.json.data | count <= 0
+
 - name: Create Pools
   uri:
     url: "{{ rancher.url }}/{{ rancher.apiversion }}/NodePools"
@@ -38,11 +56,8 @@
       name: "{{ item.name }}"
       namespaceId: ""
       nodeTaints: []
-      nodeTemplateId: "{{ node_templates.json.data[0].id }}"
+      nodeTemplateId: "{{ pool_template.json.data[0].id }}"
       quantity: "{{ item.count }}"
   delegate_to: localhost
-  with_items:
-    "{{ rancher.user_cluster.pools }}"
   register: res
 
-- debug: var=res

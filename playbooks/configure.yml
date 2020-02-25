@@ -33,7 +33,7 @@
 #
 #######################################################################
 - name: Configure control plane nodes
-  hosts: controlplane
+  hosts: ranchernodes
   gather_facts: yes
   roles:
   - role: docker

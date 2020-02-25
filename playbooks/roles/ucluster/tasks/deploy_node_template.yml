@@ -15,9 +15,10 @@
 ###
 
 ---
+
 - name: See if the node template is already existing
   uri:
-    url:  "{{ rancher.url }}/{{ rancher.apiversion }}/nodetemplates?name={{ rancher.node_template }}"
+    url:  "{{ rancher.url }}/{{ rancher.apiversion }}/nodetemplates?name={{ item.node_template.name }}"
     validate_certs: "{{ rancher.validate_certs }}"
     headers:
       Accept: application/json
@@ -46,10 +47,8 @@
       baseType: nodeTemplate
       driver: vmwarevsphere
       description: "My template"
-      name: "{{ rancher.node_template }}"
+      name: "{{ item.node_template.name }}"
       cloudCredentialId: "{{ cloudcreds.json.data[0].id }}"
-#      labels:
-#        hpe.io/creator: cloudbusters
       engineEnv: "{{ lookup('template','engineEnv.j2') | from_yaml }}"
       engineInstallURL: "{{ rancher.engineInstallURL }}"
       vmwarevsphereConfig:
@@ -60,13 +59,13 @@
         creationType: vm
         cloudConfig: "{{ lookup('template','cloud-config.j2') }}"
         cloudinit: ""
-        cpuCount: "{{rancher.cpu_count }}"
+        cpuCount: "{{item.node_template.cpu_count }}"
         customAttribute: ""
         datacenter: "/{{ datacenter }}"
         datastore: "/{{ datacenter }}/datastore/{{ datastore }}"
-        diskSize: "{{ rancher.disk_size }}"
+        diskSize: "{{ item.node_template.disk_size }}"
         folder: "/{{ datacenter }}/vm/{{ user_folder }}"
-        memorySize: "{{ rancher.memory_size }}"
+        memorySize: "{{ item.node_template.memory_size }}"
         network:
           - "/{{ datacenter }}/network/{{ vm_portgroup }}"
         pool: "/{{ datacenter }}/host/{{ vcenter_cluster }}/Resources/{{ user_folder }}"
@@ -75,7 +74,7 @@
 
 - name: Verify the the Node Template exists
   uri:
-    url:  "{{ rancher.url }}/{{ rancher.apiversion }}/nodetemplates?name={{ rancher.node_template }}"
+    url:  "{{ rancher.url }}/{{ rancher.apiversion }}/nodetemplates?name={{ item.node_template.name }}"
     validate_certs: "{{ rancher.validate_certs }}"
     headers:
       Accept: application/json
