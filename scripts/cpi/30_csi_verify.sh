@@ -1,1 +1,1 @@
-kubectl describe csinode
+rancher kubectl describe csinode

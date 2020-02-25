@@ -29,6 +29,10 @@
     body_format: form-urlencoded
   register: clusters
 
+- name: Compute Name of Cluster Template
+  set_fact:
+    cluster_template:  "{% if rancher.user_cluster.csi %}cluster.csi.yml.j2{% else %}cluster.yml.j2{% endif %}"
+
 - name: Create User Cluster
   uri:
     url: "{{ rancher.url }}/{{ rancher.apiversion }}/clusters"
@@ -42,7 +46,7 @@
     status_code:
     - 201
     body_format: json
-    body:  "{{ lookup('template','cluster.yml.j2') | from_yaml }}"
+    body:  "{{ lookup('template',cluster_template) | from_yaml }}"
   delegate_to: localhost
   register: res
   when: clusters.json.data | count <= 0

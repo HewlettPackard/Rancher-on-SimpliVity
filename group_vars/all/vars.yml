@@ -33,7 +33,7 @@ vcenter_validate_certs: false                             # true not implemented
 vcenter_cluster: OCP                                      # Name of your SimpliVity Cluster (must exist)
 vm_portgroup: clh2964                                     # portgroup that the VMS connect to (must exist)
 datacenter: DEVOPS                                        # Name of your DATACENTER (must exist)
-datastore: clhRancher                                     # where to store the VMs
+datastore: clhRancher                                     # Datastore where the VMs are landed
 datastore_size: 1024                                      # size in GiB of the VM datastore, only applies if the playbook creates the datastore
 cluster_name: clh                                         # Name of the K8S Cluster. A VM folder with the same name is created if needed
 
@@ -89,16 +89,17 @@ rancher:
   node_template: user-template
   user_cluster:
     name: api
+    csi: false                         # true unsupported for now
     pools:
      - name: master-pool
        etcd: true
        master: true
        worker: false
        count: 1
-       hostPrefix: clh-mas
+       hostPrefix: clh3-mas
      - name: worker-pool
        etcd: false
-       master: fale
+       master: false
        worker: true
        count: 3
-       hostPrefix: clh-wrk
+       hostPrefix: clh3-wrk
