@@ -18,3 +18,4 @@
 - import_playbook: playbooks/prepare.yml
 - import_playbook: playbooks/provision.yml
 - import_playbook: playbooks/configure.yml
+- import_playbook: playbooks/rancher.yml
