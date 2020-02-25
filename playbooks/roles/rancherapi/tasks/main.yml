@@ -1,7 +1,0 @@
-- include_tasks: cloudcreds.yml
-
-- include_tasks: node_template.yml
-
-- include_tasks: cluster.yml
-
-- include_tasks: pool.yml

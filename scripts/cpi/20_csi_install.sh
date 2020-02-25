@@ -10,10 +10,10 @@ datacenters = "DEVOPS"
 EOF
 
 
-kubectl delete secret vsphere-config-secret -n kube-system
-kubectl create secret generic vsphere-config-secret --from-file=/tmp/csi-vsphere.conf --namespace=kube-system
+rancher kubectl delete secret vsphere-config-secret -n kube-system
+rancher kubectl create secret generic vsphere-config-secret --from-file=/tmp/csi-vsphere.conf --namespace=kube-system
 
 
-kubectl apply -f csi/csi-driver-rbac.yaml
-kubectl apply -f csi/vsphere-csi-controller-ss.yaml
-kubectl apply -f csi/vsphere-csi-node-ds.yaml
+rancher kubectl apply -f csi/csi-driver-rbac.yaml
+rancher kubectl apply -f csi/vsphere-csi-controller-ss.yaml
+rancher kubectl apply -f csi/vsphere-csi-node-ds.yaml

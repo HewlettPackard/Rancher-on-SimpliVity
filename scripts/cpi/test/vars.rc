@@ -4,3 +4,4 @@
 #    15 disks per iSCSI controller
 imax=5
 techno=csi
+export KUBECONFIG=~/kubeconfig.api

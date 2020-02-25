@@ -14,12 +14,7 @@
 # limitations under the License.
 ###
 ---
-- hosts: localhost
-  gather_facts: False
-  roles:
-  - role: rancherapi
-    vars:
-      define_node_template: true
-      define_cluster: true
-#      define_pool: true
-
+- include_tasks: cloudcreds.yml
+- include_tasks: node_template.yml
+- include_tasks: cluster.yml
+- include_tasks: pool.yml

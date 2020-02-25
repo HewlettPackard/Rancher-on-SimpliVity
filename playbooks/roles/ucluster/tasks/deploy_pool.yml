@@ -14,9 +14,9 @@
 # limitations under the License.
 ###
 ---
-- name: See if the user cluster is already deployed
+- name: See if the node template is already existing
   uri:
-    url: "{{ rancher.url }}/{{ rancher.apiversion }}/clusters?name={{ rancher.user_cluster.name }}"
+    url:  "{{ rancher.url }}/{{ rancher.apiversion }}/nodetemplates?name={{ item.node_template.name }}"
     validate_certs: "{{ rancher.validate_certs }}"
     headers:
       Accept: application/json
@@ -26,12 +26,15 @@
     timeout: 4
     status_code:
     - 200
-    body_format: form-urlencoded
-  register: clusters
+  register: pool_template
 
-- name: Create User Cluster
+- name: Fail if template not found
+  fail:
+  when: pool_template.json.data | count <= 0
+
+- name: Create Pools
   uri:
-    url: "{{ rancher.url }}/{{ rancher.apiversion }}/clusters"
+    url: "{{ rancher.url }}/{{ rancher.apiversion }}/NodePools"
     validate_certs: "{{ rancher.validate_certs }}"
     headers:
       Accept: application/json
@@ -42,28 +45,19 @@
     status_code:
     - 201
     body_format: json
-    body:  "{{ lookup('template','cluster.yml.j2') | from_yaml }}"
+    body:
+      clusterId: "{{ clusters.json.data[0].id }}"
+      etcd: "{{ item.etcd }}"
+      controlPlane: "{{ item.master }}"
+      worker: "{{ item.worker }}"
+      deleteNotReadyAfterSecs: 0
+      displayName: "{{ item.name }}"
+      hostnamePrefix: "{{ item.hostPrefix }}"
+      name: "{{ item.name }}"
+      namespaceId: ""
+      nodeTaints: []
+      nodeTemplateId: "{{ pool_template.json.data[0].id }}"
+      quantity: "{{ item.count }}"
   delegate_to: localhost
   register: res
-  when: clusters.json.data | count <= 0
-
-- name: Make sure the cluster was created
-  uri:
-    url: "{{ rancher.url }}/{{ rancher.apiversion }}/clusters?name={{ rancher.user_cluster.name }}"
-    validate_certs: "{{ rancher.validate_certs }}"
-    headers:
-      Accept: application/json
-      Content-Type: application/json
-      Authorization: Bearer {{ rancher.bearer_token }}
-    method: GET
-    timeout: 4
-    status_code:
-    - 200
-    body_format: form-urlencoded
-  register: clusters
-
-- fail:
-  when: clusters.json.data | count <= 0
-
-- debug: var=clusters.json.data[0].id
 

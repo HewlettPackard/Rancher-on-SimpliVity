@@ -16,7 +16,6 @@
 ---
 cloudinit_folder: /home/core/.svtrancher
 
-domain_name: clh.org
 rancher_subnet: 10.15.152.0/24                            # subnet to use on the 'vm_portgroup' VLAN
 gateway: '10.15.152.1'                                    # gateway for the above subnet (see your net admin)
 ntp_servers: ['10.12.2.1']                                # List of NTP servers
@@ -33,7 +32,7 @@ vcenter_validate_certs: false                             # true not implemented
 vcenter_cluster: OCP                                      # Name of your SimpliVity Cluster (must exist)
 vm_portgroup: clh2964                                     # portgroup that the VMS connect to (must exist)
 datacenter: DEVOPS                                        # Name of your DATACENTER (must exist)
-datastore: clhRancher                                     # where to store the VMs
+datastore: clhRancher                                     # Datastore where the VMs are landed
 datastore_size: 1024                                      # size in GiB of the VM datastore, only applies if the playbook creates the datastore
 cluster_name: clh                                         # Name of the K8S Cluster. A VM folder with the same name is created if needed
 
@@ -49,12 +48,12 @@ admin_template: clh-ubuntu-tpl
 #admin_template: clh-centos-tpl
 
 #
-# passwordless login
+# Public key to use for login in the rancher nodes (the VM hosting the Rancher Cluster)
 #
 ssh_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUAPiKRsniRNFeAsbwxY1/dfAG6Bhhsc+Z45j3Cn+K6rQ06L8sVvCCVglzL0uXjhAoVwaapMDSpYNTUOy4ukvSq99Cil97UdKQxV9nPkhghjFGMt3XIHeddX994F0Ma5W/6Y/fKWOuPRsoV+3bj4LmAK634ISmEAEYdh4mbczSsLTDTQcafREnzTJGAlx4GqFiHr1isK+CWLEFcJGbjbULgtJGGkprfMX/UZS0LNV5QYGiiw5/jkQQZ6jl7aKJwaRT/4jlW8Jbg4YbPddUnicxOeVDmU2lpi42S4lBxJC5f9VH8S9NzdcX43R5dleRjKdtEbMRFhsBlx7vkvRJ2upx core@hpe-ansible'
 
 #
-# VMWare CSI Storage plugin
+# CSI Storage plugin
 #
 csi_datastore_name: hpecsi
 csi_storageclass_name: csivols
@@ -79,26 +78,33 @@ proxy:
 
 rancher:
   url: https://lb1.clh.org
-  bearer_token: "{{ vault_rancher_token }}"
-  validate_certs: False  
-  apiversion: v3
-  cpu_count: 2
-  disk_size: 30000
-  memory_size: 4096
-  engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'
-  node_template: user-template
+  bearer_token: "{{ vault_rancher_token }}"                                   # Configure after the deployment of Rancher Server
+  validate_certs: False                                                       #  
+  apiversion: v3                                                              # Playbooks designed for v3 of the API
+  engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # 
   user_cluster:
-    name: api
+    name: api                                                                 # name of the user cluster
+    csi: false                                                                # set to true if you want to configure the CPI and CSI Drivers
     pools:
      - name: master-pool
        etcd: true
        master: true
        worker: false
        count: 1
-       hostPrefix: clh-mas
+       hostPrefix: clh3-mas
+       node_template:
+         name: master-node
+         cpu_count: 2
+         disk_size: 20000
+         memory_size: 8192
      - name: worker-pool
        etcd: false
-       master: fale
+       master: false
        worker: true
        count: 3
-       hostPrefix: clh-wrk
+       hostPrefix: clh3-wrk
+       node_template:
+         name: worker-node
+         cpu_count: 2
+         disk_size: 40000
+         memory_size: 4096
