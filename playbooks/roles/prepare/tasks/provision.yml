@@ -50,27 +50,41 @@
     mode: u=rwx,g=rx,o=rx
   with_items: "{{ prepare_client_tools }}"
 
-- name: Create Support Folder
+- name: create VM Folders
   vcenter_folder:
     hostname: "{{ vcenter_hostname }}"
     username: "{{ vcenter_username }}"
     password: "{{ vcenter_password }}"
     validate_certs: "{{ vcenter_validate_certs }}"
     datacenter: "{{ datacenter }}"
-    folder_name: "{{ admin_folder }}"
+    folder_name: "{{ item }}"
     folder_type: vm
     state: present
+  with_items:
+    - "{{ user_folder }}"
+    - "{{ admin_folder }}"
 
-- name: create Cluster Folder
-  vcenter_folder:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
+- name: Create Resource Pools
+  vmware_resource_pool:
+    hostname: '{{ vcenter_hostname }}'
+    username: '{{ vcenter_username }}'
+    password: '{{ vcenter_password }}'
     validate_certs: "{{ vcenter_validate_certs }}"
-    datacenter: "{{ datacenter }}"
-    folder_name: "{{ cluster_name }}"
-    folder_type: vm
+    datacenter: '{{ datacenter }}'
+    cluster: '{{ vcenter_cluster }}'
+    resource_pool: '{{ item }}'
+    mem_shares: normal
+    mem_limit: -1
+    mem_reservation: 0
+    mem_expandable_reservations: yes
+    cpu_shares: normal
+    cpu_limit: -1
+    cpu_reservation: 0
+    cpu_expandable_reservations: yes
     state: present
+  with_items:
+    - "{{ user_folder }}"
+    - "{{ admin_folder }}"
 
 - name: Populate /etc/hosts
   become: true

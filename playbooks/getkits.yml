@@ -13,5 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###
+
 ---
-kits_folder: null
+- name: Copy Kits
+  hosts: localhost
+  roles:
+  - role: kits
+

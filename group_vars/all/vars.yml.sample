@@ -38,12 +38,9 @@ cluster_name: hpe                                         # Name of the K8S Clus
 #
 # folders, templates and OVAs, templates are created using the corresponding OVA if they cannot be found (and only if they cannot be found)
 #
-vcenter_pool: hpe
-user_folder: hpe
-admin_folder: hpeRancher                                # Folder for Rancher Cluster and VM Templates
-admin_ova_path: /home/core/kits/ubuntu1804.ova
+user_folder: hpe                                          # folder and pool name for the user cluster VMs, created if they are not found
+admin_folder: hpeRancher                                  # Folder and pool name for Rancher Cluster VMs and  Templates
 admin_template: hpe-ubuntu-tpl
-#admin_ova_path: /home/core/kits/centos760.ova
 #admin_template: hpe-centos-tpl
 
 #

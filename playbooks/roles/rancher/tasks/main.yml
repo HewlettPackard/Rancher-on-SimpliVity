@@ -22,7 +22,7 @@
 - name: Deploy the Rancher Cluster
   shell: |
     cd {{ install_dir }}
-    rke up --config ./rancher-cluster.yml
+    rke up --config ./rancher-cluster.yml > {{ install_dir }}/rke-up.log
   async: "{{ rancher_cluster_deploy_timeout }}"
   poll: 0
   register: res

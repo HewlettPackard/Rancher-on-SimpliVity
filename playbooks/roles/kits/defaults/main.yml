@@ -14,4 +14,6 @@
 # limitations under the License.
 ###
 ---
-kits_folder: null
+kits_folder: /home/core/kits
+kits_rke_version: v1.0.4
+kits_rancher_cli_version: v2.3.2
