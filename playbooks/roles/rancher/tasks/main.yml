@@ -35,12 +35,14 @@
   delay: 5
   retries:  "{{ ( 1 + rancher_cluster_deploy_timeout | int / 5 ) | int }}"
 
+- debug: var=job_result
+  when: job_result.finished != 1 or job_result.rc != 0
+
 - fail:
     msg: "{{ job_result }}"
   when: job_result.finished != 1 or job_result.rc != 0
 
-#- debug: var=job_result.stdout_lines
-
+# Add a loop here to wait for all nodes to be Ready - tbd
 - name: Verify Cluster Status
   shell: |
     kubectl --kubeconfig={{ install_dir }}/kube_config_rancher-cluster.yml get node -o wide

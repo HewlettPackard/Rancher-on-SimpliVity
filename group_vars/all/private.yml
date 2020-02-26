@@ -26,7 +26,7 @@ esxi_host: ''
 #
 # We only support Ubuntu
 #
-ubuntu_ifname1: ens160
+ubuntu_ifname1: ens192
 centos_ifname1: ens192
 rancher_iface: "{{ ubuntu_ifname1 }}"
 

@@ -14,6 +14,27 @@
 # limitations under the License.
 ### 
 
+- name: Configure Proxy
+  become: true
+  ini_file:
+    path: /etc/dnf/dnf.conf
+    section: main
+    option: proxy
+    value: "{{ proxy.https }}"
+    backup: yes
+  when:
+  - proxy is defined
+  - ansible_pkg_mgr == "dnf"
+
+- name: Install Required Packages
+  become: true
+  package:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+    - genisoimage
+    
 - name: Verify Presence of Required files
   stat:
     path: "{{ item }}"
