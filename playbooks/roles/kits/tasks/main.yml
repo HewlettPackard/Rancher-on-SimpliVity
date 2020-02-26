@@ -58,4 +58,4 @@
   copy:
     src: "{{ kits_folder }}/rancher-{{ kits_rancher_cli_version }}/rancher"
     dest: "{{ kits_folder }}/"
-    mode: '0755'
+    mode: preserve
