@@ -37,3 +37,4 @@ rancher_iface: "{{ ubuntu_ifname1 }}"
 
 install_dir: "{{ lookup('env','HOME') }}/.svtrancher" 
 kits_folder: "{{ lookup('env','HOME') }}/kits"
+admin_ova_path: "{{ kits_folder }}/ubuntu1804.ova"

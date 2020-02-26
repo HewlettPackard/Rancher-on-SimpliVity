@@ -16,27 +16,42 @@ Install Ansible on your Workstation
   
   ```
 
-Because we are using Ubuntu for the Rancher Cluster and user cluster, we should probably use Ubuntu for the Ansible box but for now I work with Fedora
+Because we are using Ubuntu for the Rancher Cluster and user cluster, we should probably use Ubuntu for the Ansible box as well but for now I work with Fedora
 
-1. clone the repo
+1.  clone the repo
 
    ```
    # git clone https://github.com/chris7444/Rancher-on-SimpliVity.git
    ```
 
-2. chose yourself a 3 letters tag. Anything is fine but hpe (which I am already using)
+2. chose yourself a 3 letters tag. Anything is fine as long as it is unique in the SVT cluster and not equal to `hpe` (which I am already using)
 
-   copy the hosts.sample file to hosts. Edit hosts and replace all occurrences of 'hpe' with your 3 letters tag.
+   copy the `hosts.sample` file to `hosts`. Edit the file`hosts` and replace all occurrences of `hpe` with your 3 letters tag.
 
    under vi you can use **:%s/hpe/xxx/g**
 
-   copy the group_vars/all/vars.yml.sample to group_vars/all/vars.yml. In this file, replace all occurrences of hpe with your 3 letter tag. 
+   copy the `group_vars/all/vars.yml.sample` to `group_vars/all/vars.yml`. In this file, replace **all** occurrences of `hpe` with your 3 letter tag (using the vi tip above if you want)
 
-   Verify the other settings including the ssh public key (use a public key matching your private key), specify your own vm_portgroup, your subnet etc (read the comments in the  sample file)
+   Always in `group_vars/all/vars.yml`, verify these other settings and use your own values. Most of the vcenter_* variables are configured for the gen10 equipment. if you use the gen9 equipement you will have to change them
 
-   in group_vars/all/vars.yml ignore the rancher: datastructure (see below features not ready for prime time)
+   ```
+   rancher_subnet: 10.15.xxx.0/24 
+   gateway: '10.15.xxx.1'
+   ssh_key: < your public key>  # no a public key is not a secret 
+   
+   ```
 
-3. Create a DNS zone in our DNS with the name xxx.org. Where xxx is your tag.
+   Edit `group_vars/all/vault.yml` (copy vault.yml.sample) and specify the password for the vcenter environment you chose
+
+   ```
+   ---
+   vault_vcenter_password: 'passwordForvCenterAdminAccount'
+   vault_rancher_token: ignoreThisforNow
+   ```
+
+   
+
+3. Create a DNS zone in our DNS (10.10.173.1) with the name `xxx.org`. Where `xxx` is your tag.
 
    In this zone, add an A Record for lb1.xxx.org where the IP address should be the IP address of your unique load balancer as found in YOUR hosts file. If your load balancer is described like the following, then lb1.xxx.org should revolve to 10.15.yyy.11
 
@@ -62,26 +77,26 @@ Because we are using Ubuntu for the Rancher Cluster and user cluster, we should 
 
    Note: you don't really need to know where the kits are downloaded (but you will find them in your $HOME/kits)
 
-   This is a separate playbook because we may have to support air-gapped/offline environments in the future
+   **note:** This is a separate playbook because we may have to support air-gapped/offline environments in the future
 
 5. Deploy
 
    ```
-   ansible-playbook -i hosts site.yml
+   # ansible-playbook -i hosts site.yml
    ```
 
    
 
-   Note: You don;t have to create a VM template! (for now)
+   **Note**: You don;t have to create a VM template! (for now)
 
    # What is deployed
 
    the playbook site.yml does the following:
 
-   - install required packages on the ansible box (I may have installed a number of packages manually on my ansible box and you may hit issue in subsequent playbooks if this is the case)
-   - verify that the required files are found in the staging area (getkits.yml)
-   - install client tools (rancher cli and rke cli)
-   - create required artifacts in vCenter including VM folders,  resource pools BUT NOT the VM Portgroup
+   - installs the required packages on the Ansible box (I may have installed a number of packages manually on my ansible box and you may hit issue in subsequent playbooks if this is the case)
+   - verifies that the required files are found in the staging area (getkits.yml)
+   - Installs client tools (rancher cli and rke cli) on the Ansible box
+   - Creates required artifacts in vCenter including VM folders,  resource pools BUT NOT the VM Portgroup (`group_vars/all/vars.yml:vm_portgroup)` which you need to create manually (if not already existing)
    - loads the Ubuntu 18.04 cloud image OVA in vCenter
    - deploys and configure the one LB (with NGINX)
    - deploys and configure the rancher VMs (installs docker and configure the firewall with required ports)
