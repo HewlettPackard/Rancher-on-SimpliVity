@@ -147,6 +147,11 @@ Because we are using Ubuntu for the Rancher Cluster and user cluster, we should 
 
    # Known issues / work in Progress
 
-   The name of the network interface as seen by Ubuntu  is changing depending on how the template/OVA was built. If using the cloud image built by Ubuntu (which is what this draft set of playbooks is doing), the name is ens192 but when using my own image, the name is ens160. Currently I use a variable to configure this name but this is sub-optimal. There is a way to address this issue with cloud-init but I need to re-org some of the tasks (integrate the cloud-init tasks in the vsphere role)
+   We need to build our own Ubuntu image if we want CPI/CSI (requires a rev 15 VM
+   
+   I have seen the deployment of the Rancher Cluster (the K8S cluster) fail occasionally also the cluster seems to be operational after the playbook is finished (according to `kubectl get nodes`)
+   
 
-   We need to build our own Ubuntu image if we want CPI/CSI (requires a rev 15 VM)
+   # Resolved
+   
+   02/27/2020 - The playbook now do not rely on  the way the deployed OS enumerates the network interfaces. The first network interface in the VM is renamed ansible0 in the OS by cloud-init. The network interfaces are identified by their MAC Address.  Before, a variable had to be configured to reflect the name of the network interface in the OS and this name was depending on the VM template itself. I have tested with two different Ubuntu templates, the official Ubuntu Cloud Image (interface is named ens192) and an Ubuntu image I built myself (rev15 ) where the interface is named ens160
