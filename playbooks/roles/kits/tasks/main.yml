@@ -27,7 +27,7 @@
 
 - name: Create kits folder
   file:
-    path: "{{ kits_folder }}/{{ inventory_hostname }}"
+    path: "{{ kits_folder }}"
     state: directory
   delegate_to: localhost
 
@@ -58,3 +58,4 @@
   copy:
     src: "{{ kits_folder }}/rancher-{{ kits_rancher_cli_version }}/rancher"
     dest: "{{ kits_folder }}/"
+    mode: preserve
