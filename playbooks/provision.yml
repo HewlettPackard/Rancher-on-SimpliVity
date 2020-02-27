@@ -16,19 +16,6 @@
 ---
 #######################################################################
 #
-# Play: Prepare cloud init data for VMs
-#
-#######################################################################
-- name: Prepare cloud-init data 
-  hosts: all:!local
-  gather_facts: false 
-  roles:
-  - role: cloudinit
-    vars:
-      cloudinit_folder: "{{ install_dir }}"
-      cloudinit_iface: "{{ rancher_iface }}" 
-#######################################################################
-#
 # Play: Provision VMs
 #
 #######################################################################
@@ -38,7 +25,7 @@
   roles:
   - role: vspherevm
     vars:
-      cloudinit_folder: "{{ install_dir }}"
+      cloudinit_iface: "{{ rancher_iface }}" 
       provision: yes
       poweron: yes
 #######################################################################
