@@ -15,7 +15,7 @@
 ###
 ---
 prepare_required_files:
-- "{{ kits_folder}}/rke"
+- "{{ kits_folder }}/rke"
 - "{{ kits_folder }}/rancher"
 prepare_client_tools:
 - "{{ kits_folder }}/rke"
