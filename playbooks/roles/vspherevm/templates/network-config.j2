@@ -1,6 +1,9 @@
 version: 2
 ethernets:
-  {{ cloudinit_iface }}:
+  id0:
+     match:
+       macaddress: {{ vm_specs.instance.hw_eth0.macaddress }}
+     set-name: ansible0
      addresses:
      - {{ hostvars[inventory_hostname].ansible_host }}/{{ rancher_subnet | ipaddr('prefix') }}
      gateway4: {{ gateway }}
