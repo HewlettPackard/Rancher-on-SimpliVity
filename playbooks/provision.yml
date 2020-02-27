@@ -25,7 +25,6 @@
   roles:
   - role: vspherevm
     vars:
-      cloudinit_iface: "{{ rancher_iface }}" 
       provision: yes
       poweron: yes
 #######################################################################
