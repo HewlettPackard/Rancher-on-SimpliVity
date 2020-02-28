@@ -44,7 +44,7 @@
     dest: "{{ kits_folder }}/rancher.tar.gz"
     mode: 644
   - url:  https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.ova
-    dest: "{{ kits_folder }}/ubuntu1804.ova"
+    dest: "{{ admin_ova_path }}"
     mode: 644
   environment: "{{ env }}"
 

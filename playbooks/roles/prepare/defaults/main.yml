@@ -14,4 +14,4 @@
 # limitations under the License.
 ###
 ---
-kits_folder: null
+kits_folder: "{{ lookup('env','HOME') }}/kits"
