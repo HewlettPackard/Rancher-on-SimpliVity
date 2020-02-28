@@ -17,3 +17,4 @@
 kits_folder: "{{ lookup('env','HOME') }}/kits"
 kits_rke_version: v1.0.4
 kits_rancher_cli_version: v2.3.2
+admin_ova_path: "{{ kits_folder }}/ubuntu1804.ova"
