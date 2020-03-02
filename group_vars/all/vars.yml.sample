@@ -79,8 +79,9 @@ rancher:
   apiversion: v3                                                              # Playbooks designed for v3 of the API
   engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # ALl node templates use the same version of Docker 
   user_cluster:
+#   vm_template: hpe-ubuntu-tpl                                               # an existing VM template, admin template by default
     name: api                                                                 # name of the user cluster
-    csi: false                                                                # set to true if you want to configure the CPI and CSI Drivers (not implemented)
+    csi: false                                                                # not implemented
     pools:
      - name: master-pool
        etcd: true
@@ -97,7 +98,7 @@ rancher:
        etcd: false
        master: false
        worker: true
-       count: 3
+       count: 2
        hostPrefix: hpe3-wrk
        node_template:
          name: worker-node

@@ -30,6 +30,10 @@
     - 200
   register: node_templates
 
+- name: Default VM template is the one used to create the Rancher Cluster
+  set_fact: 
+    vm_template: "{{ rancher.user_cluster.vm_template | default(admin_template) }}"
+
 - name: Create the Node Template
   uri:
     url: "{{ rancher.url }}/{{ rancher.apiversion }}/nodetemplates"
@@ -55,7 +59,7 @@
         boot2dockerUrl": ""
         cfgparam:
           - "disk.enableUUID=TRUE"
-        cloneFrom: "/{{ datacenter }}/vm/{{ datastore }}/{{ admin_template }}"
+        cloneFrom: "/{{ datacenter }}/vm/{{ datastore }}/{{ vm_template }}"
         creationType: vm
         cloudConfig: "{{ lookup('template','cloud-config.j2') }}"
         cloudinit: ""
