@@ -78,30 +78,31 @@ rancher:
   validate_certs: False                                                       #  
   apiversion: v3                                                              # Playbooks designed for v3 of the API
   engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # ALl node templates use the same version of Docker 
-  user_cluster:
-#   vm_template: hpe-ubuntu-tpl                                               # an existing VM template, admin template by default
-    name: api                                                                 # name of the user cluster
-    csi: false                                                                # not implemented
-    pools:
-     - name: master-pool
-       etcd: true
-       master: true
-       worker: false
-       count: 1
-       hostPrefix: hpe3-mas
-       node_template:
-         name: master-node
-         cpu_count: 2
-         disk_size: 20000
-         memory_size: 8192
-     - name: worker-pool
-       etcd: false
-       master: false
-       worker: true
-       count: 2
-       hostPrefix: hpe3-wrk
-       node_template:
-         name: worker-node
-         cpu_count: 2
-         disk_size: 40000
-         memory_size: 4096
+
+user_cluster:
+# vm_template: hpe-ubuntu-tpl                                               # an existing VM template, admin template by default
+  name: api                                                                 # name of the user cluster
+  csi: false
+  pools:
+   - name: master-pool
+     etcd: true
+     master: true
+     worker: false
+     count: 1
+     hostPrefix: hpe3-mas
+     node_template:
+       name: master-node
+       cpu_count: 2
+       disk_size: 20000
+       memory_size: 8192
+   - name: worker-pool
+     etcd: false
+     master: false
+     worker: true
+     count: 2
+     hostPrefix: hpe3-wrk
+     node_template:
+       name: worker-node
+       cpu_count: 2
+       disk_size: 40000
+       memory_size: 4096

@@ -15,4 +15,4 @@
 ###
 ---
 - include_tasks: deploy_pool.yml
-  with_items: "{{ rancher.user_cluster.pools }}"
+  with_items: "{{ user_cluster.pools }}"

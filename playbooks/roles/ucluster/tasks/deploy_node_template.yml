@@ -32,7 +32,7 @@
 
 - name: Default VM template is the one used to create the Rancher Cluster
   set_fact: 
-    vm_template: "{{ rancher.user_cluster.vm_template | default(admin_template) }}"
+    vm_template: "{{ user_cluster.vm_template | default(admin_template) }}"
 
 - name: Create the Node Template
   uri:

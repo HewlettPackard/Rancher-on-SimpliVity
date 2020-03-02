@@ -16,7 +16,7 @@
 ---
 - name: See if the user cluster is already deployed
   uri:
-    url: "{{ rancher.url }}/{{ rancher.apiversion }}/clusters?name={{ rancher.user_cluster.name }}"
+    url: "{{ rancher.url }}/{{ rancher.apiversion }}/clusters?name={{ user_cluster.name }}"
     validate_certs: "{{ rancher.validate_certs }}"
     headers:
       Accept: application/json
@@ -31,7 +31,7 @@
 
 - name: Compute Name of Cluster Template
   set_fact:
-    cluster_template:  "{% if rancher.user_cluster.csi %}cluster.csi.yml.j2{% else %}cluster.yml.j2{% endif %}"
+    cluster_template:  "{% if user_cluster.csi %}cluster.csi.yml.j2{% else %}cluster.yml.j2{% endif %}"
 
 - name: Create User Cluster
   uri:
@@ -53,7 +53,7 @@
 
 - name: Make sure the cluster was created
   uri:
-    url: "{{ rancher.url }}/{{ rancher.apiversion }}/clusters?name={{ rancher.user_cluster.name }}"
+    url: "{{ rancher.url }}/{{ rancher.apiversion }}/clusters?name={{ user_cluster.name }}"
     validate_certs: "{{ rancher.validate_certs }}"
     headers:
       Accept: application/json

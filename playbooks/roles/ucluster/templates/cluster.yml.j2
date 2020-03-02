@@ -9,7 +9,7 @@ enableNetworkPolicy: false
 googleKubernetesEngineConfig: null
 localClusterAuthEndpoint:
   enabled: true
-name: api
+name: {{ user_cluster.name }}
 rancherKubernetesEngineConfig:
   addonJobTimeout: 30
   authentication:
