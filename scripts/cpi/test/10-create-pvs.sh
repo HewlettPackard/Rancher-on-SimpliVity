@@ -8,6 +8,6 @@ out_file=/tmp/pvc.tpl
 for (( i = 1 ; i <= imax ; i++ ))
 do
   i=$i techno=$techno envsubst < ./pvc.tpl >${out_file}
-  kubectl apply -f ${out_file}
+  rancher kubectl apply -f ${out_file}
 done
 

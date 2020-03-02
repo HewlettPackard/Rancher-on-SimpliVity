@@ -3,5 +3,5 @@ script_dir=$(dirname $0)
 
 for i in $(seq $imax)
 do 
-  kubectl exec -it  pod$i -- sh -c "cat /tmp/foo/foo.txt"
+  rancher kubectl exec -it  pod$i -- sh -c "cat /tmp/foo/foo.txt"
 done
