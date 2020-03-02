@@ -17,6 +17,10 @@
 prepare_required_files:
 - "{{ kits_folder }}/rke"
 - "{{ kits_folder }}/rancher"
+- "{{ kits_folder }}/kubectl"
+- "{{ kits_folder }}/helm"
 prepare_client_tools:
 - "{{ kits_folder }}/rke"
 - "{{ kits_folder }}/rancher"
+- "{{ kits_folder }}/kubectl"
+- "{{ kits_folder }}/helm"

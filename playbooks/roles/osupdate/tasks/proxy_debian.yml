@@ -14,7 +14,7 @@
 # limitations under the License.
 ###
 
-- name: Configure Proxy
+- name: Populate /etc/apt/apt.conf.d/proxy.conf
   become: true
   template:
     src: proxy.conf.j2

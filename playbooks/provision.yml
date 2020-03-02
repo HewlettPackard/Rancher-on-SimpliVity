@@ -27,12 +27,13 @@
     vars:
       provision: yes
       poweron: yes
+
 #######################################################################
 #
 # Play: Update Pkg Manager
 #
 #######################################################################
-- name: Provision VMs
+- name: Update VMs
   hosts: all:!local
   gather_facts: true
   roles:

@@ -29,15 +29,15 @@
   with_items:
   - "{{ groups[drs_group] }}"
 
-- name: Build List of provisionned VMs
+- name: Build List of provisioned VMs
   run_once: true
   delegate_to: localhost
   set_fact:
-    provisionned_vms: "{{ vm_facts.results | json_query(query) }}"
+    provisioned_vms: "{{ vm_facts.results | json_query(query) }}"
   vars:
     query: "[?instance].instance.hw_name" 
 
-- name: "Create DRS Anti-Affinity Rule for {{ drs_group }} VMs "
+- name: "Create DRS Anti-Affinity Rule for {{ drs_group }} VMs"
   delegate_to: localhost
   vmware_vm_vm_drs_rule:
     hostname: "{{ vcenter_hostname }}"
@@ -46,11 +46,11 @@
     cluster_name: "{{ vcenter_cluster }}"
     validate_certs: "{{ vcenter_validate_certs }}"
     vms:
-      "{{ provisionned_vms }}"
+      "{{ provisioned_vms }}"
     drs_rule_name: "{{ cluster_name }}-{{ drs_group }}-anti-affinity-rule-001"
     enabled: True
     state: present
     mandatory: True
     affinity_rule: false
-  when: provisionned_vms | count > 0
+  when: provisioned_vms | count > 0
 

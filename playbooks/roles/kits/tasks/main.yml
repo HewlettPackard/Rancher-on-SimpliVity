@@ -37,7 +37,7 @@
     dest: "{{ item.dest }}"
     mode: "{{ item.mode }}"
   with_items:
-  - url:   https://github.com/rancher/rke/releases/download/{{ kits_rke_version }}/rke_linux-amd64
+  - url:  https://github.com/rancher/rke/releases/download/{{ kits_rke_version }}/rke_linux-amd64
     dest: "{{ kits_folder }}/rke"
     mode: 755
   - url:  https://github.com/rancher/cli/releases/download/{{ kits_rancher_cli_version }}/rancher-linux-amd64-{{ kits_rancher_cli_version }}.tar.gz
@@ -45,6 +45,12 @@
     mode: 644
   - url:  https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.ova
     dest: "{{ admin_ova_path }}"
+    mode: 644
+  - url:  https://storage.googleapis.com/kubernetes-release/release/{{ kits_kubectl_cli_version }}/bin/linux/amd64/kubectl
+    dest: "{{ kits_folder }}/kubectl"
+    mode: 755
+  - url:  https://get.helm.sh/helm-{{ kits_helm_cli_version }}-linux-amd64.tar.gz
+    dest: "{{ kits_folder }}/helm.tar.gz"
     mode: 644
   environment: "{{ env }}"
 
@@ -59,3 +65,22 @@
     src: "{{ kits_folder }}/rancher-{{ kits_rancher_cli_version }}/rancher"
     dest: "{{ kits_folder }}/"
     mode: preserve
+
+- name: Create helm archive staging directory
+  file:
+    path: "{{ kits_folder }}/helm-{{ kits_helm_cli_version }}"
+    state: directory
+  delegate_to: localhost
+
+- name: Extract helm cli
+  unarchive:
+    src: "{{ kits_folder }}/helm.tar.gz"
+    dest: "{{ kits_folder }}/helm-{{ kits_helm_cli_version }}"
+    remote_src: yes
+
+- name: Copy helm cli tool to expected location
+  copy:
+    src: "{{ kits_folder }}/helm-{{ kits_helm_cli_version }}/linux-amd64/helm"
+    dest: "{{ kits_folder }}/"
+    mode: preserve
+
