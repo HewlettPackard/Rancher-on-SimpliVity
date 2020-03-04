@@ -32,6 +32,29 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
    **Note: Time services are crucial**. You must have time services available in your environment
 
+   The variables used to configure the DHCP service on a support VM include:
+
+   ```
+   #
+   # DHCP related settings
+   #
+   dhcp_subnet: 10.15.152.0/24                               # subnet to use on the above VLAN (see your net admin)
+   dhcp_range: '10.15.152.100 10.15.152.150'                 # DHCP range to use on the above VLAN (see your net admin)
+   dhcp_default_lease_time: 86400                            # DHCP default lease time (24 hours)
+   dhcp_max_lease_time: 2592000                              # DHCP maximum lease time (30 days)
+   domain_name: hpe.org                                      # DNS domain name
+   ```
+
+   The `dhcp_subnet` variable denotes the subnet where DHCP leases will be provided.  This is normally the same subnet as `rancher_subnet`.
+
+   The `dhcp_range` variable configures the range of IP addresses that will be given out by the DHCP server. This range needs to include sufficient addresses to satisfy any nodes created using node templates, such as user clusters.
+
+   The `dhcp_default_lease_time` and `dhcp_max_lease_time` variables specify the minimum and maximum times in seconds for DHCP leases to remain valid. In the provided sample file the default lease time is 86400 seconds or 24 hours. The maximum lease time is 2592000 seconds, or 30 days. You should use values that will ensure your K8s cluster nodes are not changing IP addresses. You could specify an indefinite lease time but that would likely result in exhausting your `dhcp_range` addresses.
+
+   The `domain_name` variable denotes the DNS domain name used for the rancher/DHCP subnet.
+
+
+
    ```
    #
    # vcenter related settings
@@ -67,10 +90,10 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
    ```
    rancher:
-     url: https://lb1.hpe.org   # this name must resolv to the IP address of your LB
+     url: https://lb1.hpe.org   # this name must resolve to the IP address of your LB
      validate_certs: False      #
      apiversion: v3             # Playbooks designed for v3 of the API
-     engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # ALl node templates use the same version of Docke
+     engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # All node templates use the same version of Docke
    ```
 
 3. copy the file `group_vars/all/vault.sample` to `group_vars/all/vault.yml` and edit this new file. Specify the password for the vCenter admin account and the password you want to configure for the Rancher Server admin account.
