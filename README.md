@@ -1,10 +1,6 @@
 # Quick Startup
 
-Install Ansible on your Workstation
-
-- tested with Fedora 31 and Ansible 2.9.5
-
-
+Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
 1. clone the repo
 
@@ -102,148 +98,138 @@ Install Ansible on your Workstation
 
    **Note**: You don't have to create a VM template! (for now)
 
-   
-
    # What is deployed
 
-   The playbook site.yml does the following:
-   
+   The playbook `site.yml` does the following:
+
    - installs the required packages on the Ansible box
    - verifies that the required files are found in the staging area
    - Installs client tools (rancher cli and rke cli) on the Ansible box
    - Creates required artifacts in vCenter including VM folders,  resource pools BUT NOT the VM Portgroup (`group_vars/all/vars.yml:vm_portgroup)` which you need to create manually (if not already existing)
    - loads the Ubuntu 18.04 cloud image OVA in vCenter
    - deploys and configures the one LB (with NGINX)
-- deploys and configure the rancher VMs (installs docker and configures the firewall with the required ports)
-   - deploy the Rancher Cluster
+   - deploys and configure the rancher VMs (installs docker and configures the firewall with the required ports)
+   - deploys the Rancher Cluster
+# Deployment of Rancher Server
 
-   # Deployment of Rancher Server
+Everything in this section is temporary and WILL change including this documentation. For now the repo provides a temporary script (`scripts/rancher.sh`). This script includes a file which is expected to be in your $HOME directory.  Create this file. If you are behind a proxy configure the proxy environment variables as shown in the example below: (replace with your proxy settings)
 
-   Everything in this section is temporary and WILL change including this documentation. For now the repo provides a temporary script (`scripts/rancher.sh`). This script includes a file which is expected to be in your $HOME directory.  Create this file. If you are behind a proxy configure the proxy environment variables as shown in the example below: (replace with your proxy settings)
-
-   ```
+```
 export https_proxy=http://10.12.7.21:8080
-   export http_proxy=http://10.12.7.21:8080
+export http_proxy=http://10.12.7.21:8080
 export NO_PROXY="localhost,.am2.cloudra.local,.hpe.org,10.15.152.0/24"
-   ```
+```
 
-   **note:** If you are not behind a proxy, leave this file empty (but it must exists)
-   
-   If behind a proxy, make sure you specify the `rancher_subnet` in the NO_PROXY specification (here 10.15.152.0/24).
-   
-   To deploy Rancher server
-   
-   1. make sure you have created the file $HOME/proxy.rc  (see above)
+If you are not behind a proxy, leave this file empty (but the file must exists). If behind a proxy, make sure you specify the `rancher_subnet` in the NO_PROXY specification (here 10.15.152.0/24).
 
-   2. run the following commands
-   
-      ```
-   cd scripts
-      ./rancher.sh
-      ```
+To deploy Rancher server:
 
-   **WARNING**: DO NOT TRY TO CONNECT TO THE RANCHER GUI NOW. The next playbook `1stlogin.yml` will change the password of the Rancher Server with the value you configured in the vault file. And for this to succeed, it uses the default credentials. 
+1. make sure you have created the file `$HOME/proxy.rc`  per the recommendations above
 
-   # First time Login
+2. run the following commands
 
-   The playbook `playbook/1stlogin.yml` configures the password for the local admin account and creates a token for use by subsequent playbooks when they use the Rancher API. This token is stored in `$HOME/.svtrancher/rancher-token`.
+```
+# cd scripts
+# ./rancher.sh
+```
 
-   For this playbook to succeed you MUST NOT have connected to the Rancher GUI before running it. If you did, you will have to create a bearer token manually and store it in `$HOME/.svtrancher/rancher-token`
+**WARNING**: DO NOT TRY TO CONNECT TO THE RANCHER GUI NOW. The next playbook `1stlogin.yml` will change the password of the Rancher Server with the value you configured in the vault file. And for this to succeed, it uses the default credentials. 
 
-   This playbook will be integrated in `site.yml` when we have the Rancher Server installation done. In the meantime you have to run it manually:
+# First time Login
 
-   ```
+The playbook `playbook/1stlogin.yml` configures the password for the local admin account and creates a token for use by subsequent playbooks when they use the Rancher API. This token is stored in `$HOME/.svtrancher/rancher-token`.
+
+For this playbook to succeed you MUST NOT have connected to the Rancher GUI before running it. If you did, you will have to create a bearer token manually and store it in `$HOME/.svtrancher/rancher-token`
+
+This playbook will be integrated in `site.yml` when we have the Rancher Server installation done. In the meantime you have to run it manually:
+
+```
+
 # ansible-playbook -i hosts playbooks/1stlogin.yml
-   ```
-
-   
+```
 
    # Deploy the user cluster
 
-   **WARNING**: You must have successfully run the playbook `playbooks/1stlogin.yml` before attempting to deploy the user cluster.
-   **WARNING**: For now you must a DHCP server configured on your Rancher VLAN.
+ **WARNING**: You must have successfully run the playbook `playbooks/1stlogin.yml` before attempting to deploy the user cluster.
+ **WARNING**: For now you must a DHCP server configured on your Rancher VLAN.
 
-   To some extent, you can configure the user cluster that the playbook `playbooks/ucluster.yml` will deploy. This is achieved by configuring the variable `user_cluster` in `group_vars/all/vars.yml`.
+To some extent, you can configure the user cluster that the playbook `playbooks/ucluster.yml` will deploy. This is achieved by configuring the variable `user_cluster` in `group_vars/all/vars.yml`.
 
-   You may create as many pools as you want, but at least you will need 1 master node, one etcd node and one worker node (no checking done). In the example below, we have two pools, the `master-pool`  contains 1 node (`count: 1`) which is running etcd as well as the Kubernetes "master" pieces. The second pool (`worker-pool`)  deploys 2 nodes (`counts: 2`) which are only worker nodes. Each pool leverages a Rancher node template.  All Rancher node templates are based on the same VMWare VM template which by default is the VM template which was used to deploy the Rancher Cluster. 
+You may create as many pools as you want, but at least you will need 1 master node, one etcd node and one worker node (no checking done). In the example below, we have two pools, the `master-pool`  contains one node (`count: 1`) which is running etcd as well as the Kubernetes "master" pieces. The second pool (`worker-pool`)  deploys two nodes (`counts: 2`) which are only worker nodes. Each pool leverages a Rancher node template (`node_template`).  All Rancher node templates are based on the same VMWare VM template which by default is the VM template which was used to deploy the Rancher Cluster. 
 
-   **note:** It is possible to specify a different template but this template will have to be prepared in vCenter manually.
+**note:** It is possible to specify a different template but this template will have to be prepared in vCenter manually.
 
-   Each node template specifies the amount of RAM (in GBs), CPUs and disk (in GBs) wanted.
-   
-   The `hostPrefix` within each pool specifies how the VMs should be named in the pool (host prefix + sequence number)
-   
+ Each node template specifies the amount of RAM (in GBs), CPUs and disk (in GBs) wanted.
+
+ The `hostPrefix` within each pool specifies how the VMs should be named in the pool (host prefix + sequence number)
+
    ```
-   user_cluster:
-   # vm_template: hpe-ubuntu-tpl     # an existing VM template, admin template by default
-     name: api                       # name of the user cluster
-     csi: false                      # true to be done
-     vcenter_credsname: mycreds2     # only one vCenter cluster supported at this time
-     pools:
-      - name: master-pool
-        etcd: true
-        master: true
-        worker: false
-        count: 1
-        hostPrefix: hpe-mas
-        node_template:
-          name: master-node
-          cpu_count: 2
-          disk_size: 20000
-          memory_size: 8192
-      - name: worker-pool
-        etcd: false
-        master: false
-        worker: true
-        count: 2
-        hostPrefix: hpe-wrk
-        node_template:
-          name: worker-node
-          cpu_count: 2
-          disk_size: 40000
-          memory_size: 4096
-   
-   
+user_cluster:
+# vm_template: hpe-ubuntu-tpl    # an existing VM template, admin template by default
+ name: api                       # name of the user cluster
+ csi: false                      # true to be done
+ vcenter_credsname: mycreds2     # only one vCenter cluster supported at this time
+ pools:
+  - name: master-pool
+    etcd: true
+    master: true
+    worker: false
+    count: 1
+    hostPrefix: hpe-mas
+    node_template:
+      name: master-node
+      cpu_count: 2
+      disk_size: 20000
+      memory_size: 8192
+  - name: worker-pool
+    etcd: false
+    master: false
+    worker: true
+    count: 2
+    hostPrefix: hpe-wrk
+    node_template:
+      name: worker-node
+      cpu_count: 2
+      disk_size: 40000
+      memory_size: 4096
    ```
-   
-   
-   
-   You are now ready to deploy the user cluster using
-   
-   ```
-   # ansible-playbook -i hosts playbooks/ucluster.yml
-   ```
-   
-   
-   
-   
-   
-   # Access Rancher Server
-   
-   You access your rancher server by browsing to the url which is specified by the variable `rancher.url`  (see `group_vars/all/vars.yml` the `rancher` variable.) The value supplied by the sample file specifies https://lb1.hpe.org.
-   
-   ```
-   rancher:
+
+ 
+
+You are now ready to deploy the user cluster:  
+
+```
+# ansible-playbook -i hosts playbooks/ucluster.yml
+```
+
+
+
+# Access Rancher Server
+
+You access your rancher server by browsing to the url which is specified by the variable `rancher.url`  (see in `group_vars/all/vars.yml` the `rancher` variable). This is https://lb1.hpe.org in the example below.
+
+```
+rancher:
      url: https://lb1.hpe.org  
      validate_certs: False    
      apiversion: v3  
          :   :
-   ```
-   
-   
-   
+
+```
    # Other Features (not ready for prime-time)
-   
+
    - Deployment of a user cluster with CPI / CSI (VMware drivers) is in progress
      - final steps manual for now (deploy cloud provider driver and CSI driver)
      - need to address the issue with the name of the network interface (see Known Issues)
-   
-   
-   
+
+  
+
    # Known issues / Work in progress
-   
-   By default, `getkits.yml` will pull the Ubuntu 18.04 cloud image (OVF format) but this file deploys a VM at h/w revision 10 and CPI/CSI requires a rev 15 VM
-   
-   Deployment of the Rancher Cluster fails occasionally also the cluster seems to be operational after the playbook is finished (according to `kubectl get nodes`)
-   
-   
+
+By default, `getkits.yml` will pull the Ubuntu 18.04 cloud image (OVF format) but this file deploys a VM at h/w revision 10 and CPI/CSI requires a rev 15 VM
+
+Deployment of the Rancher Cluster fails occasionally also the cluster seems to be operational after the playbook is finished (according to `kubectl get nodes`)
+
+
+
+
