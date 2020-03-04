@@ -162,7 +162,8 @@ You may create as many pools as you want, but at least you will need 1 master no
 
  The `hostPrefix` within each pool specifies how the VMs should be named in the pool (host prefix + sequence number)
 
-   ```user_cluster:
+```
+user_cluster:
   vm_template: hpe-ubuntu-tpl     # an existing VM template, admin template by default
   name: api                       # name of the user cluster
   csi: false                      # true to be done
@@ -190,7 +191,7 @@ You may create as many pools as you want, but at least you will need 1 master no
        cpu_count: 2
        disk_size: 40000
        memory_size: 4096
-   ```
+```
 
 You are now ready to deploy the user cluster:  
 
