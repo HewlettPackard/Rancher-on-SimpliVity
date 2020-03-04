@@ -1,0 +1,78 @@
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+### 
+---
+# configure DHCP
+
+- name: Install Pkgs on Ubuntu Support Node
+  become: true
+  package:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+    - firewalld
+    - isc-dhcp-server
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install Pkgs on CentOS/RedHat Support Node
+  become: true
+  package:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+    - firewalld
+    - dhcpd
+  when: ansible_os_family == "RedHat"
+
+- name: Enable firewall
+  become: true
+  systemd:
+    name: firewalld
+    enabled: yes
+    state: started
+
+- name: Open ports in the firewall
+  become: true
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled
+  with_items:
+    "{{ dhcpd_ports }}"
+
+- name: Create dhcpd.conf
+  become: true
+  template:
+    src: dhcpd.conf.j2
+    dest: /etc/dhcp/dhcpd.conf
+  notify: 
+    - Restart DHCP RedHat
+    - Restart DHCP Ubuntu
+
+- name: Enable DHCP Service on Ubuntu Support Node
+  become: true
+  systemd:
+    name: isc-dhcp-server
+    enabled: yes
+  when: ansible_distribution == "Ubuntu"
+
+- name: Enable DHCP Service on RedHat/CentOS Support Node
+  become: true
+  systemd:
+    name: dhcpd
+    enabled: yes
+  when: ansible_os_family == "RedHat"

@@ -22,6 +22,15 @@ dns_servers: ['10.10.173.1','10.10.173.31']               # list of DNS servers
 dns_suffixes: ['am2.cloudra.local','hpe.org']             # list of DNS suffixes
 
 #
+# DHCP related settings
+#
+dhcp_subnet: 10.15.152.0/24                               # subnet to use on the above VLAN (see your net admin)
+dhcp_range: '10.15.152.100 10.15.152.150'                 # DHCP range to use on the above VLAN (see your net admin)
+dhcp_default_lease_time: 86400                            # DHCP default lease time (24 hours)
+dhcp_max_lease_time: 2592000                              # DHCP maximum lease time (30 days)
+domain_name: hpe.org                                      # DNS domain name
+
+#
 # vcenter related settings
 #
 vcenter_hostname: vcentergen10.am2.cloudra.local          # name of your vCenter server

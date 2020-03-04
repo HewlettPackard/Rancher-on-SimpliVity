@@ -14,5 +14,8 @@
 # limitations under the License.
 ###
 
-localhost
-
+---
+- hosts: localhost
+  remote_user: root
+  roles:
+    - dhcp
