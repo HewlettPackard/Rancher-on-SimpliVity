@@ -161,6 +161,7 @@ export NO_PROXY="localhost,.am2.cloudra.local,.hpe.org,10.15.152.0/24"
    # Deploy the user cluster
 
    **WARNING**: You must have successfully run the playbook `playbooks/1stlogin.yml` before attempting to deploy the user cluster.
+   **WARNING**: For now you must a DHCP server configured on your Rancher VLAN.
 
    To some extent, you can configure the user cluster that the playbook `playbooks/ucluster.yml` will deploy. This is achieved by configuring the variable `user_cluster` in `group_vars/all/vars.yml`.
 
