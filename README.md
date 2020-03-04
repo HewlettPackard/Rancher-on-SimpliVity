@@ -112,7 +112,7 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    - deploys the Rancher Cluster
 # Deployment of Rancher Server
 
-Everything in this section is temporary and WILL change including this documentation. For now the repo provides a temporary script (`scripts/rancher.sh`). This script includes a file which is expected to be in your $HOME directory.  Create this file. If you are behind a proxy configure the proxy environment variables as shown in the example below: (replace with your proxy settings)
+Everything in this section is temporary and WILL change including this documentation. For now the repo provides a temporary script (`scripts/rancher.sh`). This script includes the file proxy.rc which is expected to be in your $HOME directory.  Create this file. If you are behind a proxy configure the proxy environment variables as shown in the example below: (replace with your proxy settings)
 
 ```
 export https_proxy=http://10.12.7.21:8080
@@ -144,7 +144,6 @@ For this playbook to succeed you MUST NOT have connected to the Rancher GUI befo
 This playbook will be integrated in `site.yml` when we have the Rancher Server installation done. In the meantime you have to run it manually:
 
 ```
-
 # ansible-playbook -i hosts playbooks/1stlogin.yml
 ```
 
@@ -163,38 +162,36 @@ You may create as many pools as you want, but at least you will need 1 master no
 
  The `hostPrefix` within each pool specifies how the VMs should be named in the pool (host prefix + sequence number)
 
-   ```
+```
 user_cluster:
-# vm_template: hpe-ubuntu-tpl    # an existing VM template, admin template by default
- name: api                       # name of the user cluster
- csi: false                      # true to be done
- vcenter_credsname: mycreds2     # only one vCenter cluster supported at this time
- pools:
-  - name: master-pool
-    etcd: true
-    master: true
-    worker: false
-    count: 1
-    hostPrefix: hpe-mas
-    node_template:
-      name: master-node
-      cpu_count: 2
-      disk_size: 20000
-      memory_size: 8192
-  - name: worker-pool
-    etcd: false
-    master: false
-    worker: true
-    count: 2
-    hostPrefix: hpe-wrk
-    node_template:
-      name: worker-node
-      cpu_count: 2
-      disk_size: 40000
-      memory_size: 4096
-   ```
-
- 
+# vm_template: hpe-ubuntu-tpl     # an existing VM template, admin template by default
+  name: api                       # name of the user cluster
+  csi: false                      # true to be done
+  vcenter_credsname: mycreds2     # only one vCenter cluster supported at this time
+  pools:
+   - name: master-pool
+     etcd: true
+     master: true
+     worker: false
+     count: 1
+     hostPrefix: hpe-mas
+     node_template:
+       name: master-node
+       cpu_count: 2
+       disk_size: 20000
+       memory_size: 8192
+   - name: worker-pool
+     etcd: false
+     master: false
+     worker: true
+     count: 2
+     hostPrefix: hpe-wrk
+     node_template:
+       name: worker-node
+       cpu_count: 2
+       disk_size: 40000
+       memory_size: 4096
+```
 
 You are now ready to deploy the user cluster:  
 
