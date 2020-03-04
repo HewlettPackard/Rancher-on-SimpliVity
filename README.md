@@ -2,84 +2,99 @@
 
 Install Ansible on your Workstation
 
-- I use Fedora 31
+- tested with Fedora 31 and Ansible 2.9.5
 
-- Ansible 2.9.3
-
-  ```
-  ansible 2.9.3
-    config file = /etc/ansible/ansible.cfg
-    configured module search path = ['/home/core/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
-    ansible python module location = /usr/lib/python3.7/site-packages/ansible
-    executable location = /usr/bin/ansible
-    python version = 3.7.6 (default, Dec 19 2019, 22:52:49) [GCC 9.2.1 20190827 (Red Hat 9.2.1-1)]
   
-  ```
 
-Because we are using Ubuntu for the Rancher Cluster and user cluster, we should probably use Ubuntu for the Ansible box as well but for now I work with Fedora
 
-1.  clone the repo
+1. clone the repo
 
    ```
-   # git clone https://github.com/chris7444/Rancher-on-SimpliVity.git
+   # git clone git@github.com:HewlettPackard/Rancher-on-SimpliVity.git
+   # cd ./Rancher-on-SimpliVity
    ```
 
-2. chose yourself a 3 letters tag. Anything is fine as long as it is unique in the SVT cluster and not equal to `hpe` (which I am already using)
+2. copy the file `group_vars/all/vars.yml.sample` to `group_vars/all/vars.yml` and configure it to match your environment. The file contains comments that should help you understand how to populate this file. (and more documentation will come)
 
-   copy the `hosts.sample` file to `hosts`. Edit the file`hosts` and replace all occurrences of `hpe` with your 3 letters tag.
-
-   under vi you can use **:%s/hpe/xxx/g**
-
-   copy the `group_vars/all/vars.yml.sample` to `group_vars/all/vars.yml`. In this file, replace **all** occurrences of `hpe` with your 3 letter tag (using the vi tip above if you want)
-
-   Always in `group_vars/all/vars.yml`, verify these other settings and use your own values. Most of the vcenter_* variables are configured for the gen10 equipment. if you use the gen9 equipment you will have to change them
+   Anyway a few variables deserves a special treatment. 
 
    ```
    rancher_subnet: 10.15.xxx.0/24
    gateway: '10.15.xxx.1'
    ssh_key: < your public key>  # no a public key is not a secret
-   
+   ntp_servers: ['10.12.2.1']                                # List of NTP servers
+   dns_servers: ['10.10.173.1','10.10.173.31']               # list of DNS servers
+   dns_suffixes: ['am2.cloudra.local','hpe.org']             # list of DNS suffixes
    ```
 
-   Edit `group_vars/all/vault.yml` (copy vault.yml.sample) and specify the password for the vcenter environment you chose
+   The `rancher_subnet` variable is the scope of IP addresses which you can use on the Rancher VLAN. The Rancher VLAN is a vCenter portgroup in your virtual infrastructure which connects all the virtual machines that this solution deploys. **This portgroup must exists** (see below `vm_portgroup`) before you attempt to run the playbooks and you must have been assigned a scope (subnet) of IP addresses on which you have complete control.
+
+   The `gateway` variable is the gateway to use for the Rancher VLAN. 
+
+   the `ssh_key` is an SSH public key for which you have the corresponding SSH private key. Currently the playbooks use the default ID of the user who is running the playbook hence the SSH public key to specify here is the one you find in `~/.ssh/id_rsa.pub`.
+
+   The `ntp_servers` and `dns_servers` variables should be configured with addresses which apply in your environment. The machines which will be deployed on the Rancher VLAN will need connectivity with these services.  
+
+   **Note: Time services are crucial**. You must have time services available in your environment
 
    ```
-   ---
-   vault_vcenter_password: 'passwordForvCenterAdminAccount'
-   vault_rancher_token: ignoreThisforNow
+   #
+   # vcenter related settings
+   #
+   vcenter_hostname: vcentergen10.am2.cloudra.local # FQDN of your vCenter Server
+   vcenter_username: Administrator@vsphere.local    # Admin creds
+   vcenter_password: "{{ vault_vcenter_password }}" # Admin creds
+   vcenter_cluster: OCP           # Name of your SimpliVity Cluster (must exist)
+   vm_portgroup: hpe2964          # portgroup that the VMS connect to (must exist)
+   datacenter: DEVOPS             # Name of your DATACENTER (must exist)
+   datastore: hpeRancher          # Datastore where the VMs are landed
+   datastore_size: 1024           # size in GiB of the datastore above
+   cluster_name: hpe              # may not be needed
+   user_folder: hpe               # folder and pool name for the user cluster VMs
+   admin_folder: hpeRancher       # Folder and pool name for Rancher Cluster VMs and  Templates
+   admin_template: hpe-ubuntu-tpl # name to give to the admin template
    ```
 
-   
+   The vCenter related variables are pretty self-explanatory.  The vCenter credentials must be valid . Some objects must exists before running the playbooks and some will be created by the playbooks.
 
-3. Create a DNS Forward Lookup Zone in our DNS (10.10.173.1) with the name `xxx.org`. Where `xxx` is your tag.  If needed, create a Reverse Lookup Zone for the subnet where your lb1.xxx.org will reside so that reverse lookups will work.
-
-   In this Forward Lookup Zone, add an A Record for lb1.xxx.org where the IP address should be the IP address of your unique load balancer as found in YOUR hosts file. If your load balancer is described like the following, then lb1.xxx.org should revolve to 10.15.yyy.11. A matching PTR record will automatically be created in your Reverse Lookup Zone for this IP address.
+   **note**: `vcenter_password` is configured using an indirection. the vCenter password is stored in a separate file (an Ansible vault) using the variable `vault_vcenter_password`. The vault file can be encrypted
 
    ```
-   [local]
-   localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python3
-   
-   [loadbalancer]
-   tag-lb1 ansible_host=10.15.yyy.11
-   
-   #machines hosting Rancher Cluster
-   [ranchernodes]
-   tag-rke1   ansible_host=10.15.yyy.21
-   tag-rke2   ansible_host=10.15.yyy.22
-   tag-rke3   ansible_host=10.15.yyy.23
+   proxy:
+     http:  "http://10.12.7.21:8080/"
+     https:  "http://10.12.7.21:8080/"
+     except: "localhost,.am2.cloudra.local,.hpe.org"
    ```
 
-4. Prepare the staging area (download the kits)
+   If your installation is behind a corporate proxy, you will need to configure the `proxy` variable as indicated above. if you are not behind a proxy just rename the variable `proxy` to something else (eg `fooproxy`)
+
+   The last variable you need to populate (for now) is the variable `rancher`. The only change you should have to do is the `url`. This is the url which will be used to access the Rancher Server. **You must configure your DNS environment **(the DNS servers designated by the variable `dns_servers`) so that the FQDN in this url (lb1.hpe.org in the example below) resolves to the IP address of the load balancer you configure in the Ansible inventory (see below)
+
+   ```
+   rancher:
+     url: https://lb1.hpe.org   # this name must resolv to the IP address of your LB
+     validate_certs: False      #
+     apiversion: v3             # Playbooks designed for v3 of the API
+     engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # ALl node templates use the same version of Docke
+   ```
+
+3. copy the file `group_vars/all/vault.sample` to `group_vars/all/vault.yml` and edit this new file. Specify the password for the vCenter admin account using the variable `vault_vcenter_password`.
+
+   ```
+   vault_vcenter_password: 'PasswordForYourVcenter'
+   ```
+
+4. copy the `hosts.sample` file to `hosts`. Edit the file`hosts` and assign IP addresses to the machines in this inventory with IP addresses taken from the `rancher_subnet` scope (see above) .  The `rancher_subnet` scope provided with the file `group_vars/all/vars.yml.sample` specifies 10.15.152.0/24 and hence the IP addresses configured in `hosts.sample` file are taken from this pool. If you need to change the `rancher_subnet` scope, make sure you change the IP addresses in the `hosts` inventory file as well.
+
+5. make sure the Rancher url (`rancher.url`) resolves to the IP address of the load balancer you configured in the `hosts` inventory. Instructions for configuring the DNS are specific to your DNS implementation and are not provided here. 
+
+6. Prepare the staging area (download the kits)
 
    ```
    # ansible-playbook -i hosts playbooks/getkits.yml
    ```
 
-   Note: you don't really need to know where the kits are downloaded (but you will find them in your $HOME/kits)
-
-   **note:** This is a separate playbook because we may have to support air-gapped/offline environments in the future
-
-5. Deploy
+7. Deploy
 
    ```
    # ansible-playbook -i hosts site.yml
@@ -89,7 +104,7 @@ Because we are using Ubuntu for the Rancher Cluster and user cluster, we should 
 
    # What is deployed
 
-   the playbook site.yml does the following:
+   The playbook site.yml does the following:
 
    - installs the required packages on the Ansible box (I may have installed a number of packages manually on my ansible box and you may hit issue in subsequent playbooks if this is the case)
    - verifies that the required files are found in the staging area (getkits.yml)
@@ -145,13 +160,12 @@ Because we are using Ubuntu for the Rancher Cluster and user cluster, we should 
 
    You access your rancher server by browsing to https://lb1.xxx.org
 
-   # Known issues / work in Progress
+   # Known issues / Work in progress
 
-   We need to build our own Ubuntu image if we want CPI/CSI (requires a rev 15 VM
-   
-   I have seen the deployment of the Rancher Cluster (the K8S cluster) fail occasionally also the cluster seems to be operational after the playbook is finished (according to `kubectl get nodes`)
-   
+   By default, `getkits.yml` will pull the Ubuntu 18.04 cloud image (OVF format) but this file deploys a VM at h/w revision 10 and CPI/CSI requires a rev 15 VM
 
-   # Resolved
+   Deployment of the Rancher Cluster fails occasionally also the cluster seems to be operational after the playbook is finished (according to `kubectl get nodes`)
+
+   Deployment of the user cluster is ready doc coming soon
+
    
-   02/27/2020 - The playbook now do not rely on  the way the deployed OS enumerates the network interfaces. The first network interface in the VM is renamed ansible0 in the OS by cloud-init. The network interfaces are identified by their MAC Address.  Before, a variable had to be configured to reflect the name of the network interface in the OS and this name was depending on the VM template itself. I have tested with two different Ubuntu templates, the official Ubuntu Cloud Image (interface is named ens192) and an Ubuntu image I built myself (rev15 ) where the interface is named ens160
