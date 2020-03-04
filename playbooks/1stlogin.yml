@@ -1,4 +1,3 @@
-
 ###
 # Copyright (2020) Hewlett Packard Enterprise Development LP
 #
@@ -14,14 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###
-
 ---
-
-- name: Verify presence of Bearer token
-  stat:
-    path: "{{ install_dir }}/rancher-token"
-  register: token_file
-- fail: 
-    msg: "Cannot find the file {{ install_dir }}/rancher-token. Did you run 1stlogin.yml ?"
-  when: not token_file.stat.exists
-- include_vars: "{{ install_dir }}/rancher-token"
+- hosts: localhost
+  gather_facts: False
+  roles:
+  - role: 1stlogin

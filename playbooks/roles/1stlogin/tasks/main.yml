@@ -1,0 +1,130 @@
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+###
+
+---
+
+- name: Verify presence of Bearer token
+  stat:
+    path: "{{ install_dir }}/rancher-token"
+  register: token_file
+- debug: var=token_file.stat.exists
+
+- block:
+  - set_fact:
+      password: admin
+      currentPassword: admin
+
+  - name: Try to authenticate with the password stored in the Ansible vault
+    uri: 
+      url: "{{ rancher.url }}/{{ rancher.apiversion }}-public/localProviders/local?action=login"
+      validate_certs: "{{ rancher.validate_certs }}"
+      headers:
+        Content-Type: application/json
+      method: POST
+      timeout: 4
+      status_code:
+      - 201
+      - 401
+      body_format: json
+      body:
+        username: "admin"
+        password: "{{ vault_rancher_password }}"
+    register: login
+
+
+  - set_fact:
+      password: "{{ vault_rancher_password }}"
+      currentPassword:  "{{ vault_rancher_password }}"
+    when:
+    - login.status == 201
+
+  - name: Get the Initial Bearer token
+    uri: 
+      url: "{{ rancher.url }}/{{ rancher.apiversion }}-public/localProviders/local?action=login"
+      validate_certs: "{{ rancher.validate_certs }}"
+      headers:
+        Content-Type: application/json
+      method: POST
+      timeout: 4
+      status_code:
+      - 201
+      body_format: json
+      body:
+        username: "admin"
+        password: "{{ password }}"
+    register: token
+
+  - name: Set the Admin password
+    uri: 
+      url: "{{ rancher.url }}/{{ rancher.apiversion }}/users?action=changepassword"
+      validate_certs: "{{ rancher.validate_certs }}"
+      headers:
+        Accept: application/json
+        Authorization: Bearer {{ token.json.token }}
+        Content-Type: application/json
+      method: POST
+      timeout: 4
+      status_code:
+      - 200
+      body_format: json
+      body:
+        currentPassword: "{{ currentPassword }}"
+        newPassword: "{{ vault_rancher_password }}"
+    register: res
+
+  - name: Create a Token
+    uri: 
+      url: "{{ rancher.url }}/{{ rancher.apiversion }}/token"
+      validate_certs: "{{ rancher.validate_certs }}"
+      headers:
+        Authorization: Bearer {{ token.json.token }}
+        Content-Type: application/json
+      method: POST
+      timeout: 4
+      status_code:
+      - 201
+      body_format: json
+      body:
+        type: token
+        description: "HPE automation"
+    register: apitoken
+
+  - name: Configure the Server URL
+    uri: 
+      url: "{{ rancher.url }}/{{ rancher.apiversion }}/settings/server-url"
+      validate_certs: "{{ rancher.validate_certs }}"
+      headers:
+        Authorization: Bearer {{ apitoken.json.token }}
+        Content-Type: application/json
+      method: PUT
+      timeout: 4
+      status_code:
+      - 200
+      body_format: json
+      body:
+        name: "server-url"
+        value: "{{ rancher.url }}"
+    register: serverurl
+
+  - name: Store the API token
+    copy:
+      dest: "{{ install_dir }}/rancher-token"
+      mode: '0600'
+      content: |
+        bearer_token: "{{ apitoken.json.token }}"
+
+  when:
+  - not token_file.stat.exists

@@ -23,7 +23,7 @@
     headers:
       Accept: application/json
       Content-Type: application/json
-      Authorization: Bearer {{ rancher.bearer_token }}
+      Authorization: Bearer {{ bearer_token }}
     method: GET
     timeout: 4
     status_code:
@@ -41,7 +41,7 @@
     headers:
       Accept: application/json
       Content-Type: application/json
-      Authorization: Bearer {{ rancher.bearer_token }}
+      Authorization: Bearer {{ bearer_token }}
     method: POST
     timeout: 4
     status_code:
@@ -83,7 +83,7 @@
     headers:
       Accept: application/json
       Content-Type: application/json
-      Authorization: Bearer {{ rancher.bearer_token }}
+      Authorization: Bearer {{ bearer_token }}
     method: GET
     timeout: 4
     status_code:

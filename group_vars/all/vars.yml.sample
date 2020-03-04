@@ -74,22 +74,22 @@ proxy:
 
 rancher:
   url: https://lb1.hpe.org                                                    # this name must resolv to the IP address of your LB
-  bearer_token: "{{ vault_rancher_token }}"                                   # Configure after the deployment of Rancher Server
   validate_certs: False                                                       #  
   apiversion: v3                                                              # Playbooks designed for v3 of the API
   engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # ALl node templates use the same version of Docker 
 
 user_cluster:
-# vm_template: hpe-ubuntu-tpl                                               # an existing VM template, admin template by default
-  name: api                                                                 # name of the user cluster
-  csi: false
+# vm_template: hpe-ubuntu-tpl     # an existing VM template, the admin template by default
+  name: api                       # name of the user cluster
+  csi: false                      # true to be done
+  vcenter_credsname: mycreds2     # only one vCenter cluster supported at this time
   pools:
    - name: master-pool
      etcd: true
      master: true
      worker: false
      count: 1
-     hostPrefix: hpe3-mas
+     hostPrefix: hpe-mas
      node_template:
        name: master-node
        cpu_count: 2
@@ -100,7 +100,7 @@ user_cluster:
      master: false
      worker: true
      count: 2
-     hostPrefix: hpe3-wrk
+     hostPrefix: hpe-wrk
      node_template:
        name: worker-node
        cpu_count: 2

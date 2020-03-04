@@ -16,12 +16,12 @@
 ---
 - name: See if the Cloud Credential is already existing
   uri: 
-    url: "{{ rancher.url }}/{{ rancher.apiversion }}/cloudcredentials?name=mycreds"
+    url: "{{ rancher.url }}/{{ rancher.apiversion }}/cloudcredentials?name={{ user_cluster.vcenter_credsname }}"
     validate_certs: "{{ rancher.validate_certs }}"
     headers:
       Accept: application/json
       Content-Type: application/json
-      Authorization: Bearer {{ rancher.bearer_token }}
+      Authorization: Bearer {{ bearer_token }}
     method: GET
     timeout: 4
     status_code:
@@ -36,17 +36,17 @@
     headers:
       Accept: application/json
       Content-Type: application/json
-      Authorization: Bearer {{ rancher.bearer_token }}
+      Authorization: Bearer {{ bearer_token }}
     method: POST
     timeout: 4
     status_code:
     - 201
     body_format: json
     body:
-      name: mycreds
+      name: "{{ user_cluster.vcenter_credsname }}"
       vmwarevspherecredentialConfig:
-        password: 'Just4m3hp_'
-        username: 'chris@vsphere.local'
+        password: "{{ vcenter_password }}"
+        username: "{{ vcenter_username }}"
         vcenter: "{{ vcenter_hostname }}"
         vcenterPort: "443"
   delegate_to: localhost
@@ -55,12 +55,12 @@
 
 - name: Verify the the Cloud Credentials were created
   uri: 
-    url: "{{ rancher.url }}/{{ rancher.apiversion }}/cloudcredentials?name=mycreds"
+    url: "{{ rancher.url }}/{{ rancher.apiversion }}/cloudcredentials?name={{ user_cluster.vcenter_credsname }}"
     validate_certs: "{{ rancher.validate_certs }}"
     headers:
       Accept: application/json
       Content-Type: application/json
-      Authorization: Bearer {{ rancher.bearer_token }}
+      Authorization: Bearer {{ bearer_token }}
     method: GET
     timeout: 4
     status_code:

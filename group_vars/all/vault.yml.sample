@@ -1,3 +1,2 @@
 ---
 vault_vcenter_password: 'PasswordForYourVcenter'
-vault_rancher_token: yourRamcherServerAPITokenHere
