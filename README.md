@@ -164,7 +164,7 @@ You may create as many pools as you want, but at least you will need 1 master no
 
 ```
 user_cluster:
-  vm_template: hpe-ubuntu-tpl     # an existing VM template, admin template by default
+# vm_template: hpe-ubuntu-tpl     # an existing VM template, admin template by default
   name: api                       # name of the user cluster
   csi: false                      # true to be done
   vcenter_credsname: mycreds2     # only one vCenter cluster supported at this time
