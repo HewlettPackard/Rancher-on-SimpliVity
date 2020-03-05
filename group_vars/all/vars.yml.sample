@@ -82,10 +82,11 @@ proxy:
 
 
 rancher:
-  url: https://lb1.hpe.org                                                    # this name must resolve to the IP address of your LB
-  validate_certs: False                                                       #  
-  apiversion: v3                                                              # Playbooks designed for v3 of the API
-  engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # All node templates use the same version of Docker 
+  url: https://lb1.hpe.org        # this the FQDN at which Rancher Server can be reached
+  hostname: lb1.hpe.org           # generally same fqdn as the one in the url above mut not necessarily
+  validate_certs: False           #  
+  apiversion: v3                  # Playbooks designed for v3 of the API
+  engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # ALl node templates use the same version of Docker 
 
 user_cluster:
 # vm_template: hpe-ubuntu-tpl     # an existing VM template, the admin template by default
