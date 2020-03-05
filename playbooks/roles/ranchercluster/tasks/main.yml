@@ -1,0 +1,52 @@
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+###
+---
+- name: Create the cluster config file
+  template:
+    src: cluster.yml.j2
+    dest: "{{ install_dir }}/rancher-cluster.yml"
+
+- name: Deploy the Rancher Cluster
+  shell: |
+    cd {{ install_dir }}
+    rke up --config ./rancher-cluster.yml > {{ install_dir }}/rke-up.log
+  async: "{{ rancher_cluster_deploy_timeout }}"
+  poll: 0
+  register: res
+
+- name: Wait a maximum of {{ rancher_cluster_deploy_timeout | int / 60 }} mns for the Rancher Cluster API
+  async_status:
+    jid: "{{ res.ansible_job_id }}"
+  register: job_result
+  until: job_result.finished
+  delay: 5
+  retries:  "{{ ( 1 + rancher_cluster_deploy_timeout | int / 5 ) | int }}"
+
+- debug: var=job_result
+  when: job_result.finished != 1 or job_result.rc != 0
+
+- fail:
+    msg: "{{ job_result }}"
+  when: job_result.finished != 1 or job_result.rc != 0
+
+# Add a loop here to wait for all nodes to be Ready - tbd
+- name: Verify Cluster Status
+  shell: |
+    kubectl --kubeconfig={{ install_dir }}/kube_config_rancher-cluster.yml get node -o wide
+  register: res
+
+- debug: var=res
+

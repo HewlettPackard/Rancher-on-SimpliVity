@@ -1,0 +1,151 @@
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+###
+
+- set_fact:
+    env:
+      KUBECONFIG: "{{ kubeconfig_file }}"
+  when: proxy is not defined
+
+- set_fact:
+    env:
+      KUBECONFIG: "{{ kubeconfig_file }}"
+      http_proxy: "{{ proxy.http }}"
+      https_proxy: "{{ proxy.http }}"
+      no_proxy: "{{ proxy.except }}"
+  when: proxy is defined
+
+- name: Install k8s module prereq
+  become: true
+  package:
+    name: python3-openshift
+    state: present
+  environment: "{{ env }}"
+
+- name: Create the Config file for the Rancher helm chart
+  template: 
+    src: helm-values.j2
+    dest: "{{ install_dir }}/helm-values.txt"
+
+- name: Add the helm repository
+  shell: |
+   helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
+  environment: "{{ env }}"
+
+- name: Create Namespace cattle-system
+  k8s:
+    state: present
+    definition:
+      kind: Namespace
+      apiVersion: v1
+      metadata:
+        name: cattle-system
+  environment: "{{ env }}"
+
+- name: Install the required Custom Resource Definitions
+  shell: |
+    kubectl apply -f "{{ certmanager_crds }}"
+  environment: "{{ env }}"
+
+- name: Create Namespace cert-manager
+  k8s:
+    state: present
+    definition:
+      kind: Namespace
+      apiVersion: v1
+      metadata:
+        name: cert-manager
+  environment: "{{ env }}"
+
+- name: Add the Jetstack Helm repository
+  shell: |
+    helm repo add jetstack https://charts.jetstack.io
+  environment: "{{ env }}"
+
+- name: Update your local Helm chart repository cache
+  shell : |
+    helm repo update
+  environment: "{{ env }}"
+
+- name: Is the cert-manager helm release installed
+  shell: |
+     helm -n cert-manager ls -f cert-manager -q
+  register: res
+
+- name: Install the cert-manager Helm chart
+  shell: |
+    helm install \
+      cert-manager jetstack/cert-manager \
+      --namespace cert-manager \
+      --version v0.12.0
+  when: res.stdout_lines | count <= 0
+  environment: "{{ env }}"
+
+# potentially  a long operation, we run it in the background
+- name: Verify the Deployment status of the cert-manager components
+  shell: |
+    kubectl -n cert-manager rollout status deploy/{{ item }}
+  with_items:
+  - 'cert-manager'
+  - 'cert-manager-cainjector'
+  - 'cert-manager-webhook'
+  async:  "{{ cert_manager_deploy_timeout }}"
+  poll: 0
+  changed_when: false
+  register: res
+  environment: "{{ env }}"
+
+- name: Waiting a maximum of {{ cert_manager_deploy_timeout | int / 60 }} mns for the cert-manager components to be rolled out
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
+  delay: 5
+  retries:  "{{ ( 1 + cert_manager_deploy_timeout | int / 5 ) | int }}"
+  register: job_result
+  until: job_result.finished
+  changed_when: false
+  with_items: "{{ res.results }}"
+
+- name: Is the rancher helm release installed
+  shell: |
+     helm -n cattle-system ls -f rancher -q
+  register: res
+
+- name: Install Rancher Server
+  shell: |
+    helm install rancher rancher-stable/rancher \
+      --namespace cattle-system \
+      --values={{ install_dir }}/helm-values.txt
+  when: res.stdout_lines | count <= 0
+  environment: "{{ env }}"
+
+# This is a long operation, we run it in the background
+- name: Verify the Deployment Status of Rancher Server
+  shell: |
+    kubectl -n cattle-system rollout status deploy/rancher
+  async:  "{{ rancherserver_deploy_timeout }}"
+  poll: 0
+  changed_when: false
+  register: res
+  environment: "{{ env }}"
+
+- name: Waiting a maximum of {{ rancherserver_deploy_timeout | int / 60 }} mns for Rancher Server to be rolled out
+  async_status:
+    jid: "{{ res.ansible_job_id }}"
+  register: job_result
+  until: job_result.finished
+  delay: 5
+  changed_when: false
+  retries:  "{{ ( 1 + rancherserver_deploy_timeout | int / 5 ) | int }}"
+
