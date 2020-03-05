@@ -63,11 +63,12 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
    If your installation is behind a corporate proxy, you will need to configure the `proxy` variable as indicated above. if you are not behind a proxy just rename the variable `proxy` to something else (eg `fooproxy`)
 
-   The next variable you need to configure is the variable `rancher`. The only change you should have to do is the `url`. This is the url which will be used to access the Rancher Server. **You must configure your DNS environment **(the DNS servers designated by the variable `dns_servers`) so that the FQDN in this url (lb1.hpe.org in the example below) resolves to the IP address of the load balancer you configure in the Ansible inventory (see below)
+   The next variable you need to configure is the variable `rancher`. The only change you should have to do are the `url` and the `hostname`. The url is the one used to access the Rancher Server.  The hostname is the FQDN of the Rancher Server. You must configure your DNS environment so that these names resolves to the IP address of the load balancer you configure in the Ansible inventory (see below) (these two names may not necessarily be the same)
 
    ```
    rancher:
      url: https://lb1.hpe.org   # this name must resolv to the IP address of your LB
+     hostname: lb1.hpe.org      # this is the hostname of the Rancher Server
      validate_certs: False      #
      apiversion: v3             # Playbooks designed for v3 of the API
      engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # ALl node templates use the same version of Docke
