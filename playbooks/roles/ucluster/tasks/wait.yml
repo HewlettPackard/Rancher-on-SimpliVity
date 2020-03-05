@@ -14,7 +14,7 @@
 # limitations under the License.
 ###
 ---
-- name: See if the user cluster is already deployed
+- name: Wait a maximum of {{ user_cluster_deploy_timeout | int / 60 }} mns for the cluster to become Active
   uri:
     url: "{{ rancher.url }}/{{ rancher.apiversion }}/clusters?name={{ user_cluster.name }}"
     validate_certs: "{{ rancher.validate_certs }}"
