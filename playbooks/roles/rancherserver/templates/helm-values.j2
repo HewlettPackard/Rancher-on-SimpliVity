@@ -1,4 +1,4 @@
-hostname: lb1.hpe.org
+hostname: "{{ rancher.hostname }}"
 {% if proxy is defined %}
 proxy: {{ proxy.http }}
 noProxy: {{ proxy.except }},10.0.0.0/8
