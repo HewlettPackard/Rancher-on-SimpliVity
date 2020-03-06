@@ -6,3 +6,5 @@ proxy:
   http:  "http://10.12.7.21:8080/"     #  http:  "http://user:password@10.12.7.21:8080/"
   https:  "http://10.12.7.21:8080/"
   except: "localhost;.am2.cloudra.local;.clh.org" 
+
+docker_install_script: 'https://releases.rancher.com/install-docker/19.03.sh'

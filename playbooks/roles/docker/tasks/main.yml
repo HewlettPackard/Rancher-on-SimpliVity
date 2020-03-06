@@ -84,7 +84,7 @@
     export HTTP_PROXY={{ proxy.http }}
     export HTTPS_PROXY={{ proxy.http }}
     export NO_PROXY={{ proxy.except }}
-    curl https://releases.rancher.com/install-docker/19.03.sh | sh
+    curl {{ docker_install_script }} | sh
 
 - name: Add user to Docker group
   shell: whoami
@@ -95,4 +95,12 @@
   user:
     name: "{{ whoami.stdout }}"
     groups: docker
+
+# the Rancher Supplied script does not enable the docker service
+- name: Make sure the Docker Daemon restarts after a reboot
+  become: true
+  systemd:
+    name: docker
+    enabled: yes
+    state: started
 
