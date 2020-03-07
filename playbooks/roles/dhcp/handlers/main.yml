@@ -14,13 +14,13 @@
 # limitations under the License.
 ###
 ---
-- name: Restart DHCP RedHat
+- name: Restart DHCP CentOS
   become: true
   systemd:
     name: dhcpd
     state: restarted
     enabled: yes
-  when: ansible_os_family == "RedHat"
+  when: ansible_distribution == "CentOS"
 
 - name: Restart DHCP Ubuntu
   become: true

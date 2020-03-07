@@ -27,7 +27,7 @@
     - isc-dhcp-server
   when: ansible_distribution == "Ubuntu"
 
-- name: Install Pkgs on CentOS/RedHat Support Node
+- name: Install Pkgs on CentOS Support Node
   become: true
   package:
     name: "{{ packages }}"
@@ -35,8 +35,8 @@
   vars:
     packages:
     - firewalld
-    - dhcpd
-  when: ansible_os_family == "RedHat"
+    - dhcp-server
+  when: ansible_distribution == "CentOS"
 
 - name: Enable firewall
   become: true
@@ -60,7 +60,7 @@
     src: dhcpd.conf.j2
     dest: /etc/dhcp/dhcpd.conf
   notify: 
-    - Restart DHCP RedHat
+    - Restart DHCP CentOS
     - Restart DHCP Ubuntu
 
 - name: Enable DHCP Service on Ubuntu Support Node
@@ -70,9 +70,9 @@
     enabled: yes
   when: ansible_distribution == "Ubuntu"
 
-- name: Enable DHCP Service on RedHat/CentOS Support Node
+- name: Enable DHCP Service on CentOS Support Node
   become: true
   systemd:
     name: dhcpd
     enabled: yes
-  when: ansible_os_family == "RedHat"
+  when: ansible_distribution == "CentOS"
