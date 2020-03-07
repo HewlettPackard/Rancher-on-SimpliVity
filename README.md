@@ -94,7 +94,7 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
      hostname: lb1.hpe.org      # this is the hostname of the Rancher Server
      validate_certs: False      #
      apiversion: v3             # Playbooks designed for v3 of the API
-     engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # All node templates use the same version of Docke
+     engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # All node templates use the same version of Docker
    ```
 
    Finally, configure the `user_cluster` variable. To some extent, you can configure the user cluster that the playbooks will deploy. This is achieved by configuring the variable `user_cluster` in `group_vars/all/vars.yml`.  An example is provided below:
