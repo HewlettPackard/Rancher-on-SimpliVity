@@ -32,6 +32,29 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
    **Note: Time services are crucial**. You must have time services available in your environment
 
+   The variables used to configure the DHCP service on a support VM include:
+
+   ```
+   #
+   # DHCP related settings
+   #
+   dhcp_subnet: 10.15.152.0/24                               # subnet to use on the above VLAN (see your net admin)
+   dhcp_range: '10.15.152.100 10.15.152.150'                 # DHCP range to use on the above VLAN (see your net admin)
+   dhcp_default_lease_time: 86400                            # DHCP default lease time (24 hours)
+   dhcp_max_lease_time: 2592000                              # DHCP maximum lease time (30 days)
+   domain_name: hpe.org                                      # DNS domain name
+   ```
+
+   The `dhcp_subnet` variable denotes the subnet where DHCP leases will be provided.  This is normally the same subnet as `rancher_subnet`.
+
+   The `dhcp_range` variable configures the range of IP addresses that will be given out by the DHCP server. This range needs to include sufficient addresses to satisfy any nodes created using node templates, such as user clusters.
+
+   The `dhcp_default_lease_time` and `dhcp_max_lease_time` variables specify the minimum and maximum times in seconds for DHCP leases to remain valid. In the provided sample file the default lease time is 86400 seconds or 24 hours. The maximum lease time is 2592000 seconds, or 30 days. You should use values that will ensure your K8s cluster nodes are not changing IP addresses. You could specify an indefinite lease time but that would likely result in exhausting your `dhcp_range` addresses.
+
+   The `domain_name` variable denotes the DNS domain name used for the rancher/DHCP subnet.
+
+
+
    ```
    #
    # vcenter related settings
@@ -63,14 +86,15 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
    If your installation is behind a corporate proxy, you will need to configure the `proxy` variable as indicated above. if you are not behind a proxy just rename the variable `proxy` to something else (eg `fooproxy`)
 
-   The next variable you need to configure is the variable `rancher`. The only change you should have to do is the `url`. This is the url which will be used to access the Rancher Server. **You must configure your DNS environment **(the DNS servers designated by the variable `dns_servers`) so that the FQDN in this url (lb1.hpe.org in the example below) resolves to the IP address of the load balancer you configure in the Ansible inventory (see below)
+   The next variable you need to configure is the variable `rancher`. The only change you should have to do are the `url` and the `hostname`. The url is the one used to access the Rancher Server.  The hostname is the FQDN of the Rancher Server. You must configure your DNS environment so that these names resolves to the IP address of the load balancer you configure in the Ansible inventory (see below) (these two names may not necessarily be the same)
 
    ```
    rancher:
      url: https://lb1.hpe.org   # this name must resolv to the IP address of your LB
+     hostname: lb1.hpe.org      # this is the hostname of the Rancher Server
      validate_certs: False      #
      apiversion: v3             # Playbooks designed for v3 of the API
-     engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # ALl node templates use the same version of Docke
+     engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # All node templates use the same version of Docker
    ```
 
    Finally, configure the `user_cluster` variable. To some extent, you can configure the user cluster that the playbooks will deploy. This is achieved by configuring the variable `user_cluster` in `group_vars/all/vars.yml`.  An example is provided below:

@@ -59,7 +59,7 @@
         boot2dockerUrl": ""
         cfgparam:
           - "disk.enableUUID=TRUE"
-        cloneFrom: "/{{ datacenter }}/vm/{{ datastore }}/{{ vm_template }}"
+        cloneFrom: "/{{ datacenter }}/vm/{{ admin_folder }}/{{ vm_template }}"
         creationType: vm
         cloudConfig: "{{ lookup('template','cloud-config.j2') }}"
         cloudinit: ""

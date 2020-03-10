@@ -13,6 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###
+---
+- name: Restart DHCP CentOS
+  become: true
+  systemd:
+    name: dhcpd
+    state: restarted
+    enabled: yes
+  when: ansible_distribution == "CentOS"
 
-localhost
-
+- name: Restart DHCP Ubuntu
+  become: true
+  systemd:
+    name: isc-dhcp-server
+    state: restarted
+    enabled: yes
+  when: ansible_distribution == "Ubuntu"

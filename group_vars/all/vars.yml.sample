@@ -22,6 +22,16 @@ dns_servers: ['10.10.173.1','10.10.173.31']               # list of DNS servers
 dns_suffixes: ['am2.cloudra.local','hpe.org']             # list of DNS suffixes
 
 #
+# DHCP related settings
+#
+dhcp_subnet: 10.15.152.0/24                               # subnet to use on the above VLAN (see your net admin)
+dhcp_range: '10.15.152.100 10.15.152.150'                 # DHCP range to use on the above VLAN (see your net admin)
+dhcp_default_lease_time: 86400                            # DHCP default lease time (24 hours)
+dhcp_max_lease_time: 2592000                              # DHCP maximum lease time (30 days)
+domain_name: hpe.org                                      # DNS domain name
+support_template: hpe-ubuntu-tpl                          # Name of VM template used for Support Node running DHCP
+
+#
 # vcenter related settings
 #
 vcenter_hostname: vcentergen10.am2.cloudra.local          # name of your vCenter server
@@ -69,14 +79,15 @@ simplivity_appliances:
 proxy:
   http:  "http://10.12.7.21:8080/"     #  http:  "http://user:password@10.12.7.21:8080/"
   https:  "http://10.12.7.21:8080/"
-  except: "localhost,.am2.cloudra.local,.hpe.org" 
+  except: "localhost,.am2.cloudra.local,.hpe.org"
 
 
 rancher:
-  url: https://lb1.hpe.org                                                    # this name must resolv to the IP address of your LB
-  validate_certs: False                                                       #  
-  apiversion: v3                                                              # Playbooks designed for v3 of the API
-  engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # ALl node templates use the same version of Docker 
+  url: https://lb1.hpe.org        # this the FQDN at which Rancher Server can be reached
+  hostname: lb1.hpe.org           # generally same fqdn as the one in the url above but not necessarily
+  validate_certs: False           #
+  apiversion: v3                  # Playbooks designed for v3 of the API
+  engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # All node templates use the same version of Docker
 
 user_cluster:
 # vm_template: hpe-ubuntu-tpl     # an existing VM template, the admin template by default

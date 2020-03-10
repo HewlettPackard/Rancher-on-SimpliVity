@@ -29,3 +29,10 @@
   until: res.cache_update_time is defined
   when: ansible_distribution == "Ubuntu"
 
+- name: Update YUM
+  become: true
+  yum:
+    update_only: yes
+    state: latest
+  when: ansible_distribution == "CentOS"
+
