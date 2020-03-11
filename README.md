@@ -43,6 +43,7 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    dhcp_default_lease_time: 86400                            # DHCP default lease time (24 hours)
    dhcp_max_lease_time: 2592000                              # DHCP maximum lease time (30 days)
    domain_name: hpe.org                                      # DNS domain name
+   support_template: hpe-ubuntu-tpl                          # Name of VM template used for Support Node running DHCP
    ```
 
    The `dhcp_subnet` variable denotes the subnet where DHCP leases will be provided.  This is normally the same subnet as `rancher_subnet`.
@@ -53,7 +54,7 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
    The `domain_name` variable denotes the DNS domain name used for the rancher/DHCP subnet.
 
-
+   The `support_template` variable defines the name of the VM template used when deploying the support VM. By default this is set to the same value as the `admin_template` variable, which is the template used when creating the VMs in the admin cluster.
 
    ```
    #
