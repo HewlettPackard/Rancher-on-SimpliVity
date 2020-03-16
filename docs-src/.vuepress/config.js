@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Rancher on HPE SimpliVity,
+  title: 'Rancher on HPE SimpliVity',
   dest: '../MVI1/',
   base: '/Rancher-on-SimpliVity/MVI1/',   
   plugins: ['vuepress-plugin-export'], 
