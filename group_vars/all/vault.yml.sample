@@ -1,3 +1,0 @@
----
-vault_vcenter_password: 'PasswordForYourVcenter'
-vault_rancher_password: 'PasswordForRancher'

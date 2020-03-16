@@ -1,1 +1,0 @@
-rancher kubectl describe csinode
