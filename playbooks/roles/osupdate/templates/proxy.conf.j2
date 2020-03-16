@@ -1,6 +1,0 @@
-{% if proxy is defined %}
-Acquire {
- HTTP::Proxy "{{ proxy.http }}"; # "http://user:password@proxy.server:port/";
- HTTPS::Proxy "{{ proxy.https }}";
-}
-{% endif %}
