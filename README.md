@@ -152,7 +152,13 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    # ansible-playbook -i hosts playbooks/getkits.yml
    ```
 
-7. Deploy
+7. (Optional) Validate configuration parameters via the `pre-checks.yml` playbook. The playbook attempts to verify that the configuration parameters defined in the `group_vars/all/vars.yml` and `group_vars/all/vault.yml` files contain appropriate values. It validates access to the `vCenter` instance hosting the SimpliVity cluster and verifies the requested `datacenter` and `vm_portgroup` exist. It ensures the configured `DNS` and `NTP` servers are valid. It also attempts to ensure the hostnames and IP addresses that will be used when creating the RKE admin cluster (defined in the `hosts.yml` file) are not already being used elsewhere in the environment.
+
+```
+   # ansible-playbook -i hosts playbooks/pre-checks.yml
+   ```
+
+8. Deploy
 
    ```
    # ansible-playbook -i hosts site.yml
