@@ -1,0 +1,48 @@
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+###
+---
+- set_fact:
+    env: {}
+  when: proxy is not defined
+
+- set_fact:
+    env:
+      http_proxy: "{{ proxy.http }}"
+      https_proxy: "{{ proxy.http }}"
+      no_proxy: "{{ proxy.except }}"
+  when: proxy is defined
+
+- name: Download govc
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    force: yes
+  with_items:
+  - url:  https://github.com/vmware/govmomi/releases/download/{{ govc_version }}/govc_linux_amd64.gz
+    dest: "{{ kits_folder }}/govc.gz"
+    mode: 644
+  environment: "{{ env }}"
+
+- name: Extract govc cli
+  shell: gzip --force --decompress "{{ kits_folder }}/govc.gz"
+
+- name: "Copy govc cli tool to {{ govc_file }}"
+  become: true
+  copy:
+    src: "{{ kits_folder }}/govc"
+    dest: "{{ govc_file }}"
+    mode: u=rwx,g=rx,o=rx
