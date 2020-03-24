@@ -58,8 +58,10 @@ module.exports = {
       {
         title: 'Configuring the solution',
         children: [
-          'config-core/ansible-config',      
+          'config-core/ansible-config',    
+          'config-core/proxy-config',  
           'config-core/vmware-config',   
+          'config-core/simplivity-config',
           'config-core/edit-vault'
         ]
       }

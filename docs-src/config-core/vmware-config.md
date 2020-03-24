@@ -6,8 +6,8 @@ All variables related to VMware configuration are described in the table below.
 |:-------|:---|:----------|
 |`vcenter_hostname`|group_vars/all/vars.yml|IP or hostname of the vCenter appliance. For example, `vcentergen10.am2.cloudra.local`|
 |`vcenter_username`|group_vars/all/vars.yml|Username to log in to the vCenter appliance. It might include a domain, for example, '`Administrator@vsphere.local`'|
-|`vault_vcenter_password`|**group_vars/all/vault.yml**|The password for the `vcenter_username` user.|
-|`vcenter_password`|group_vars/all/vars.yml|`{{vault_vcenter_password}}`|
+|`vault_vcenter_password`|**group_vars/all/vault.yml**|The password for the `vcenter_username` user, stored in the vault|
+|`vcenter_password`|group_vars/all/vars.yml|Use the value of the `{{ vault_vcenter_password }}` variable from the vault|
 |`vcenter_cluster`|group_vars/all/vars.yml|Name of your SimpliVity Cluster. For example `Rancher`|
 |`vm_portgroup`|group_vars/all/vars.yml|Portgroup that the VMs connect to|
 |`datacenter`|group_vars/all/vars.yml|Name of the datacenter where the environment will be provisioned. For example, `DEVOPS`|
@@ -21,3 +21,4 @@ All variables related to VMware configuration are described in the table below.
 
 **Note:** The `vcenter_password` variable de-references the `vault_vcenter_password` which is stored in the vault.
 
+For more information on datastore configuration, see the section [SimpliVity Configuration](simplivity-config).
