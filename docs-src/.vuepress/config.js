@@ -31,8 +31,31 @@ module.exports = {
 
 
     sidebar: [
-      '/summary'
-       ]
+      '/summary',
+      {
+        title: 'Release Notes',
+        collapsable: true,
+        children: [
+          '/rel-notes/rel-notes',
+          //'/rel-notes/new-features',
+          //'/rel-notes/fixed-issues',
+          '/rel-notes/known-issues'
+        ]
+      },
+      {
+        title: 'Solution overview',
+        children: [
+          'soln-overview/solution-overview',
+          'soln-overview/containers-k8s-devops',
+          'soln-overview/rancher-overview',
+          'soln-overview/simplivity-overview',
+          'soln-overview/solution-configuration',
+          'soln-overview/solution-sizing',
+          'soln-overview/high-availability',
+          'soln-overview/playbooks'
+        ]
+      }
+    ]
   }
 }
 
