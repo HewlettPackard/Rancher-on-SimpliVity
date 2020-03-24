@@ -54,7 +54,16 @@ module.exports = {
           'soln-overview/high-availability',
           'soln-overview/playbooks'
         ]
+      },
+      {
+        title: 'Configuring the solution',
+        children: [
+          'config-core/ansible-config',      
+          'config-core/vmware-config',   
+          'config-core/edit-vault'
+        ]
       }
+
     ]
   }
 }
