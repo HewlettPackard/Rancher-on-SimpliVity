@@ -41,7 +41,7 @@ module.exports = {
           //'/rel-notes/fixed-issues',
           '/rel-notes/known-issues'
         ]
-      },
+      },  
       {
         title: 'Solution overview',
         children: [
@@ -56,6 +56,13 @@ module.exports = {
         ]
       },
       {
+        title: 'Preparing the environment ',
+        children: [
+          'preparing/verify-prereqs',
+          'preparing/ansible-fedora'
+        ]
+      },      
+      {
         title: 'Configuring the solution',
         children: [
           'config-core/ansible-config',    
@@ -66,8 +73,15 @@ module.exports = {
           'config-core/simplivity-config',
           'config-core/edit-vault'
         ]
+      },
+      {
+        title: 'Overview of the playbooks',
+        children: [
+          'playbooks/playbooks-overview',
+          'playbooks/initial-deployment',
+          'playbooks/redeploy'
+        ]
       }
-
     ]
   }
 }
