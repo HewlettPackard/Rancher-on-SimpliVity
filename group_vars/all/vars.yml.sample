@@ -118,3 +118,12 @@ user_cluster:
        cpu_count: 2
        disk_size: 40000
        memory_size: 4096
+
+# TLS
+#tls_source: rancher                              # either rancher or secret, letsEncrypt unsupported (See doc), rancher is the default
+# the following variables are relevant if tls_source=secret
+#tls_privateCA: false                             # true if using a private root CA, default is false (ie you use a public root CA)
+#tls_cacert_file: /home/core/certs/cacerts.pem    # file containing the root CA certificate. Relevant if tls_privateCA is true
+#tls_certchain_file: /home/core/certs/cachain.pem # file containing the server certificate followed by the intermediate CA certs (if any)
+#tls_certkey_file: /home/core/certs/tlskey.pem    # file containing the private key fo the Rancher server
+

@@ -17,7 +17,10 @@
 ---
 kubeconfig_file:  "{{ install_dir }}/kube_config_rancher-cluster.yml"
 certmanager_crds:  'https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml'  # update getkits then point to the staging area (tbd)
-cert_manager_deploy_timeout: 300 # timeout in seconds. 5mns should be more than enough
+cert_manager_deploy_timeout: 300  # timeout in seconds. 5mns should be more than enough
 rancherserver_deploy_timeout: 600 # timeout in seconds. 10mns should be more than enough
-tls_source: rancher # rancher signed certificates, requires certmanager
-tls_privateCA: false
+tls_source: rancher               # rancher signed certificates, requires certmanager
+tls_privateCA: false              # use if root CA is not a wellknown/public root CA
+tls_cacert_file: null             # location of the root CA certificate if tls_privateCA is set to true
+tls_certchain_file: null          # location of the file containing the server certificate followed by the intermediate CA certs (if any)
+tls_certkey_file: null            # location of the file containing the server private key
