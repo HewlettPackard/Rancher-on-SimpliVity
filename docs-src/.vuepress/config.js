@@ -60,7 +60,9 @@ module.exports = {
         children: [
           'config-core/ansible-config',    
           'config-core/proxy-config',  
-          'config-core/vmware-config',   
+          'config-core/networking-config', 
+          'config-core/vmware-config',
+          'config-core/rancher-config',   
           'config-core/simplivity-config',
           'config-core/edit-vault'
         ]
