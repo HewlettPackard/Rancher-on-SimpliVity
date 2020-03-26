@@ -3,16 +3,13 @@
 Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
 1. clone the repo
-
    ```
    # git clone git@github.com:HewlettPackard/Rancher-on-SimpliVity.git
    # cd ./Rancher-on-SimpliVity
    ```
-
 2. copy the file `group_vars/all/vars.yml.sample` to `group_vars/all/vars.yml` and configure it to match your environment. The file contains comments that should help you understand how to populate this file. (and more documentation will come)
 
-   Anyway a few variables deserves a special treatment. 
-
+   Anyway a few variables deserve a special treatment. 
    ```
    rancher_subnet: 10.15.xxx.0/24
    gateway: '10.15.xxx.1'
@@ -21,7 +18,6 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    dns_servers: ['10.10.173.1','10.10.173.31']               # list of DNS servers
    dns_suffixes: ['am2.cloudra.local','hpe.org']             # list of DNS suffixes
    ```
-
    The `rancher_subnet` variable is the scope of IP addresses which you can use on the Rancher VLAN. The Rancher VLAN is a vCenter portgroup in your virtual infrastructure which connects all the virtual machines that this solution deploys. **This portgroup must exists** (see below `vm_portgroup`) before you attempt to run the playbooks and you must have been assigned a scope (subnet) of IP addresses on which you have complete control.
 
    The `gateway` variable is the gateway to use for the Rancher VLAN. 
