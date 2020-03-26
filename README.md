@@ -199,13 +199,13 @@ Prepare the staging area (download the kits)
 
 8. Deploy
 
-   ```
+```
    # ansible-playbook -i hosts site.yml
-   ```
+```
 
    **Note**: You don't have to create a VM template! (for now)
 
-   # What is deployed
+# What is deployed
 
    The playbook `site.yml` does the following:
 
