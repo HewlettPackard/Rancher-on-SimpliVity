@@ -122,7 +122,7 @@ user_cluster:
 #
 # Active Directory Integration
 #
-ad_ca_file: "path to your AD CA certificate in pem format"                # A default file is provided in playbooks/roles/ad-auth/files/ca.pem
+#ad_ca_file: "path to your AD CA certificate in pem format"                # A default file is provided in playbooks/roles/ad-auth/files/ca.pem
 ad_login_domain: AM2                                                      # Name of the AD Domain
 ad_server_name: mars-adds.am2.cloudra.local                               # Name of the AD Server
 ad_service_account_username: adreader                                     # AD service account username
