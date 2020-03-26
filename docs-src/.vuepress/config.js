@@ -9,7 +9,7 @@ module.exports = {
       { text: 'Blog', link: '/blog/' }
     ],
 
-    repo: 'testaction',
+    repo: 'Rancher-on-SimpliVity',
     // Customising the header label
     // Defaults to "GitHub"/"GitLab"/"Bitbucket" depending on `themeConfig.repo`
     repoLabel: 'Contribute!',
@@ -67,11 +67,15 @@ module.exports = {
         children: [
           'config-core/ansible-config',    
           'config-core/proxy-config',  
-          'config-core/networking-config', 
           'config-core/vmware-config',
-          'config-core/rancher-config',   
-          'config-core/simplivity-config',
-          'config-core/edit-vault'
+          'config-core/simplivity-config',          
+          'config-core/networking-config',              
+          'config-core/rancher-config',
+          'config-core/lbs-config.md',
+          'config-core/group-vars',
+          'config-core/edit-vault',
+          'config-core/vars-sample',
+          'config-core/vault-sample'
         ]
       },
       {

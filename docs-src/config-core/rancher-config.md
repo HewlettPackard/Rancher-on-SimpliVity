@@ -31,3 +31,6 @@ General configuration variables are shown in the table below:
 |`user_folder`|group_vars/all/vars.yml|Folder and pool name for the user cluster VMs|
 |`admin_folder`|group_vars/all/vars.yml|Folder and pool name for Rancher Cluster VMs and  Templates|
 |`admin_template`|group_vars/all/vars.yml|Name for the admin template|
+
+
+## 
