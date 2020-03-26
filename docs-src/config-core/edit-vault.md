@@ -10,3 +10,4 @@ A sample vault file is provided named `group_vars/all/vault.sample`. You can use
 |Variable|File|Description|
 |:-------|:---|:----------|
 |`vault_vcenter_password`|**group_vars/all/vault.yml**|The password for the `vcenter_username` user|
+|`vault_rancher_password`|**group_vars/all/vault.yml**|The password for the Rancher admin cluster|

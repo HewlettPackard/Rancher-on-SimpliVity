@@ -9,7 +9,7 @@ module.exports = {
       { text: 'Blog', link: '/blog/' }
     ],
 
-    repo: 'testaction',
+    repo: 'Rancher-on-SimpliVity',
     // Customising the header label
     // Defaults to "GitHub"/"GitLab"/"Bitbucket" depending on `themeConfig.repo`
     repoLabel: 'Contribute!',
@@ -41,7 +41,7 @@ module.exports = {
           //'/rel-notes/fixed-issues',
           '/rel-notes/known-issues'
         ]
-      },
+      },  
       {
         title: 'Solution overview',
         children: [
@@ -56,18 +56,54 @@ module.exports = {
         ]
       },
       {
+        title: 'Solution components',
+        children: [
+          'soln-components/hardware',
+          'soln-components/software',
+          'soln-components/application-software'
+        ]
+      },      
+      {
+        title: 'Preparing the environment ',
+        children: [
+          'preparing/verify-prereqs',
+          'preparing/ansible-fedora'
+        ]
+      },      
+      {
         title: 'Configuring the solution',
         children: [
           'config-core/ansible-config',    
           'config-core/proxy-config',  
-          'config-core/networking-config', 
+          'config-core/edit-hosts', 
           'config-core/vmware-config',
-          'config-core/rancher-config',   
-          'config-core/simplivity-config',
-          'config-core/edit-vault'
+          'config-core/simplivity-config',          
+          'config-core/networking-config',              
+          'config-core/rancher-config',
+          'config-core/lbs-config.md',
+          'config-core/group-vars',
+          'config-core/edit-vault',
+          'config-core/vars-sample',
+          'config-core/vault-sample',
+          'config-core/hosts-sample'
         ]
-      }
-
+      },
+      {
+        title: 'Overview of the playbooks',
+        children: [
+          'playbooks/playbooks-overview',
+          'playbooks/initial-deployment',
+          'playbooks/redeploy'
+        ]
+      },
+      {
+        title: 'Post deployment tasks',
+        collapsable: true,
+        children: [
+          '/post-deploy/post-deploy-intro',
+          '/post-deploy/first-login'
+        ]
+      }      
     ]
   }
 }
