@@ -32,7 +32,7 @@ vcenter_hostname: vcentergen10.am2.cloudra.local          # name of your vCenter
 vcenter_username: Administrator@vsphere.local             # Admin user for your vCenter environment
 vcenter_password: "{{ vault_vcenter_password }}"          # Encrypted in group_vars/all/vault.yml
 vcenter_validate_certs: false                             # true not implemented/tested
-vcenter_cluster: OCP                                      # Name of your SimpliVity Cluster (must exist)
+vcenter_cluster: Rancher                                  # Name of your SimpliVity Cluster (must exist)
 vm_dvswitch: dvsMgmt2960                                  # Distributed Virtual Switch containing vm_portgroup (must exist)
 vm_portgroup: hpe2964                                     # portgroup that the VMS connect to (must exist)
 datacenter: DEVOPS                                        # Name of your DATACENTER (must exist)

@@ -3,7 +3,7 @@
 ## Initial deployment
 
 
-The main entry point for the OpenShift on SimpliVity Ansible playbooks is:
+The main entry point for the Rancher on SimpliVity Ansible playbooks is:
 
 - `site.yml` for initial deployment
 

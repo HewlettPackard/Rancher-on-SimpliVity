@@ -2,7 +2,7 @@
 
 ## Group files
 
-The following files, in the `group_vars` folder, contain variable definitions for each group  of OCP cluster nodes. 
+The following files, in the `group_vars` folder, contain variable definitions for each group of nodes.
 These group files facilitate more sophisticated settings, such as additional network interfaces.
 
 

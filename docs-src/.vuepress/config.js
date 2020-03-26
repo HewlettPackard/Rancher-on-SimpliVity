@@ -56,6 +56,14 @@ module.exports = {
         ]
       },
       {
+        title: 'Solution components',
+        children: [
+          'soln-components/hardware',
+          'soln-components/software',
+          'soln-components/application-software'
+        ]
+      },      
+      {
         title: 'Preparing the environment ',
         children: [
           'preparing/verify-prereqs',
@@ -87,7 +95,15 @@ module.exports = {
           'playbooks/initial-deployment',
           'playbooks/redeploy'
         ]
-      }
+      },
+      {
+        title: 'Post deployment tasks',
+        collapsable: true,
+        children: [
+          '/post-deploy/post-deploy-intro',
+          '/post-deploy/first-login'
+        ]
+      }      
     ]
   }
 }

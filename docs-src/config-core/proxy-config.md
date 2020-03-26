@@ -16,7 +16,7 @@ All variables related to proxy configuration are described in the table below.
 |:-------|:---|:----------|
 |`http_proxy`|group_vars/all/vars.yml|Hostname or IP address of the HTTP proxy server and the proxy port number separated by a colon. For example: "http://web-proxy.hpecloud.org:8080".<br><br>Mandatory if proxy support is required.|
 |`https_proxy`|group_vars/all/vars.yml|Hostname or IP address of the HTTP proxy server and the proxy port number separated by a colon. Typically, this is identical to the `http_proxy` value.<br><br>Mandatory if proxy support is required.|
-|`no_proxy`|group_vars/all/vars.yml|A comma-separated list of hostnames, IP addresses, or network ranges that should bypass the proxy server. The list should include: localhost, the configured domain name used to deploy the OCP cluster, the DHCP subnet CIDR, and the vCenter hostname. <br><br>Mandatory if proxy support is required.|
+|`no_proxy`|group_vars/all/vars.yml|A comma-separated list of hostnames, IP addresses, or network ranges that should bypass the proxy server. The list should include: localhost, the configured domain name used to deploy the Rancher cluster, the DHCP subnet CIDR, and the vCenter hostname. <br><br>Mandatory if proxy support is required.|
 
 
 A sample proxy configuration is provided in the file `group_vars/all/vars.yml.sample`:
