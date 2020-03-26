@@ -1,7 +1,7 @@
-{% if tls_source == 'secret' and tls_privateCA %}
+{% if rancherserver_tls_source == 'secret' and rancherserver_tls_privateCA %}
 privateCA: true
 {% endif %}
-hostname: "{{ rancher.hostname }}"
+hostname: "{{ rancherserver_hostname }}"
 {% if proxy is defined %}
 proxy: {{ proxy.http }}
 noProxy: {{ proxy.except }},10.0.0.0/8
@@ -13,5 +13,5 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "1800"
   tls:
     # options: rancher, letsEncrypt, secret
-    source: {{ tls_source }}
+    source: {{ rancherserver_tls_source }}
 

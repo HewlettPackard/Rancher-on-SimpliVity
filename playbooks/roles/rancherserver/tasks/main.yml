@@ -14,17 +14,14 @@
 # limitations under the License.
 ###
 
-- set_fact:
-    tls_source: "{{ tls_source | lower }}"
-
 - fail:
-    msg: "Unsupported value for tls_source {{ tls_source }}"
+    msg: "Unsupported value for tls_source {{ rancherserver_tls_source }}"
   when: 
-  - tls_source != "secret"
-  - tls_source != "rancher"
+  - rancherserver_tls_source != "secret"
+  - rancherserver_tls_source != "rancher"
 
 - include_tasks: tls_secret.yml
-  when: tls_source == "secret"
+  when: rancherserver_tls_source == "secret"
 - include_tasks: tls_rancher.yml
-  when: tls_source == "rancher"
+  when: rancherserver_tls_source == "rancher"
 
