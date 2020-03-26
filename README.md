@@ -91,11 +91,11 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
    ```
    rancher:
-     url: https://lb1.hpe.org   # this name must resolv to the IP address of your LB
-     hostname: lb1.hpe.org      # this is the hostname of the Rancher Server
-     validate_certs: False      #
-     apiversion: v3             # Playbooks designed for v3 of the API
-     engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # All node templates use the same version of Docker
+     url: https://rancher.hpe.org
+     hostname: rancher.hpe.org
+     validate_certs: False
+     apiversion: v3
+     engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'
    ```
 
    Rancher Server is designed to be secure by default and requires SSL/TLS configuration. There are three options for the source of the certificate: Rancher Generated Certificates, Let's Encrypt and Certificates from Files.
@@ -111,7 +111,6 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
      tls_source: rancher
    ```
    If you want to supply your own certificates you will have to set tls_source to secret and let the playbooks know where to find your certificates as shown in the example below:
-
    ```
    rancher:
      url: https://rancher.hpe.org
@@ -213,11 +212,11 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    - deploys the user cluster.
 # Access Rancher Server
 
-You access your rancher server by browsing to the url which is specified by the variable `rancher.url`  (see in `group_vars/all/vars.yml` the `rancher` variable). This is https://lb1.hpe.org in the example below. 
+You access your rancher server by browsing to the url which is specified by the variable `rancher.url`  (see in `group_vars/all/vars.yml` the `rancher` variable). This is https://rancher.hpe.org in the example below. 
 
 ```
 rancher:
-     url: https://lb1.hpe.org  
+     url: https://rancher.hpe.org  
      validate_certs: False    
      apiversion: v3  
          :   :
