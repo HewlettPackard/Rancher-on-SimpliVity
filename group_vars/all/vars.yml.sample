@@ -82,13 +82,18 @@ proxy:
   https:  "http://10.12.7.21:8080/"
   except: "localhost,.am2.cloudra.local,.hpe.org"
 
-
 rancher:
   url: https://rancher.hpe.org    # this the FQDN at which Rancher Server can be reached
   hostname: rancher.hpe.org       # generally same fqdn as the one in the url above but not necessarily
   validate_certs: False           #
   apiversion: v3                  # Playbooks designed for v3 of the API
   engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # All node templates use the same version of Docker
+# If user supplied certificate wanted
+#  tls_source: secret                               # either rancher or secret, letsEncrypt unsupported (See doc), rancher is the default
+#  tls_privateCA: true                              # if using a private root CA, default is false (ie you use a public root CA)
+#  tls_cacert_file: /home/core/certs/cacerts.pem    # file containing the root CA certificate. Relevant if tls_privateCA is true
+#  tls_certchain_file: /home/core/certs/cachain.pem # file containing the server certificate followed by the intermediate CA certs (if any)
+#  tls_certkey_file: /home/core/certs/tlskey.pem    # file containing the private key fo the Rancher server 
 
 user_cluster:
 # vm_template: hpe-ubuntu-tpl     # an existing VM template, the admin template by default
@@ -118,12 +123,4 @@ user_cluster:
        cpu_count: 2
        disk_size: 40000
        memory_size: 4096
-
-# TLS
-tls_source: rancher                              # either rancher or secret, letsEncrypt unsupported (See doc), rancher is the default
-# the following variables are relevant if tls_source=secret
-tls_privateCA: false                             # if using a private root CA, default is false (ie you use a public root CA)
-tls_cacert_file: /home/core/certs/cacerts.pem    # file containing the root CA certificate. Relevant if tls_privateCA is true
-tls_certchain_file: /home/core/certs/cachain.pem # file containing the server certificate followed by the intermediate CA certs (if any)
-tls_certkey_file: /home/core/certs/tlskey.pem    # file containing the private key fo the Rancher server 
 
