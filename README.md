@@ -95,7 +95,7 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    ```
 
    Rancher Server is designed to be secure by default and requires SSL/TLS configuration. There are three options for the source of the certificate: Rancher Generated Certificates, Let's Encrypt and Certificates from Files.
-   These playbooks support option 1 and option 3. You specify which one to use by configuring the variable rancher.tls_source in group_vars/all/vars.yml. The accepted values are rancher for option 1, and secret for option 3. The default is rancher. which means that the example above is equivalent to what is shown below:
+   These playbooks support option 1 and option 3. You specify which one to use by configuring the variable `rancher.tls_source` in `group_vars/all/vars.yml`. The accepted values are `rancher` for option 1, and `secret` for option 3. The default is `rancher` which means that the example above is equivalent to what is shown below:
 
    ```
    rancher:
@@ -106,7 +106,7 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
      engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'
      tls_source: rancher
    ```
-   If you want to supply your own certificates you will have to set tls_source to secret and let the playbooks know where to find your certificates as shown in the example below:
+   If you want to supply your own certificates you will have to set `rancher.tls_source` to `secret` and let the playbooks know where to find your certificates as shown in the example below:
    ```
    rancher:
      url: https://rancher.hpe.org
@@ -120,8 +120,8 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
      tls_certchain_file: /home/core/certs/cachain.pem
      tls_certkey_file: /home/core/certs/tlskey.pem    
    ```
-   The rancher.tls_privateCA variable should be set to true if the certificates are signed by a private root Certificate Authority (root CA), in which case you need to supply the certificate of the root CA using rancher.tls_cacert_file. In the example above, the root CA certificate was stored in /home/core/certs/cacerts.pem. Note that all certificates use the PEM format.
-   The certificate and key that the Rancher Server should used is specified with the variables rancher.tls_certchain_file and rancher.tls_certkey_file. These variables should be configured with the names of the files that contain the SSL certificate and key that the Rancher Server should use. Note that the file designated by rancher.tls_certchain_file contains the certificate of the Rancher Server itself followed by the certificates of intermediate CAs if any.
+   The `rancher.tls_privateCA` variable should be set to `true` if the certificates are signed by a private root Certificate Authority (root CA), in which case you need to supply the certificate of the root CA using `rancher.tls_cacert_file`. In the example above, the root CA certificate was stored in /home/core/certs/cacerts.pem. Note that all certificates use the PEM format.
+   The certificate and key that the Rancher Server should used is specified with the variables `rancher.tls_certchain_file` and `rancher.tls_certkey_file`. These variables should be configured with the names of the files that contain the SSL certificate and key that the Rancher Server should use. Note that the file designated by `rancher.tls_certchain_file` contains the certificate of the Rancher Server itself followed by the certificates of intermediate CAs if any.
 
    Finally, configure the `user_cluster` variable. To some extent, you can configure the user cluster that the playbooks will deploy. This is achieved by configuring the variable `user_cluster` in `group_vars/all/vars.yml`.  An example is provided below:
 
