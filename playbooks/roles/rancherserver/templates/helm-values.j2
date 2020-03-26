@@ -1,4 +1,4 @@
-{% if tls_privateCA %}
+{% if tls_source == 'secret' and tls_privateCA %}
 privateCA: true
 {% endif %}
 hostname: "{{ rancher.hostname }}"
