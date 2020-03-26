@@ -67,6 +67,7 @@ module.exports = {
         children: [
           'config-core/ansible-config',    
           'config-core/proxy-config',  
+          'config-core/edit-hosts', 
           'config-core/vmware-config',
           'config-core/simplivity-config',          
           'config-core/networking-config',              
@@ -75,7 +76,8 @@ module.exports = {
           'config-core/group-vars',
           'config-core/edit-vault',
           'config-core/vars-sample',
-          'config-core/vault-sample'
+          'config-core/vault-sample',
+          'config-core/hosts-sample'
         ]
       },
       {
