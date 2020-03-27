@@ -21,3 +21,7 @@ ad_service_account_username: adreader
 ad_service_account_password: "{{ vault_ad_service_account_password }}"
 ad_tls: true
 ad_port: 636
+ad_group_search_base: ""
+ad_group_search_filter: ""
+ad_user_search_base: "cn=Users,dc=am2,dc=cloudra,dc=local"
+ad_user_search_filter: ""

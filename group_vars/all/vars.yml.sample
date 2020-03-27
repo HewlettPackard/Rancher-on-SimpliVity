@@ -129,3 +129,8 @@ ad_service_account_username: adreader                                     # AD s
 ad_service_account_password: "{{ vault_ad_service_account_password }}"    # AD service account password
 ad_tls: true                                                              # Use TLS for AD
 ad_port: 636                                                              # Port number to access AD service
+ad_group_search_base: ""                                                  # Search base string used for group lookups
+ad_group_search_filter: ""                                                # Search filter for group lookups
+ad_user_search_base: "cn=Users,dc=am2,dc=cloudra,dc=local"                # Search base string used for user lookups
+ad_user_search_filter: ""                                                 # Search filer for user lookups
+

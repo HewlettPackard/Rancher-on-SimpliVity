@@ -62,6 +62,10 @@
         serviceAccountPassword: "{{ ad_service_account_password }}"
         serviceAccountUsername: "{{ ad_service_account_username }}"
         tls: "{{ ad_tls }}"
+        groupSearchBase: "{{ ad_group_search_base }}"
+        groupSearchFilter: "{{ ad_group_search_filter }}"
+        userSearchBase: "{{ ad_user_search_base }}"
+        userSearchFilter: "{{ ad_user_search_filter }}"
 
   - name: Verify the AD Authentication configured successfully
     uri:
