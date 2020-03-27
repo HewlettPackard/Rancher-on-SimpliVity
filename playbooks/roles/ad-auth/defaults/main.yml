@@ -1,0 +1,27 @@
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+###
+---
+ad_ca_file: ca.pem
+ad_login_domain: AM2
+ad_server_name: mars-adds.am2.cloudra.local
+ad_service_account_username: adreader
+ad_service_account_password: "{{ vault_ad_service_account_password }}"
+ad_tls: true
+ad_port: 636
+ad_group_search_base: ""
+ad_group_search_filter: ""
+ad_user_search_base: "cn=Users,dc=am2,dc=cloudra,dc=local"
+ad_user_search_filter: ""

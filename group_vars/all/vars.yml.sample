@@ -124,3 +124,17 @@ user_cluster:
        disk_size: 40000
        memory_size: 4096
 
+#
+# Active Directory Integration
+#
+#ad_ca_file: "path to your AD CA certificate in pem format"                # A default file is provided in playbooks/roles/ad-auth/files/ca.pem
+ad_login_domain: AM2                                                      # Name of the AD Domain
+ad_server_name: mars-adds.am2.cloudra.local                               # Name of the AD Server
+ad_service_account_username: adreader                                     # AD service account username
+ad_service_account_password: "{{ vault_ad_service_account_password }}"    # AD service account password
+ad_tls: true                                                              # Use TLS for AD
+ad_port: 636                                                              # Port number to access AD service
+ad_group_search_base: ""                                                  # Search base string used for group lookups
+ad_group_search_filter: ""                                                # Search filter for group lookups
+ad_user_search_base: "cn=Users,dc=am2,dc=cloudra,dc=local"                # Search base string used for user lookups
+ad_user_search_filter: ""                                                 # Search filer for user lookups

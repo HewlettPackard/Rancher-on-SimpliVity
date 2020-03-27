@@ -1,0 +1,89 @@
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+###
+---
+- name: See if the AD Authentication is already configured
+  uri:
+    url:  "{{ rancher.url }}/{{ rancher.apiversion }}/activeDirectoryConfigs/activedirectory"
+    validate_certs: "{{ rancher.validate_certs }}"
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Authorization: Bearer {{ bearer_token }}
+    method: GET
+    timeout: 4
+    status_code:
+    - 200
+  register: ad_auth
+
+- set_fact:
+    ad_configured: "{{ ad_auth.json.enabled }}"
+
+- block:
+
+  - name: Load Active Directory CA certificate file
+    set_fact: 
+      ad_ca_file: "{{ ad_ca_file | default('ca.pem') }}"
+
+  - name: Configure Active Directory Authentication
+    uri:
+      url: "{{ rancher.url }}/{{ rancher.apiversion }}/activeDirectoryConfigs/activedirectory"
+      validate_certs: "{{ rancher.validate_certs }}"
+      headers:
+        Accept: application/json
+        Content-Type: application/json
+        Authorization: Bearer {{ bearer_token }}
+      method: PUT
+      timeout: 4
+      status_code:
+      - 200
+      body_format: json
+      body:
+        accessMode: unrestricted
+        certificate: "{{ lookup ('file', ad_ca_file) }}"
+        defaultLoginDomain: "{{ ad_login_domain }}"
+        enabled: true
+        port: "{{ ad_port }}"
+        servers: [
+           "{{ ad_server_name }}"
+        ]
+        serviceAccountPassword: "{{ ad_service_account_password }}"
+        serviceAccountUsername: "{{ ad_service_account_username }}"
+        tls: "{{ ad_tls }}"
+        groupSearchBase: "{{ ad_group_search_base }}"
+        groupSearchFilter: "{{ ad_group_search_filter }}"
+        userSearchBase: "{{ ad_user_search_base }}"
+        userSearchFilter: "{{ ad_user_search_filter }}"
+
+  - name: Verify the AD Authentication configured successfully
+    uri:
+      url:  "{{ rancher.url }}/{{ rancher.apiversion }}/activeDirectoryConfigs/activedirectory"
+      validate_certs: "{{ rancher.validate_certs }}"
+      headers:
+        Accept: application/json
+        Content-Type: application/json
+        Authorization: Bearer {{ bearer_token }}
+      method: GET
+      timeout: 4
+      status_code:
+      - 200
+    register: ad_auth2
+  
+  - name: Fail if Active Directory Authentication was not configured successfully
+    fail:
+      msg: "Active Directory Authentication did not configure successfully"
+    when: ad_auth2.json.enabled == false
+  
+  when: ad_configured == false
