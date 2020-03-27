@@ -3,16 +3,13 @@
 Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
 1. clone the repo
-
    ```
    # git clone git@github.com:HewlettPackard/Rancher-on-SimpliVity.git
    # cd ./Rancher-on-SimpliVity
    ```
-
 2. copy the file `group_vars/all/vars.yml.sample` to `group_vars/all/vars.yml` and configure it to match your environment. The file contains comments that should help you understand how to populate this file. (and more documentation will come)
 
-   Anyway a few variables deserves a special treatment. 
-
+   Anyway a few variables deserve a special treatment. 
    ```
    rancher_subnet: 10.15.xxx.0/24
    gateway: '10.15.xxx.1'
@@ -21,7 +18,6 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    dns_servers: ['10.10.173.1','10.10.173.31']               # list of DNS servers
    dns_suffixes: ['am2.cloudra.local','hpe.org']             # list of DNS suffixes
    ```
-
    The `rancher_subnet` variable is the scope of IP addresses which you can use on the Rancher VLAN. The Rancher VLAN is a vCenter portgroup in your virtual infrastructure which connects all the virtual machines that this solution deploys. **This portgroup must exists** (see below `vm_portgroup`) before you attempt to run the playbooks and you must have been assigned a scope (subnet) of IP addresses on which you have complete control.
 
    The `gateway` variable is the gateway to use for the Rancher VLAN. 
@@ -91,12 +87,41 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
    ```
    rancher:
-     url: https://lb1.hpe.org   # this name must resolv to the IP address of your LB
-     hostname: lb1.hpe.org      # this is the hostname of the Rancher Server
-     validate_certs: False      #
-     apiversion: v3             # Playbooks designed for v3 of the API
-     engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # All node templates use the same version of Docker
+     url: https://rancher.hpe.org
+     hostname: rancher.hpe.org
+     validate_certs: False
+     apiversion: v3
+     engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'
    ```
+
+   Rancher Server is designed to be secure by default and requires SSL/TLS configuration. There are three options for the source of the certificate: Rancher Generated Certificates, Let's Encrypt and Certificates from Files.
+   These playbooks support option 1 and option 3. You specify which one to use by configuring the variable `rancher.tls_source` in `group_vars/all/vars.yml`. The accepted values are `rancher` for option 1, and `secret` for option 3. The default is `rancher` which means that the example above is equivalent to what is shown below:
+
+   ```
+   rancher:
+     url: https://rancher.hpe.org
+     hostname: rancher.hpe.org
+     validate_certs: False
+     apiversion: v3
+     engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'
+     tls_source: rancher
+   ```
+   If you want to supply your own certificates you will have to set `rancher.tls_source` to `secret` and let the playbooks know where to find your certificates as shown in the example below:
+   ```
+   rancher:
+     url: https://rancher.hpe.org
+     hostname: rancher.hpe.org
+     validate_certs: False
+     apiversion: v3
+     engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'
+     tls_source: secret
+     tls_privateCA: true
+     tls_cacert_file: /home/core/certs/cacerts.pem
+     tls_certchain_file: /home/core/certs/cachain.pem
+     tls_certkey_file: /home/core/certs/tlskey.pem    
+   ```
+   The `rancher.tls_privateCA` variable should be set to `true` if the certificates are signed by a private root Certificate Authority (root CA), in which case you need to supply the certificate of the root CA using `rancher.tls_cacert_file`. In the example above, the root CA certificate was stored in /home/core/certs/cacerts.pem. Note that all certificates use the PEM format.
+   The certificate and key that the Rancher Server should used is specified with the variables `rancher.tls_certchain_file` and `rancher.tls_certkey_file`. These variables should be configured with the names of the files that contain the SSL certificate and key that the Rancher Server should use. Note that the file designated by `rancher.tls_certchain_file` contains the certificate of the Rancher Server itself followed by the certificates of intermediate CAs if any.
 
    Finally, configure the `user_cluster` variable. To some extent, you can configure the user cluster that the playbooks will deploy. This is achieved by configuring the variable `user_cluster` in `group_vars/all/vars.yml`.  An example is provided below:
 
@@ -183,11 +208,11 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    - deploys the user cluster.
 # Access Rancher Server
 
-You access your rancher server by browsing to the url which is specified by the variable `rancher.url`  (see in `group_vars/all/vars.yml` the `rancher` variable). This is https://lb1.hpe.org in the example below. 
+You access your rancher server by browsing to the url which is specified by the variable `rancher.url`  (see in `group_vars/all/vars.yml` the `rancher` variable). This is https://rancher.hpe.org in the example below. 
 
 ```
 rancher:
-     url: https://lb1.hpe.org  
+     url: https://rancher.hpe.org  
      validate_certs: False    
      apiversion: v3  
          :   :
