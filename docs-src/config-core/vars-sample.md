@@ -4,7 +4,7 @@ A sample `vars.yml` file is provided named `group_vars/all/vars.yml.sample` that
 vars file. To create a `vars.yml` file, you create a new file called `group_vars/all/vars.yml` and add entries based on
 the descriptions in the preceding sections. A sample `vars.yml` file is shown below for convenience.
 
-TODO update before release
+<!-- TODO Update sample vars file before release -->
 
 ```
 ---

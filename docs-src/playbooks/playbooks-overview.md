@@ -17,17 +17,17 @@ The main entry point for the Rancher on SimpliVity Ansible playbooks is:
 
 This is a wraper for a number of playbooks that perform the deployment in stages:
 
-- import_playbook: playbooks/prepare.yml
-- import_playbook: playbooks/provision.yml
-- import_playbook: playbooks/configure.yml
-- import_playbook: playbooks/ranchercluster.yml
-- import_playbook: playbooks/rancherserver.yml
-- import_playbook: playbooks/1stlogin.yml
-- import_playbook: playbooks/ucluster.yml
+- playbooks/prepare.yml
+- playbooks/provision.yml
+- playbooks/configure.yml
+- playbooks/ranchercluster.yml
+- playbooks/rancherserver.yml
+- playbooks/1stlogin.yml
+- playbooks/ucluster.yml
 
 
 ## Deployment overview
-`site.yml` is a wrapper for a number of playblooks that perform different functions: 
+
 
 ### Prepare
 
@@ -98,4 +98,4 @@ In the current release, the user cluster deploys with a `kubernetesVersion` of  
 ## Post deployment playbooks
 A number of playbooks are provided to help with post-deployment tasks:
 
-TODO
+<!-- TODO Post deployment playbooks -->

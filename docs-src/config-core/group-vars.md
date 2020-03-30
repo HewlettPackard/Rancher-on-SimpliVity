@@ -25,7 +25,7 @@ disk1_size: '60'                    # Disk size in Gbs
 
 you can override these values in the individual node entries in the `hosts` file:
 
-TODO
+<!-- TODO Override group vars in hosts file-->
 
 
 
@@ -41,4 +41,4 @@ The following variables apply to all node groups:
 |`ram`|All nodes/groups|Amount of RAM in MB to assign to a VM or a group of VMs|
 |`disk1_size`|All nodes/groups|Size of the disk in GB to attach to a VM or a group of VMs. |
 
-TODO
+<!-- TODO Additional common variables -->

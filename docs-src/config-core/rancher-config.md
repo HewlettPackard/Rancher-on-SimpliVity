@@ -35,7 +35,7 @@ General configuration variables are shown in the table below:
 
 ## User cluster
 
-TODO
+<!-- TODO Rancher user cluster config -->
 
 ```
 user_cluster:
