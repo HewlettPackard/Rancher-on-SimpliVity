@@ -1,10 +1,13 @@
 # Initial cluster deployment
 
+## Prerequisites
 
-- Configure variables in `group_vars/all/vars` 
-- Configure sensitive variables in `group_vars/all/vault` 
+Before you attempt to run the playbooks to deploy the solution, make sure that you have fulfil the requirements:
+
+- Configure variables in `group_vars/all/vars`
+- Configure sensitive variables in `group_vars/all/vault`
 - Configure `hosts`
-- Make sure the Rancher url (the `rancher.url` variable) resolves to the IP address of the load balancer you configured in the hosts inventory. Instructions for configuring the DNS are specific to your DNS implementation and are not provided here.
+- Make sure the Rancher URL (specified using the `rancher.url` variable) resolves to the IP address of the load balancer you configured in the hosts inventory. Instructions for configuring the DNS are specific to your DNS implementation and are not provided here.
 
 
 ## Pre-deployment validation
@@ -43,18 +46,3 @@ $ ansible-playbook -i hosts site.yml --vault-password-file .vault_pass
 ```
 
 
-## Deployment overview
-`site.yml` is a wrapper for a number of playblooks that perform different functions: 
-
-
-- installs the required packages on the Ansible box
-- verifies that the required files are found in the staging area
-- Installs client tools (rancher cli and rke cli) on the Ansible box
-- Creates required artifacts in vCenter including VM folders, resource pools 
-- loads the Ubuntu 18.04 cloud image OVA in vCenter
-- deploys and configures the one LB (with NGINX)
-- deploys and configure the rancher VMs (installs docker and configures the firewall with the required ports)
-- deploys the Rancher Cluster (a Kubernetes cluster)
-- deploys the Rancher Server on top of the Rancher Cluster
-- performs a number of first time login operations including changing the admin password of the Rancher server and creating an API token
-- deploys the user cluster.

@@ -1,3 +1,4 @@
 # Log in to the Rancher admin cluster
 
-Once the `site.yml` playbook has run successfully to completion, TODO
+Once the `site.yml` playbook has run successfully to completion, <!-- TODO Log in to the Rancher admin cluster -->
+
