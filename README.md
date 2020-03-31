@@ -204,7 +204,7 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
    Finally, configure the `user_cluster` variable. To some extent, you can configure the user cluster that the playbooks will deploy. This is achieved by configuring the variable `user_cluster` in `group_vars/all/vars.yml`.  An example is provided below:
 
-   ```
+```
 user_cluster:
    # vm_template: hpe-ubuntu-tpl     # an existing VM template, admin template by default
      name: api                       # name of the user cluster
