@@ -61,6 +61,3 @@
   gather_facts: yes
   roles:
   - role: lb
-    vars:
-      lb_backend_iface: "{{ rancher_iface }}"
-

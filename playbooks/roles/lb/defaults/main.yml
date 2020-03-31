@@ -15,4 +15,9 @@
 ###
 
 ---
-lb_backend_iface: ens160
+loadbalancers_backend_vip: "{{ loadbalancers.backend.vip }}"                                                 # no default value
+loadbalancers_backend_vrrp_router_id: "{{ loadbalancers.backend.vrrp_router_id }}"                           # no default value
+load_balancers_backend_nginx_max_fails: "{{ loadbalancers.backend.nginx_max_fails | default('1') }}"
+load_balancers_backend_nginx_fail_timeout: "{{ loadbalancers.backend.nginx_fail_timeout | default ('5s') }}"
+load_balancers_backend_nginx_proxy_timeout: "{{ loadbalancers.backend.nginx_proxy_timeout | default ('3s') }}"
+load_balancers_backend_nginx_proxy_connect_timeout: "{{ loadbalancers.backend.nginx_proxy_connect_timeout | default ('1s') }}"

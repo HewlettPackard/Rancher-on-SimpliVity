@@ -17,3 +17,7 @@
 - include_tasks: provision_drs.yml
   vars:
     drs_group: ranchernodes
+
+- include_tasks: provision_drs.yml
+  vars:
+    drs_group: loadbalancer

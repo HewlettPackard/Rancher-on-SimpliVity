@@ -13,15 +13,36 @@
 # limitations under the License.
 ### 
 ---
-- name: Get the IP address of the rancher hostname
-  set_fact:
-    rancher_ip_addr: "{{ lookup('dig', rancher.hostname, 'flat=0') }}"
+- name: Install epel repository
+  become: true
+  package:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - epel-release
+  when: ansible_os_family == "RedHat"
 
-- fail:
-    msg: "rancher.hostname {{ rancher.hostname }} cannot be resolved in DNS"
-  when: rancher_ip_addr.address is not defined
+- name: Install nginx
+  become: true
+  package:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - nginx
 
-- include_tasks: firewall.yml
-- include_tasks: keepalived.yml
-- include_tasks: nginx.yml
+- name: Update nginx.conf
+  become: true
+  template:
+     src: nginx.conf.{{ ansible_distribution_file_variety | lower }}.j2
+     dest: /etc/nginx/nginx.conf
+  notify: Restart nginx
+
+- name: start nginx
+  become: true
+  systemd:
+    name: nginx
+    enabled: yes
+    state: started
 
