@@ -13,14 +13,6 @@
 # limitations under the License.
 ### 
 ---
-- name: Get the IP address of the rancher hostname
-  set_fact:
-    rancher_ip_addr: "{{ lookup('dig', rancher.hostname, 'flat=0') }}"
-
-- fail:
-    msg: "rancher.hostname {{ rancher.hostname }} cannot be resolved in DNS"
-  when: rancher_ip_addr.address is not defined
-
 - include_tasks: firewall.yml
 - include_tasks: keepalived.yml
 - include_tasks: nginx.yml
