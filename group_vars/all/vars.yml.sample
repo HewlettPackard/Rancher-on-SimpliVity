@@ -138,3 +138,15 @@ ad_group_search_base: ""                                                  # Sear
 ad_group_search_filter: ""                                                # Search filter for group lookups
 ad_user_search_base: "cn=Users,dc=am2,dc=cloudra,dc=local"                # Search base string used for user lookups
 ad_user_search_filter: ""                                                 # Search filer for user lookups
+
+#
+# Loadbalancer Variables
+#
+loadbalancers:
+  backend:
+    vip: 10.15.152.9/24
+    vrrp_router_id: 51
+    nginx_max_fails: 1
+    nginx_fail_timeout: 5s
+    nginx_proxy_timeout: 3s
+    nginx_proxy_connect_timeout: 2s

@@ -133,9 +133,9 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
         :    :
    rancher:
      url: https://rancher.hpe.org
-     hostname: rancher,hpe.org
+     hostname: rancher.hpe.org
          :   :
-   loadbalancers
+   loadbalancers:
      backend:
        vip: 10.15.152.9/24
        vrrp_router_id: 51

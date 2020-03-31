@@ -5,7 +5,8 @@ localhost     ansible_connection=local ansible_python_interpreter=/usr/bin/pytho
 hpe-support1  ansible_host=10.15.152.5
 
 [loadbalancer]
-hpe-lb1       ansible_host=10.15.152.11
+hpe-lb1       ansible_host=10.15.152.11 api_int_preferred=true
+hpe-lb2       ansible_host=10.15.152.12
 
 #machines hosting Rancher Cluster
 [ranchernodes]
