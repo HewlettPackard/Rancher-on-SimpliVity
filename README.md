@@ -126,7 +126,7 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
    You can configure **one or two load balancers** depending on if you want HA for this service or not.  When deploying two load balancers, a floating IP is deployed and managed by keepalived.  Your settings for `rancher.hostname` and the name in the `rancher.url` variable should resolve to the address you chose for this floating IP. If you configure a single load balancer, you don't need a floating IP and the `rancher.hostname` should resolve to the IP of the standalone load balancer.
 
-   The first example below is for an HA setup. The Ansible inventory specifies two load balancers. The `loadbalancers` variable in `group_vars/all/vars.yml` specifies the VIP to use (`loadbalancers.backend.vip`) and a VRRP router ID (51) which must be unique on the rancher subnet/VLAN . The DNS is configured to resolve`rancher.hostname` to 10.15.152.9. Note that this VIP MUST be in the rancher subnet **and** outside of the DHCP scope.
+   The first example below is for an HA setup. The Ansible inventory specifies two load balancers. The `loadbalancers` variable in `group_vars/all/vars.yml` specifies the VIP to use (`loadbalancers.backend.vip`) and a VRRP router ID (51) which must be unique on the rancher subnet/VLAN . The DNS is configured to resolve`rancher.hostname` to 10.15.152.9. Note that this VIP MUST be in the rancher subnet **and** outside the DHCP scope like any other IP address from the hosts inventory.
 
    ```
    rancher_subnet: 10.15.152.0/24 
