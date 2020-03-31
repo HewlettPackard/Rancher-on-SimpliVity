@@ -168,7 +168,7 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    The second example below shows how to configure a single load balancer.  HA is provided by VMWare HA. The VIP and the VRRP router ID are commented out. This disables keepalived. In this case, `rancher.hostname` (rancher.hpe.org)  must resolve to the IP address of the VM in the `loadbalancer` group.
 
    ```
-rancher_subnet: 10.15.152.0/24 
+   rancher_subnet: 10.15.152.0/24
        :         : 
    rancher:
      url: https://rancher.hpe.org 
@@ -185,7 +185,7 @@ rancher_subnet: 10.15.152.0/24
    ```
    
    ```
-[local]
+   [local]
    localhost     ansible_connection=local ansible_python_interpreter=/usr/bin/python3
     
    [support]
@@ -200,7 +200,6 @@ rancher_subnet: 10.15.152.0/24
    hpe-rke2      ansible_host=10.15.152.22
    hpe-rke3      ansible_host=10.15.152.23
    ```
-   
    
 
    Finally, configure the `user_cluster` variable. To some extent, you can configure the user cluster that the playbooks will deploy. This is achieved by configuring the variable `user_cluster` in `group_vars/all/vars.yml`.  An example is provided below:
