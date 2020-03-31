@@ -7,6 +7,7 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    # git clone git@github.com:HewlettPackard/Rancher-on-SimpliVity.git
    # cd ./Rancher-on-SimpliVity
    ```
+   
 2. copy the file `group_vars/all/vars.yml.sample` to `group_vars/all/vars.yml` and configure it to match your environment. The file contains comments that should help you understand how to populate this file. (and more documentation will come)
 
    Anyway a few variables deserve a special treatment. 
@@ -123,6 +124,87 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    The `rancher.tls_privateCA` variable should be set to `true` if the certificates are signed by a private root Certificate Authority (root CA), in which case you need to supply the certificate of the root CA using `rancher.tls_cacert_file`. In the example above, the root CA certificate was stored in /home/core/certs/cacerts.pem. Note that all certificates use the PEM format.
    The certificate and key that the Rancher Server should used is specified with the variables `rancher.tls_certchain_file` and `rancher.tls_certkey_file`. These variables should be configured with the names of the files that contain the SSL certificate and key that the Rancher Server should use. Note that the file designated by `rancher.tls_certchain_file` contains the certificate of the Rancher Server itself followed by the certificates of intermediate CAs if any.
 
+   You can configure one or two load balancers depending on if you want HA or non HA.  When deploying two load balancers, a floating IP is deployed and managed by keepalived.  Your settings for `rancher.hostname` and the name in the `rancher.url` variable should resolve to the address you chose for this floating IP. If you configure a single load balancer, you don't need a floating IP and the `rancher.hostname` should resolve to the IP is the standalone load balancer.
+
+   The first example below is for an HA setup. The Ansible inventory specifies two load balancers. The `loadbalancers` variable in `group_vars/all/vars.yml` specifies the VIP to use (`loadbalancers.backend.vip`) and a VRRP router ID (51) which must be unique on the rancher subnet/VLAN . The DNS is configured to resolve`rancher.hostname` resolves to 10.15.152.9. Note that this VIP MUST be in the rancher subnet.
+
+   ```
+   rancher_subnet: 10.15.152.0/24 
+        :    :
+   rancher:
+     url: https://rancher.hpe.org
+     hostname: rancher,hpe.org
+         :   :
+   loadbalancers
+     backend:
+       vip: 10.15.152.9/24
+       vrrp_router_id: 51
+       nginx_max_fails: 1
+       nginx_fail_timeout: 5s
+       nginx_proxy_timeout: 3s
+       nginx_proxy_connect_timeout: 2s
+   ```
+
+   ```
+   [local]
+   localhost     ansible_connection=local ansible_python_interpreter=/usr/bin/python3
+    
+   [support]
+   hpe-support1  ansible_host=10.15.152.5
+    
+   [loadbalancer]
+   hpe-lb1       ansible_host=10.15.152.11 api_int_preferred=true
+   hpe-lb2       ansible_host=10.15.152.12
+    
+   #machines hosting Rancher Cluster
+   [ranchernodes]
+   hpe-rke1      ansible_host=10.15.152.21
+   hpe-rke2      ansible_host=10.15.152.22
+   hpe-rke3      ansible_host=10.15.152.23
+   ```
+
+   **note:** The first load balancer is tagged with the variable `api_int_preferred` which means when the two load balancers are up and running, this VM will host the configured VIP.
+
+   
+
+   The second example below shows how to configure a single load balancer.  HA is provided by VMWare HA. The vip and the VRRP router ID are commented out. This disables keepalived. In this case, `rancher.hostname` (rancher.hpe.org)  must resolve to the IP address of the VM in the `loadbalancer` group.
+
+   ```
+   rancher_subnet: 10.15.152.0/24 
+       :         : 
+   rancher:
+     url: https://rancher.hpe.org 
+     hostname: rancher.hpe.org
+       :          :
+   loadbalancers:
+     backend:
+   #    vip: 10.15.152.9/24
+   #    vrrp_router_id: 51
+       nginx_max_fails: 1
+       nginx_fail_timeout: 5s
+       nginx_proxy_timeout: 3s
+       nginx_proxy_connect_timeout: 2s
+   ```
+
+   ```
+   [local]
+   localhost     ansible_connection=local ansible_python_interpreter=/usr/bin/python3
+    
+   [support]
+   hpe-support1  ansible_host=10.15.152.5
+    
+   [loadbalancer]
+   hpe-lb1       ansible_host=10.15.152.9
+    
+   #machines hosting Rancher Cluster
+   [ranchernodes]
+   hpe-rke1      ansible_host=10.15.152.21
+   hpe-rke2      ansible_host=10.15.152.22
+   hpe-rke3      ansible_host=10.15.152.23
+   ```
+
+   
+
    Finally, configure the `user_cluster` variable. To some extent, you can configure the user cluster that the playbooks will deploy. This is achieved by configuring the variable `user_cluster` in `group_vars/all/vars.yml`.  An example is provided below:
 
    ```
@@ -181,7 +263,7 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
 ```
    # ansible-playbook -i hosts playbooks/pre-checks.yml
-   ```
+```
 
 8. Deploy
 
