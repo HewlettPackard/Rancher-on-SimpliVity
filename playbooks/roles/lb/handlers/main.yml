@@ -21,3 +21,10 @@
     name: nginx
     enabled: yes
     state: restarted
+
+- name: Enable and start keepalived service
+  become: true
+  systemd:
+    name: keepalived
+    enabled: yes
+    state: restarted

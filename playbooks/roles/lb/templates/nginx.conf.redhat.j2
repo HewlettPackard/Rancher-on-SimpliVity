@@ -7,26 +7,31 @@ worker_connections 8192;
 }
 
 stream {
+
     upstream rancher_servers_http {
         least_conn;
-        {% for host in groups['ranchernodes'] %}
-        server {{ hostvars[host].ansible_host }}:80 max_fails=3 fail_timeout=5s;
-        {% endfor %}
+        {% for host in groups['ranchernodes'] -%}
+        server {{ hostvars[host].ansible_host }}:80 max_fails={{ load_balancers_backend_nginx_max_fails }} fail_timeout={{ load_balancers_backend_nginx_fail_timeout }};
+        {% endfor -%}
     }
     server {
-    listen 80;
-    proxy_pass rancher_servers_http;
+        listen 80;
+        proxy_pass rancher_servers_http;
+        proxy_timeout {{ load_balancers_backend_nginx_proxy_timeout }};
+        proxy_connect_timeout {{ load_balancers_backend_nginx_proxy_connect_timeout }};
     }
 
     upstream rancher_servers_https {
         least_conn;
-        {% for host in groups['ranchernodes'] %}
-        server {{ hostvars[host].ansible_host }}:443 max_fails=3 fail_timeout=5s;
-        {% endfor %}
+        {% for host in groups['ranchernodes'] -%}
+        server {{ hostvars[host].ansible_host }}:443 max_fails={{ load_balancers_backend_nginx_max_fails }} fail_timeout={{ load_balancers_backend_nginx_fail_timeout }};
+        {% endfor -%}
     }
     server {
         listen     443;
         proxy_pass rancher_servers_https;
+        proxy_timeout {{ load_balancers_backend_nginx_proxy_timeout }};
+        proxy_connect_timeout {{ load_balancers_backend_nginx_proxy_connect_timeout }};
     }
 
 }

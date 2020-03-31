@@ -13,7 +13,36 @@
 # limitations under the License.
 ### 
 ---
-- include_tasks: firewall.yml
-- include_tasks: keepalived.yml
-- include_tasks: nginx.yml
+- name: Install epel repository
+  become: true
+  package:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - epel-release
+  when: ansible_os_family == "RedHat"
+
+- name: Install nginx
+  become: true
+  package:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - nginx
+
+- name: Update nginx.conf
+  become: true
+  template:
+     src: nginx.conf.{{ ansible_distribution_file_variety | lower }}.j2
+     dest: /etc/nginx/nginx.conf
+  notify: Restart nginx
+
+- name: start nginx
+  become: true
+  systemd:
+    name: nginx
+    enabled: yes
+    state: started
 
