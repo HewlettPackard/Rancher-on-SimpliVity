@@ -69,6 +69,6 @@
     systemd:
       name: keepalived
       enabled: yes
-      state: started
+      state: restarted
 
   when: loadbalancers.backend.vip is defined
