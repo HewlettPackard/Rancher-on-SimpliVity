@@ -4,8 +4,8 @@
 
 Before you attempt to run the playbooks to deploy the solution, make sure that you have fulfil the requirements:
 
-- Configure variables in `group_vars/all/vars`
-- Configure sensitive variables in `group_vars/all/vault`
+- Configure variables in `group_vars/all/vars.yml`
+- Configure sensitive variables in `group_vars/all/vault.yml`
 - Configure `hosts`
 - Make sure the Rancher URL (specified using the `rancher.url` variable) resolves to the IP address of the load balancer you configured in the hosts inventory. Instructions for configuring the DNS are specific to your DNS implementation and are not provided here.
 
@@ -25,6 +25,9 @@ $ cd ~/Rancher-on-SimpliVity
 $ ansible-playbook -i hosts playbooks/pre-checks.yml
 ```
 
+
+
+
 ## Download required software
 
 Once you have satisfied the prerequisites and configured all of the variables to match your environment,
@@ -34,6 +37,14 @@ prepare the staging area by running the `playbooks/getkits.yml` to download the 
 $ cd ~/Rancher-on-SimpliVity
 # ansible-playbook -i hosts playbooks/getkits.yml
 ```
+
+The follwing software is downloaded:
+
+- RKE (v1.0.4)
+- Rancher (v2.3.2)
+- Ubuntu OVA (18.04)
+- Kubectl (v1.17.2)
+- Helm (v3.1.1)
 
 ## Deploy Rancher
 
