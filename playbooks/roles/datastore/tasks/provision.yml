@@ -61,85 +61,91 @@
   delegate_to: localhost
   register: csi_datastore_specs
 
-# We need the cluster ID to create the datastore
-- name: Find the Cluster ID
-  uri:
-    url: "https://{{ ovc.ip }}/api/omnistack_clusters?name={{ simplivity_cluster }}"
-    method: GET
-    headers:
-        Content-Type: application/vnd.simplivity.v1+json
-        Authorization: Bearer {{ ovc.token }}
-    validate_certs: "{{ simplivity_validate_certs }}"
-  delegate_to: localhost
-  register: clusters
-
-# Fail if the cluster ID could not be found
-- fail: 
-    msg: "The cluster {{ simplivity_cluster }} was not found"
-  when : clusters.json.omnistack_clusters | count < 1
-
-# Verify that the backup policy exists
-- name: Find the Backup Policy ID
-  uri:
-    url: "https://{{ ovc.ip }}/api/policies?name={{ simplivity_backup_policy | urlencode() }}"
-    method: GET
-    headers:
-        Content-Type: application/vnd.simplivity.v1+json
-        Authorization: Bearer {{ ovc.token }}
-    validate_certs: "{{ simplivity_validate_certs }}"
-  delegate_to: localhost
-  register: policies
-
-- fail:
-    msg: "Cannot find SimpliVity Backup Policy {{ simplivity_backup_policy }}"
-  when: policies.json.count < 1
-
-#jinja2 s choking on numbers like number * 1024 * 1024 * 1024
-- name: Compute number of bytes
-  shell: |
-    echo $(( {{ simplivity_datastore_size }} * 1024 * 1024 * 1024 ))
-  changed_when: false
-  register: size
-
-# Create the Datastore if it does not already exist
-- name: Create the Datastore
-  uri:
-    url: "https://{{ ovc.ip }}/api/datastores"
-    validate_certs: "{{ simplivity_validate_certs }}"
-    headers:
-      Content-Type: application/vnd.simplivity.v1+json
-      Authorization: Bearer {{ ovc.token }}
-    method: POST
-    timeout: 50
-    body_format: json
-    body:
-      name: "{{ simplivity_datastore }}"
-      omnistack_cluster_id: "{{ clusters.json.omnistack_clusters[0].id }}"
-      policy_id: "{{ policies.json.policies[0].id }}"
-      size: "{{ size.stdout }}"
-    status_code: 202
-  delegate_to: localhost
-  register: task
-  when: csi_datastore_specs.json.count < 1
-
-# Wait for the successful completion of the task
-- name: Loop until task is finished
-  uri:
-    url: "https://{{ ovc.ip }}/api/tasks/{{ task.json.task.id }}"
-    headers:
-      Content-Type: application/vnd.simplivity.v1+json
-      Authorization: Bearer {{ ovc.token }}
-    method: GET
-    validate_certs: "{{ simplivity_validate_certs }}"
-  until: task_status.json.task.state == "COMPLETED"
-  retries: 10
-  delegate_to: localhost
-  register: task_status
-  when: csi_datastore_specs.json.count < 1
-
-# Set changed status
 - debug: 
-    msg: "Datastore {{ simplivity_datastore }} Created"
+    msg: "Datastore {{ simplivity_datastore }} Already Exists"
   changed_when: true
-  when: csi_datastore_specs.json.count < 1
+  when: csi_datastore_specs.json.count > 0
+
+# If the datastore does not exist, then create it
+- block:
+
+  # We need the cluster ID to create the datastore
+  - name: Find the Cluster ID
+    uri:
+      url: "https://{{ ovc.ip }}/api/omnistack_clusters?name={{ simplivity_cluster }}"
+      method: GET
+      headers:
+          Content-Type: application/vnd.simplivity.v1+json
+          Authorization: Bearer {{ ovc.token }}
+      validate_certs: "{{ simplivity_validate_certs }}"
+    delegate_to: localhost
+    register: clusters
+
+  # Fail if the cluster ID could not be found
+  - fail: 
+      msg: "The cluster {{ simplivity_cluster }} was not found"
+    when: clusters.json.omnistack_clusters | count < 1
+
+  # Verify that the backup policy exists
+  - name: Find the Backup Policy ID
+    uri:
+      url: "https://{{ ovc.ip }}/api/policies?name={{ simplivity_backup_policy | urlencode() }}"
+      method: GET
+      headers:
+          Content-Type: application/vnd.simplivity.v1+json
+          Authorization: Bearer {{ ovc.token }}
+      validate_certs: "{{ simplivity_validate_certs }}"
+    delegate_to: localhost
+    register: policies
+
+  - fail:
+      msg: "Cannot find SimpliVity Backup Policy {{ simplivity_backup_policy }}"
+    when: policies.json.count < 1
+
+  #jinja2 s choking on numbers like number * 1024 * 1024 * 1024
+  - name: Compute number of bytes
+    shell: |
+      echo $(( {{ simplivity_datastore_size }} * 1024 * 1024 * 1024 ))
+    changed_when: false
+    register: size
+
+  # Create the Datastore if it does not already exist
+  - name: Create the Datastore
+    uri:
+      url: "https://{{ ovc.ip }}/api/datastores"
+      validate_certs: "{{ simplivity_validate_certs }}"
+      headers:
+        Content-Type: application/vnd.simplivity.v1+json
+        Authorization: Bearer {{ ovc.token }}
+      method: POST
+      timeout: 50
+      body_format: json
+      body:
+        name: "{{ simplivity_datastore }}"
+        omnistack_cluster_id: "{{ clusters.json.omnistack_clusters[0].id }}"
+        policy_id: "{{ policies.json.policies[0].id }}"
+        size: "{{ size.stdout }}"
+      status_code: 202
+    delegate_to: localhost
+    register: task
+
+  # Wait for the successful completion of the task
+  - name: Loop until task is finished
+    uri:
+      url: "https://{{ ovc.ip }}/api/tasks/{{ task.json.task.id }}"
+      headers:
+        Content-Type: application/vnd.simplivity.v1+json
+        Authorization: Bearer {{ ovc.token }}
+      method: GET
+      validate_certs: "{{ simplivity_validate_certs }}"
+    until: task_status.json.task.state == "COMPLETED"
+    retries: 10
+    delegate_to: localhost
+    register: task_status
+
+  # Set changed status
+  - debug: 
+      msg: "Datastore {{ simplivity_datastore }} Created"
+    changed_when: true
   
+  when: csi_datastore_specs.json.count < 1
