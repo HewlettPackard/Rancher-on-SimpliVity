@@ -41,10 +41,10 @@
 
 #######################################################################
 #
-# Play: Deploy vSphere CSI Driver
+# Play: Deploy CSI Driver
 #
 #######################################################################
-- name: Deploy vSphere Cloud Native Storage (CSI)
+- name: Deploy Cloud Native Storage (CSI)
   hosts: localhost
   gather_facts: no
   roles:
@@ -59,7 +59,7 @@
       provision: yes
     when: user_cluster.csi == true
 
-  - role: vsphere-csi
+  - role: csi
     vars:
       provision: yes
     when: user_cluster.csi == true

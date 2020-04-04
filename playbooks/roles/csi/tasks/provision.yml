@@ -14,13 +14,7 @@
 # limitations under the License.
 ### 
 ---
-- name: Install k8s module prereq
-  become: true
-  package:
-    name: python3-openshift
-    state: present
-
-- name: Get Datastore Info
+- name: Get CSI Datastore Info
   vmware_datastore_info:
     hostname: '{{ vcenter_hostname }}'
     username: '{{ vcenter_username }}'
@@ -31,7 +25,7 @@
   delegate_to: localhost
   register: csi_datastore_info
 
-- name: Create vSphere CPI Secret
+- name: Create CSI Secret
   k8s:
     state: present
     definition:
@@ -43,7 +37,7 @@
         name: vsphere-config-secret
         namespace: kube-system
 
-- name: Deploy Cloud Manager Config Map
+- name: Create CSI Config Map
   k8s:
     state: present
     definition:
@@ -68,22 +62,25 @@
 - name: Create Cloud Controller Manager Daemon Set
   k8s:
     state: present
-    definition: "{{ lookup('file','vsphere-cloud-controller-manager-ds.rancher.yaml') }}"
+    definition: "{{ lookup('file','cloud-controller-manager-ds.rancher.yaml') }}"
 
-- name: Deploy Controller RBAC
+- name: Create Controller RBAC
   k8s:
     state: present
     definition: "{{ lookup('file','vsphere-csi-controller-rbac.yaml') }}"
+  when: csi_driver == "vsphere"
 
 - name: Create Controller StatefulSet and Driver
   k8s:
     state: present
     definition: "{{ lookup('file','vsphere-csi-controller-ss.yaml') }}"
+  when: csi_driver == "vsphere"
 
-- name: Deploy CSI DaemonSet
+- name: Create CSI DaemonSet
   k8s:
     state: present
     definition: "{{ lookup('file','vsphere-csi-node-ds.yaml') }}"
+  when: csi_driver == "vsphere"
 
 - name: See if the CSI Storage Class exists
   k8s_info:
@@ -95,7 +92,7 @@
     msg: "Storage Class '{{ csi_storageclass_name }}' already exists."
   when: sc.resources | count > 0
 
-- name: Generate the Storage Class
+- name: Create CSI Storage Class
   k8s:
     state: present
     definition: "{{ lookup('template','csi-sc.yml.j2') }}"

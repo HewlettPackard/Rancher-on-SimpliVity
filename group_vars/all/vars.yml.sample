@@ -65,6 +65,7 @@ ssh_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUAPiKRsniRNFeAsbwxY1/dfAG6Bhhsc
 csi_datastore_name: hpecsi
 csi_storageclass_name: csivols
 csi_datastore_size: 20
+csi_driver: vsphere
 
 
 #
