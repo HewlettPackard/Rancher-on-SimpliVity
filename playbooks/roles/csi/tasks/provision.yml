@@ -50,6 +50,9 @@
 
 - local_action: copy content={{ kubeconfig.json.config }} dest={{ install_dir }}/kube_config.{{ userclusterID }}
 
+- debug:
+    msg: "User Cluster kube_config file: {{ install_dir }}/kube_config.{{ userclusterID }}"
+
 - name: Create CSI Secret
   k8s:
     state: present
