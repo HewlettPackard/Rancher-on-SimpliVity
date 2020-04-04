@@ -14,5 +14,6 @@
 # limitations under the License.
 ### 
 ---
+- include_tasks: token.yml
 - include_tasks: provision.yml
   when: provision is defined
