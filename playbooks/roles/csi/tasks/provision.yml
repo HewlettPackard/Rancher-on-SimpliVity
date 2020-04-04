@@ -48,10 +48,13 @@
     - 200
   register: kubeconfig
 
-- local_action: copy content={{ kubeconfig.json.config }} dest={{ install_dir }}/kube_config.{{ userclusterID }}
+- set_fact:
+    uc_kube_config_file: "{{ install_dir }}/kube_config.{{ user_cluster.name }}.{{ userclusterID }}"
 
 - debug:
-    msg: "User Cluster kube_config file: {{ install_dir }}/kube_config.{{ userclusterID }}"
+    msg: "User Cluster kube_config file: {{ uc_kube_config_file }}"
+
+- local_action: copy content={{ kubeconfig.json.config }} dest={{ uc_kube_config_file }}
 
 - name: Create CSI Secret
   k8s:
@@ -65,7 +68,7 @@
         name: vsphere-config-secret
         namespace: kube-system
   environment:
-    KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
+    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: Create CSI Config Map
   k8s:
@@ -79,28 +82,28 @@
       data:
         vsphere.conf: "{{ lookup('template', 'csi-vsphere.conf.j2') }}"
   environment:
-    KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
+    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: Create Cloud Controller Manager Roles
   k8s:
     state: present
     definition: "{{ lookup('file','cloud-controller-manager-roles.yaml') }}"
   environment:
-    KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
+    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: Create Cloud Controller Manager Role Bindings
   k8s:
     state: present
     definition: "{{ lookup('file','cloud-controller-manager-role-bindings.yaml') }}"
   environment:
-    KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
+    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: Create Cloud Controller Manager Daemon Set
   k8s:
     state: present
     definition: "{{ lookup('file','cloud-controller-manager-ds.rancher.yaml') }}"
   environment:
-    KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
+    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: Set variables specific to vSphere CSI Driver
   set_fact:
@@ -115,21 +118,21 @@
     state: present
     definition: "{{ lookup('file','{{ csi_controller_rbac }}') }}"
   environment:
-    KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
+    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: Create Controller StatefulSet and Driver
   k8s:
     state: present
     definition: "{{ lookup('file','{{ csi_controller_ss }}') }}"
   environment:
-    KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
+    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: Create CSI DaemonSet
   k8s:
     state: present
     definition: "{{ lookup('file','{{ csi_controller_node_ds }}') }}"
   environment:
-    KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
+    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: See if the CSI Storage Class exists
   k8s_info:
@@ -137,7 +140,7 @@
     name: "{{ csi_storageclass_name }}"
   register: sc
   environment:
-    KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
+    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - debug:
     msg: "Storage Class '{{ csi_storageclass_name }}' already exists."
@@ -161,7 +164,7 @@
       state: present
       definition: "{{ lookup('template','csi-sc.yml.j2') }}"
     environment:
-      KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
+      KUBECONFIG: "{{ uc_kube_config_file }}"
 
   - debug:
       msg: "Storage Class '{{ csi_storageclass_name }}' Created"
