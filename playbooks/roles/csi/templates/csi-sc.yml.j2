@@ -6,6 +6,6 @@ metadata:
   name: "{{ csi_storageclass_name }}"
 parameters:
   datastoreurl: "{{ csi_datastore_info.datastores[0].url }}"
-provisioner: csi.vsphere.vmware.com
+provisioner: "{{ csi_provisioner }}"
 reclaimPolicy: Delete
 volumeBindingMode: Immediate

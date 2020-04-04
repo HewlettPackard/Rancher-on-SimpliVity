@@ -99,11 +99,12 @@
   environment:
     KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
 
-- name: Set CSI variables for vSphere CSI Driver
+- name: Set variables specific to vSphere CSI Driver
   set_fact:
     csi_controller_rbac: "vsphere-csi-controller-rbac.yaml"
     csi_controller_ss: "vsphere-csi-controller-ss.yaml"
     csi_controller_node_ds: "vsphere-csi-node-ds.yaml"
+    csi_provisioner: "csi.vsphere.vmware.com"
   when: csi_driver == "vsphere"
 
 - name: Create Controller RBAC
