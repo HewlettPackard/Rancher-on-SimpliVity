@@ -99,39 +99,33 @@
   environment:
     KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
 
-#
-# Deploy CSI Driver
-#
-- block:
-
-  - name: Set CSI variables for vSphere CSI Driver
-    set_fact:
-      csi_controller_rbac: "vsphere-csi-controller-rbac.yaml"
-      csi_controller_ss: "vsphere-csi-controller-ss.yaml"
-      csi_controller_node_ds: "vsphere-csi-node-ds.yaml"
-
-  - name: Create Controller RBAC
-    k8s:
-      state: present
-      definition: "{{ lookup('file','{{ csi_controller_rbac }}') }}"
-    environment:
-      KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
-
-  - name: Create Controller StatefulSet and Driver
-    k8s:
-      state: present
-      definition: "{{ lookup('file','{{ csi_controller_ss }}') }}"
-    environment:
-      KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
-
-  - name: Create CSI DaemonSet
-    k8s:
-      state: present
-      definition: "{{ lookup('file','{{ csi_controller_node_ds }}') }}"
-    environment:
-      KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
-
+- name: Set CSI variables for vSphere CSI Driver
+  set_fact:
+    csi_controller_rbac: "vsphere-csi-controller-rbac.yaml"
+    csi_controller_ss: "vsphere-csi-controller-ss.yaml"
+    csi_controller_node_ds: "vsphere-csi-node-ds.yaml"
   when: csi_driver == "vsphere"
+
+- name: Create Controller RBAC
+  k8s:
+    state: present
+    definition: "{{ lookup('file','{{ csi_controller_rbac }}') }}"
+  environment:
+    KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
+
+- name: Create Controller StatefulSet and Driver
+  k8s:
+    state: present
+    definition: "{{ lookup('file','{{ csi_controller_ss }}') }}"
+  environment:
+    KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
+
+- name: Create CSI DaemonSet
+  k8s:
+    state: present
+    definition: "{{ lookup('file','{{ csi_controller_node_ds }}') }}"
+  environment:
+    KUBECONFIG: "{{ install_dir }}/kube_config.{{ userclusterID }}"
 
 - name: See if the CSI Storage Class exists
   k8s_info:
