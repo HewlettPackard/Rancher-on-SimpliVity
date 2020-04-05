@@ -13,13 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###
-
 ---
-- import_playbook: playbooks/prepare.yml
-- import_playbook: playbooks/provision.yml
-- import_playbook: playbooks/configure.yml
-- import_playbook: playbooks/ranchercluster.yml
-- import_playbook: playbooks/rancherserver.yml
-- import_playbook: playbooks/1stlogin.yml
-- import_playbook: playbooks/ucluster.yml
-- import_playbook: playbooks/csi.yml
+vcenter_hostname: 'vcenter.example.com'
+vcenter_username: 'Administrator@vsphere.local'
+vcenter_password: 'YourPassword'
+vcenter_validate_certs: false
+esx_supported:
+  version: "6.7.0"
+  build: 14320388

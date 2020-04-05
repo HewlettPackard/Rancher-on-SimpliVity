@@ -1,0 +1,172 @@
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+### 
+---
+- name: Retrieve User Cluster ID
+  uri:
+    url:  "{{ rancher.url }}/{{ rancher.apiversion }}/clusters?name={{ user_cluster.name }}"
+    validate_certs: "{{ rancher.validate_certs }}"
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Authorization: Bearer {{ bearer_token }}
+    method: GET
+    timeout: 4
+    status_code:
+    - 200
+  register: usercluster
+
+- set_fact:
+    userclusterID: "{{ usercluster.json.data[0].id }}"
+
+- debug:
+    msg: "User Cluster ID: {{ userclusterID }}"
+
+- name: Retrieve Kubernetes Configuration for User Cluster
+  uri:
+    url:  "{{ rancher.url }}/{{ rancher.apiversion }}/clusters/{{ userclusterID }}?action=generateKubeconfig"
+    validate_certs: "{{ rancher.validate_certs }}"
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Authorization: Bearer {{ bearer_token }}
+    method: POST
+    timeout: 4
+    status_code:
+    - 200
+  register: kubeconfig
+
+- set_fact:
+    uc_kube_config_file: "{{ install_dir }}/kube_config.{{ user_cluster.name }}.{{ userclusterID }}"
+
+- debug:
+    msg: "User Cluster kube_config file: {{ uc_kube_config_file }}"
+
+- local_action: copy content={{ kubeconfig.json.config }} dest={{ uc_kube_config_file }}
+
+- name: Create CSI Secret
+  k8s:
+    state: present
+    definition:
+      kind: Secret
+      apiVersion: v1
+      data:
+        csi-vsphere.conf: "{{ lookup('template', 'csi-secret.conf.j2') | b64encode }}"
+      metadata:
+        name: vsphere-config-secret
+        namespace: kube-system
+  environment:
+    KUBECONFIG: "{{ uc_kube_config_file }}"
+
+- name: Create CSI Config Map
+  k8s:
+    state: present
+    definition:
+      kind: ConfigMap
+      apiVersion: v1
+      metadata:
+        name: cloud-config
+        namespace: kube-system
+      data:
+        vsphere.conf: "{{ lookup('template', 'csi-vsphere.conf.j2') }}"
+  environment:
+    KUBECONFIG: "{{ uc_kube_config_file }}"
+
+- name: Create Cloud Controller Manager Roles
+  k8s:
+    state: present
+    definition: "{{ lookup('file','cloud-controller-manager-roles.yaml') }}"
+  environment:
+    KUBECONFIG: "{{ uc_kube_config_file }}"
+
+- name: Create Cloud Controller Manager Role Bindings
+  k8s:
+    state: present
+    definition: "{{ lookup('file','cloud-controller-manager-role-bindings.yaml') }}"
+  environment:
+    KUBECONFIG: "{{ uc_kube_config_file }}"
+
+- name: Create Cloud Controller Manager Daemon Set
+  k8s:
+    state: present
+    definition: "{{ lookup('file','cloud-controller-manager-ds.rancher.yaml') }}"
+  environment:
+    KUBECONFIG: "{{ uc_kube_config_file }}"
+
+- name: Set variables specific to vSphere CSI Driver
+  set_fact:
+    csi_controller_rbac: "vsphere-csi-controller-rbac.yaml"
+    csi_controller_ss: "vsphere-csi-controller-ss.yaml"
+    csi_controller_node_ds: "vsphere-csi-node-ds.yaml"
+    csi_provisioner: "csi.vsphere.vmware.com"
+  when: csi_driver == "vsphere"
+
+- name: Create Controller RBAC
+  k8s:
+    state: present
+    definition: "{{ lookup('file','{{ csi_controller_rbac }}') }}"
+  environment:
+    KUBECONFIG: "{{ uc_kube_config_file }}"
+
+- name: Create Controller StatefulSet and Driver
+  k8s:
+    state: present
+    definition: "{{ lookup('file','{{ csi_controller_ss }}') }}"
+  environment:
+    KUBECONFIG: "{{ uc_kube_config_file }}"
+
+- name: Create CSI DaemonSet
+  k8s:
+    state: present
+    definition: "{{ lookup('file','{{ csi_controller_node_ds }}') }}"
+  environment:
+    KUBECONFIG: "{{ uc_kube_config_file }}"
+
+- name: See if the CSI Storage Class exists
+  k8s_info:
+    kind: StorageClass
+    name: "{{ csi_storageclass_name }}"
+  register: sc
+  environment:
+    KUBECONFIG: "{{ uc_kube_config_file }}"
+
+- debug:
+    msg: "Storage Class '{{ csi_storageclass_name }}' already exists."
+  when: sc.resources | count > 0
+
+- block:
+
+  - name: Get CSI Datastore Info
+    vmware_datastore_info:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      datacenter_name: '{{ datacenter }}'
+      name: "{{ csi_datastore_name | default(datastores[0]) }}"
+      validate_certs:  "{{ vcenter_validate_certs }}"
+    delegate_to: localhost
+    register: csi_datastore_info
+
+  - name: Create CSI Storage Class
+    k8s:
+      state: present
+      definition: "{{ lookup('template','csi-sc.yml.j2') }}"
+    environment:
+      KUBECONFIG: "{{ uc_kube_config_file }}"
+
+  - debug:
+      msg: "Storage Class '{{ csi_storageclass_name }}' Created"
+
+  when: sc.resources | count < 1

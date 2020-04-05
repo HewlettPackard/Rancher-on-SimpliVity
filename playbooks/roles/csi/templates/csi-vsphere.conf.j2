@@ -1,0 +1,9 @@
+[Global]
+insecure-flag = "{{ not vcenter_validate_certs }}"
+[VirtualCenter "{{ vcenter_hostname }}"]
+user = "{{ vcenter_username }}"
+password = "{{ vcenter_password }}"
+port = "443"
+datacenters = "{{ datacenter }}"
+[Network]
+public-network = "{{ vm_portgroup }}"

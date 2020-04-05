@@ -200,12 +200,11 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    hpe-rke2      ansible_host=10.15.152.22
    hpe-rke3      ansible_host=10.15.152.23
    ```
-   
 
    Finally, configure the `user_cluster` variable. To some extent, you can configure the user cluster that the playbooks will deploy. This is achieved by configuring the variable `user_cluster` in `group_vars/all/vars.yml`.  An example is provided below:
 
-```
-user_cluster:
+   ```
+   user_cluster:
    # vm_template: hpe-ubuntu-tpl     # an existing VM template, admin template by default
      name: api                       # name of the user cluster
      csi: false                      # true to be done
@@ -234,10 +233,27 @@ user_cluster:
           disk_size: 40000
           memory_size: 4096
    ```
-   
+
    You may create as many `pools` as you want, but at least you will need 1 master node, one etcd node and one worker node (no checking done). In the example above, we have two pools, the `master-pool`  contains one node (`count: 1`) which is running etcd as well as the Kubernetes "master" pieces. The second pool (`worker-pool`)  deploys two nodes (`counts: 2`) which are only worker nodes. Each pool leverages a Rancher node template (`node_template`).  All Rancher node templates inside the user cluster are based on the same VMWare VM template which by default is the VM template which was used to deploy the Rancher Cluster. It is possible to specify a different template but this template will have to be prepared in vCenter manually. Each node template specifies the amount of RAM (in GBs), CPUs and disk (in GBs) wanted.
 
    The `hostPrefix` within each pool specifies how the VMs in a pool should be named. (host prefix + sequence number)
+
+   ### vSphere storage Container Storage Interface (CSI) support
+
+   The `user_cluster.csi` variable controls whether the provisioned user cluster will include support for a CSI storage plugin. When set to `true` the cluster will deploy with CSI storage support enabled. At this time only the vSphere CSI driver is supported. Future versions of this solution will include support for other CSI plugins.
+
+   **Note:** CSI storage drivers require that the VM template used to create the user cluster be configured with **VM Hardware Compatibility version 15**. At present the Ubuntu cloud images use hardware compatibility version 10, which makes them incompatible with the CSI storage driver. Instructions for manually creating an Ubuntu 18.04 VM with hardware compatibility version 15 will be included in the accompanying documentation. If you will be using a different template for the user cluster vs. the RKE cluster, be sure to set the `user_cluster.vm_template` variable to the appropriate VM template that uses hardware compatibility 15.
+
+   The following variables control the CSI storage deployment:
+
+   ```
+   csi_datastore_name: hpecsi
+   csi_storageclass_name: csivols
+   csi_datastore_size: 512
+   csi_driver: vsphere
+   ```
+
+   The `csi_datastore_name` variable defines the name of the vSphere datastore where CSI volumes will be created by the CSI driver. If this datastore does not exist it will be created by the playbooks. The `csi_storageclass_name` variable defines the name of the Kubernetes storage class that will be created in the user cluster associated with the vSphere CSI driver. PVCs and PVs using this storage class will trigger vSphere to create the underlying volumes. The `csi_datastore_size` variable determines the size of the datastore in GiB that will hold the CSI volumes. The `csi_driver` variable determines which CSI driver will be deployed. At this time the only supported value is `vsphere`, though this will change in future releases as other CSI drivers are supported.
 
 3. copy the file `group_vars/all/vault.sample` to `group_vars/all/vault.yml` and edit this new file. Specify the password for the vCenter admin account and the password you want to configure for the Rancher Server admin account.
 
@@ -248,7 +264,7 @@ user_cluster:
 
 4. copy the `hosts.sample` file to `hosts`. Edit the file`hosts` and assign IP addresses to the machines in this inventory with IP addresses taken from the `rancher_subnet` scope (see above) .  The `rancher_subnet` scope provided with the file `group_vars/all/vars.yml.sample` specifies 10.15.152.0/24 and hence the IP addresses configured in `hosts.sample` file are taken from this pool. If you need to change the `rancher_subnet` scope, make sure you change the IP addresses in the `hosts` inventory file as well.
 
-5. make sure the Rancher url (`rancher.url`) resolves to the IP address of the load balancer you configured in the `hosts` inventory. Instructions for configuring the DNS are specific to your DNS implementation and are not provided here. 
+5. make sure the Rancher url (`rancher.url`) resolves to the IP address of the load balancer you configured in the `hosts` inventory. Instructions for configuring the DNS are specific to your DNS implementation and are not provided here.
 
 6. Prepare the staging area (download the kits)
 
@@ -258,9 +274,9 @@ user_cluster:
 
 7. (Optional) Validate configuration parameters via the `pre-checks.yml` playbook. The playbook attempts to verify that the configuration parameters defined in the `group_vars/all/vars.yml` and `group_vars/all/vault.yml` files contain appropriate values. It validates access to the `vCenter` instance hosting the SimpliVity cluster and verifies the requested `datacenter` and `vm_portgroup` exist. It ensures the configured `DNS` and `NTP` servers are valid. It also attempts to ensure the hostnames and IP addresses that will be used when creating the RKE admin cluster (defined in the `hosts.yml` file) are not already being used elsewhere in the environment.
 
-```
+   ```
    # ansible-playbook -i hosts playbooks/pre-checks.yml
-```
+   ```
 
 8. Deploy
 
@@ -270,9 +286,9 @@ user_cluster:
 
    **Note**: You don't have to create a VM template! (for now)
 
-   # What is deployed
+# What is deployed
 
-   The playbook `site.yml` does the following:
+The playbook `site.yml` does the following:
 
    - installs the required packages on the Ansible box
    - verifies that the required files are found in the staging area
@@ -285,18 +301,19 @@ user_cluster:
    - deploys the Rancher Server on top of the Rancher Cluster
    - performs a number of first time login  operations including changing the admin password of the Rancher server and creating an API token
    - deploys the user cluster.
+
 # Access Rancher Server
 
 You access your rancher server by browsing to the url which is specified by the variable `rancher.url`  (see in `group_vars/all/vars.yml` the `rancher` variable). This is https://rancher.hpe.org in the example below. 
 
 ```
 rancher:
-     url: https://rancher.hpe.org  
-     validate_certs: False    
-     apiversion: v3  
+  url: https://rancher.hpe.org
+  validate_certs: False
+  apiversion: v3
          :   :
-
 ```
+
 The password for the admin account is the password you configured in `group_vars/all/vault.yml`.
 
 # Optional Post-Installation Features
@@ -335,15 +352,12 @@ Access the Rancher GUI and access the `Security -> Authentication` menu option t
 
 # Other Features (not ready for prime-time)
 
-   - Deployment of a user cluster with CPI / CSI (VMware drivers) is in progress
-     - final steps manual for now (deploy cloud provider driver and CSI driver)
      - need to address the issue with the name of the network interface (see Known Issues)
 
   
 
    # Known issues / Work in progress
 
-By default, `getkits.yml` will pull the Ubuntu 18.04 cloud image (OVF format) but this file deploys a VM at h/w revision 10 and CPI/CSI requires a rev 15 VM
+By default, `getkits.yml` will pull the Ubuntu 18.04 cloud image (OVF format) but this file deploys a VM at h/w revision 10 and CPI/CSI requires a rev 15 VM.
 
 Deployment of the Rancher Cluster fails occasionally also the cluster seems to be operational after the playbook is finished (according to `kubectl get nodes`)
-

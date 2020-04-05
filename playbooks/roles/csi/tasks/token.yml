@@ -1,3 +1,4 @@
+
 ###
 # Copyright (2020) Hewlett Packard Enterprise Development LP
 #
@@ -15,11 +16,12 @@
 ###
 
 ---
-- import_playbook: playbooks/prepare.yml
-- import_playbook: playbooks/provision.yml
-- import_playbook: playbooks/configure.yml
-- import_playbook: playbooks/ranchercluster.yml
-- import_playbook: playbooks/rancherserver.yml
-- import_playbook: playbooks/1stlogin.yml
-- import_playbook: playbooks/ucluster.yml
-- import_playbook: playbooks/csi.yml
+
+- name: Verify presence of Bearer token
+  stat:
+    path: "{{ install_dir }}/rancher-token"
+  register: token_file
+- fail: 
+    msg: "Cannot find the file {{ install_dir }}/rancher-token. Did you run 1stlogin.yml ?"
+  when: not token_file.stat.exists
+- include_vars: "{{ install_dir }}/rancher-token"
