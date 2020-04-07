@@ -1,6 +1,14 @@
-# Rancher configuration
+# Admin cluster and Rancher server configuration
 
-Rancher-specific configuration is performed using the `rancher` dictionary element in the `group_vars/all/vars.yml` file:
+The playbooks deploy an admin cluster and a separate user cluster. The user cluster
+is deployed from the Rancher server installed on the admin cluster and the configuration for the user cluster is
+documented [here](rancher-user-config).
+
+
+The nodes in the admin cluster are determined by the
+entries in the `hosts` file and are provisioned by the playbooks based on the configuration in this section.
+
+Rancher configuration is specified using the `rancher` dictionary element in the `group_vars/all/vars.yml` file:
 
 
 |Variable|File|Description|
@@ -27,45 +35,9 @@ General configuration variables are shown in the table below:
 
 |Variable|File|Description|
 |:-------|:---|:----------|
-|`cluster_name`|group_vars/all/vars.yml|Name of the K8S Cluster|
+|`cluster_name`|group_vars/all/vars.yml|Name of the K8S admin cluster|
 |`user_folder`|group_vars/all/vars.yml|Folder and pool name for the user cluster VMs|
-|`admin_folder`|group_vars/all/vars.yml|Folder and pool name for Rancher Cluster VMs and  Templates|
+|`admin_folder`|group_vars/all/vars.yml|Folder and pool name for Rancher admin cluster VMs and templates|
 |`admin_template`|group_vars/all/vars.yml|Name for the admin template|
-
-
-## User cluster
-
-<!-- TODO Rancher user cluster config -->
-
-```
-user_cluster:
-# vm_template: hpe-ubuntu-tpl     # an existing VM template, the admin template by default
-  name: api                       # name of the user cluster
-  csi: false                      # true to be done
-  vcenter_credsname: mycreds2     # only one vCenter cluster supported at this time
-  pools:
-   - name: master-pool
-     etcd: true
-     master: true
-     worker: false
-     count: 1
-     hostPrefix: hpe-mas
-     node_template:
-       name: master-node
-       cpu_count: 2
-       disk_size: 20000
-       memory_size: 8192
-   - name: worker-pool
-     etcd: false
-     master: false
-     worker: true
-     count: 2
-     hostPrefix: hpe-wrk
-     node_template:
-       name: worker-node
-       cpu_count: 2
-       disk_size: 40000
-       memory_size: 4096
-```
 
 

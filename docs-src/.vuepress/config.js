@@ -80,6 +80,7 @@ module.exports = {
           'config-core/simplivity-config',          
           'config-core/networking-config',              
           'config-core/rancher-config',
+          'config-core/rancher-user-config',
           'config-core/lbs-config.md',
           'config-core/group-vars',
           'config-core/edit-vault',
@@ -89,9 +90,12 @@ module.exports = {
         ]
       },
       {
-        title: 'Overview of the playbooks',
+        title: 'Running the playbooks',
         children: [
-          'playbooks/playbooks-overview',
+          'playbooks/playbooks-intro',
+          'playbooks/prerequisites',
+          'playbooks/pre-deployment-validation',
+          'playbooks/download-kits',
           'playbooks/initial-deployment',
           'playbooks/redeploy'
         ]
