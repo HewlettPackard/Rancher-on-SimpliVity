@@ -92,6 +92,9 @@ module.exports = {
         title: 'Overview of the playbooks',
         children: [
           'playbooks/playbooks-overview',
+          'playbooks/prerequisites',
+          'playbooks/pre-deployment-validation',
+          'playbooks/download-kits',
           'playbooks/initial-deployment',
           'playbooks/redeploy'
         ]
