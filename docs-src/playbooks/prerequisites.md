@@ -1,4 +1,4 @@
-## Prerequisites
+# Prerequisites
 
 Before you attempt to run the playbooks to deploy the solution, make sure that you have fulfil the requirements:
 
