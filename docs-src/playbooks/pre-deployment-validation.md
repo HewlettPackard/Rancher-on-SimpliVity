@@ -12,3 +12,14 @@ elsewhere in the environment.
 $ cd ~/Rancher-on-SimpliVity
 $ ansible-playbook -i hosts playbooks/pre-checks.yml
 ```
+
+
+The playbook performs the following checks:
+
+- Test reachability to vCenter host
+- Verify vCenter credentials
+- Verify existence of datacenter
+- Verify existence of portgroup
+- Verify IP addresses for RKE admin cluster are not in use
+- Verify DNS server(s)
+- Verify NTP server(s)
