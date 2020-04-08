@@ -1,6 +1,6 @@
-# Initial cluster deployment
+# Initial deployment
 
-## Deploy Rancher
+## Run site.yml
 
 Run the
 playbook `site.yml` to perform the initial admin and user cluster deployment:
@@ -71,7 +71,7 @@ The `provision` stage performs the following tasks:
 
 The `configure` stage configures the admin server VMs, DHCP VM and loadbalancer VMs. 
 
-- Create DRS anti-affinity rule for Rancher admin server VMs
+- Create DRS anti-affinity rules for Rancher admin server VMs and load balancer VMs
 - Configure the Rancher admin server VMs
   - Install required packages, configure firewall and open ports
   - Install and configure Docker

@@ -10,6 +10,8 @@ for `rancher.hostname` and  `rancher.url` variables should resolve to the addres
 If you configure a single load balancer, you don't need a floating IP and the `rancher.hostname` should resolve
 to the IP of the standalone load balancer.
 
+The `admin-template` is used when provisioning the load balancer VMs.
+
 ## Deploying two load balancers
 
 With this option, two load balancers are deployed in an active-active configuration to provide highly-available access.

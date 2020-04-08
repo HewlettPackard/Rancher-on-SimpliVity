@@ -36,8 +36,10 @@ General configuration variables are shown in the table below:
 |Variable|File|Description|
 |:-------|:---|:----------|
 |`cluster_name`|group_vars/all/vars.yml|Name of the K8S admin cluster|
-|`user_folder`|group_vars/all/vars.yml|Folder and pool name for the user cluster VMs|
 |`admin_folder`|group_vars/all/vars.yml|Folder and pool name for Rancher admin cluster VMs and templates|
 |`admin_template`|group_vars/all/vars.yml|Name for the admin template|
 
 
+If the `admin_template` already exists, it is used when provisioning the VMs for the admin cluster and
+the load balancers. Otherwise, this template is created from the default Ubuntu OVA
+specified in the file `playbooks/roles/kits/tasks/main.yml` and then used when provisioning the VMs.
