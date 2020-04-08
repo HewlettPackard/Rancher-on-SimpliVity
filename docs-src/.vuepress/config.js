@@ -108,6 +108,13 @@ module.exports = {
           '/post-deploy/first-login',
           '/post-deploy/auth-active-directory'
         ]
+      },
+      {
+        title: 'Appendices',
+        collapsable: true,
+        children: [
+          '/appendices/appendixa'
+        ]
       }      
     ]
   }
