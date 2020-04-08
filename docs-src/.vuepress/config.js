@@ -105,7 +105,8 @@ module.exports = {
         collapsable: true,
         children: [
           '/post-deploy/post-deploy-intro',
-          '/post-deploy/first-login'
+          '/post-deploy/first-login',
+          '/post-deploy/auth-active-directory'
         ]
       }      
     ]
