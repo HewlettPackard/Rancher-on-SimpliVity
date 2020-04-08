@@ -1,18 +1,21 @@
 # Rancher user cluster configuration
 
 <!-- TODO Rancher user cluster config -->
-
+Once the admin cluster has been deployed and Rancher server has been installed, the playbooks deploy a
+user cluster based on the following configuration.
 
 ## General config for user cluster
 
 |Variable|File|Description|
 |:-------|:---|:----------|
+|`user_folder`|group_vars/all/vars.yml|Folder and pool name for the user cluster VMs|
 |`user_cluster.name`|group_vars/all/vars.yml|The name of the user cluster|
 |`user_cluster.vcenter_credsname`|group_vars/all/vars.yml|The name given to the generated Cloud Credentials|
 
 
+<br><br>
 
-The following figure shows how to see the generated cloud credentials in the UI, accessed via your profile:
+The following figure shows the generated cloud credentials in the UI, accessed via your profile:
 
 !["Cloud credentials"][cloud-credentials-png] 
 
@@ -22,7 +25,9 @@ The following figure shows how to see the generated cloud credentials in the UI,
 ## Configuration of pools
 
 `user_cluster.pools` is an array of pool configurations, with typically one pool specified for master nodes,
-and one pool for worker nodes. The configuration variables used within each pool definition is specified below.
+and one pool for worker nodes. Note that the cluster must have at least one master node, one etcd node and one worker node.
+
+The configuration variables used within each pool definition are detailed below.
 
 
 |Variable|File|Description|
@@ -37,7 +42,7 @@ and one pool for worker nodes. The configuration variables used within each pool
 
 ## Node templates
 
-For each pool, a node template can be specified, with specific resource configuration appropriate to the node type
+For each pool, a node template can be specified with resource configuration appropriate to the node type
 of the pool.
 
 |Variable|File|Description|
@@ -47,14 +52,22 @@ of the pool.
 |`node_template.disk_size`|group_vars/all/vars.yml|The size of disk in MB to create for the node|
 |`node_template.disk_size`|group_vars/all/vars.yml|The size of RAM in MB|
 
-The following figure shows how to see the generated node templates in the UI, accessed via your profile:
 
-!["Node templates"][node-templates-png] 
+<br><br>
+
+The following figure shows the generated node templates in the UI, accessed via your profile:
+
+!["Node templates"][node-templates-png]
 
 **Figure. Node templates**
 
 
 ## Sample user cluster definition
+
+The sample definition has one master pool, with a single node containing the master and etcd components. There is also
+a single worker pool, with 2 nodes that only run worker components. In this example, the VM template is not specified 
+so the default is to use the same template as that used for the Rancher admin cluster
+
 ```
 user_cluster:
 # vm_template: hpe-ubuntu-tpl     # an existing VM template, the admin template by default
