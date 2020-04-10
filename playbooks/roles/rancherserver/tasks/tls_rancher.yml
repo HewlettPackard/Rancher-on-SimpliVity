@@ -127,8 +127,10 @@
 - name: Install Rancher Server
   shell: |
     helm install rancher rancher-stable/rancher \
-      --namespace cattle-system \
+      --namespace cattle-system {{ switch_version }} \
       --values={{ install_dir }}/helm-values.txt
+  vars:
+    switch_version: "{% if rancherserver_version == 'latest' %}{% else %}--version={{ rancherserver_version }}{% endif %}"
   when: res.stdout_lines | count <= 0
   environment: "{{ env }}"
 

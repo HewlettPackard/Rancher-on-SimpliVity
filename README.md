@@ -84,13 +84,14 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
    If your installation is behind a corporate proxy, you will need to configure the `proxy` variable as indicated above. if you are not behind a proxy just rename the variable `proxy` to something else (eg `fooproxy`)
 
-   The next variable you need to configure is the variable `rancher`. The only change you should have to do are the `url` and the `hostname`. The url is the one used to access the Rancher Server.  The hostname is the FQDN of the Rancher Server. You must configure your DNS environment so that these names resolves to the IP address of the load balancer you configure in the Ansible inventory (see below) (these two names may not necessarily be the same)
+   The next variable you need to configure is the variable `rancher`. The only change you should have to do are the `url` and the `hostname`. The url is the one used to access the Rancher Server.  The hostname is the FQDN of the Rancher Server. You must configure your DNS environment so that these names resolves to the IP address of the load balancer you configure in the Ansible inventory (see below) (these two names may not necessarily be the same). Note that you can also specify the version of Rancher Server using `rancher.version`. These playbooks were last tested using version 2.3.x.
 
    ```
    rancher:
      url: https://rancher.hpe.org
      hostname: rancher.hpe.org
      validate_certs: False
+     version: 2.3.6
      apiversion: v3
      engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'
    ```
@@ -102,6 +103,7 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    rancher:
      url: https://rancher.hpe.org
      hostname: rancher.hpe.org
+     version: 2.3.6
      validate_certs: False
      apiversion: v3
      engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'
