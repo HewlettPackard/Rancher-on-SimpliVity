@@ -41,7 +41,7 @@ The main entry point `site.yml` is a wraper for a number of playbooks that perfo
 - playbooks/rancherserver.yml
 - playbooks/1stlogin.yml
 - playbooks/ucluster.yml
-
+- playbooks/csi.yml
 
 ### Prepare
 
@@ -113,3 +113,12 @@ In this stage, a number of first-time log in operations are performed, including
 - Deploy the user cluster with the Rancher API, using the node template and the configuration in the `cluster.yml.j2` Jinga template file.
 
 In the current release, the user cluster deploys with a `kubernetesVersion` of  `v1.17.2-rancher1-2`.
+
+
+### Enable CSI for user cluster
+
+- Create a datastore named `csi_datastore_name` of size `csi_datastore_size`
+- Retrieve the `kubeconfig` for user cluster and store it in installation directory
+- Configure vSphere CSI driver
+- Create storage class named `csi_storageclass_name`
+
