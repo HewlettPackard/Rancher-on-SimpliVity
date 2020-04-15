@@ -1,9 +1,12 @@
 # Container Storage Interface (CSI) configuration
 
-The playbooks can configure CSI storage for the user cluster, by setting the `user_cluster.csi` to `true`.
-In this release, only the vSphere CSI driver is supported, but future releases will support other drivers.
+The playbooks can configure CSI storage for the user cluster, by setting the `user_cluster.csi` variable to `true`.
+In this release, only the vSphere CSI driver is supported, but other drivers will be supported in future releases.
 
 ## User cluster configuration for CSI
+
+The variables for configuring CSI in a user cluster are detailed in the following table.
+
 
 |Variable|File|Description|
 |:-------|:---|:----------|
@@ -20,6 +23,7 @@ VM template that uses hardware compatibility 15. The playbooks expect this templ
 
 ## CSI configuration
 
+General configuation of the CSI driver is performed using the variables in the following table.
 
 |Variable|File|Description|
 |:-------|:---|:----------|

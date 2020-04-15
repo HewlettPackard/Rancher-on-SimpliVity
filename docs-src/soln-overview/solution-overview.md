@@ -1,13 +1,13 @@
 # Solution overview
 
 This Reference Configuration for Rancher on HPE SimpliVity is part of an overall
-solution from Hewlett Packard Enterprise... <!-- TODO Solution overview -->
+solution from Hewlett Packard Enterprise... TODO more <!-- TODO Solution overview -->
 
 **Kubernetes** is an orchestration system for managing container-based applications. Kubernetes empowers developers to
 utilize new architectures like microservices and serverless that require developers to think about application operations
 in a way they may not have before. These software architectures can blur the lines between traditional development and
 application operations.
 
-**Rancher** is ... <!-- TODO Rancher overview --> .
+**Rancher** is ... TODO more<!-- TODO Rancher overview --> .
 
-**HPE SimpliVity** is an enterprise-grade hyper-converged platform uniting best-in-class data services with the world's best-selling server.
+**HPE SimpliVity** is an enterprise-grade hyper-converged platform uniting best-in-class data services with the world's best-selling server. TODO more
