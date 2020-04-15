@@ -36,6 +36,7 @@
     url: "{{ item.url }}"
     dest: "{{ item.dest }}"
     mode: "{{ item.mode }}"
+    force: yes
   with_items:
   - url:  https://github.com/rancher/rke/releases/download/{{ kits_rke_version }}/rke_linux-amd64
     dest: "{{ kits_folder }}/rke"
