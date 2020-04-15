@@ -181,9 +181,9 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    #    vip: 10.15.152.9/24
    #    vrrp_router_id: 51
        nginx_max_fails: 1
-       nginx_fail_timeout: 5s
-       nginx_proxy_timeout: 3s
-       nginx_proxy_connect_timeout: 2s
+       nginx_fail_timeout: 10s
+       nginx_proxy_timeout: 10m
+       nginx_proxy_connect_timeout: 60s
    ```
    
    ```
