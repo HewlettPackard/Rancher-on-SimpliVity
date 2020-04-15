@@ -3,7 +3,7 @@
 You can use Rancher to deploy production-grade Kubernetes clusters from datacenter to cloud to the edge.
 Rancher also unites all your disparate deployments with centralized authentication, access control and observability.
 
-Yoiu can use Helm or the App Catalog to deploy and manage applications across any or all these environments, ensuring multi-cluster consistency with a single deployment.
+You can use Helm or the App Catalog to deploy and manage applications across any or all these environments, ensuring multi-cluster consistency with a single deployment.
 
 
 ## Terminology
