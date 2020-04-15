@@ -82,6 +82,7 @@ module.exports = {
           'config-core/rancher-config',
           'config-core/rancher-user-config',
           'config-core/lbs-config.md',
+          'config-core/csi-storage-config',
           'config-core/group-vars',
           'config-core/edit-vault',
           'config-core/vars-sample',

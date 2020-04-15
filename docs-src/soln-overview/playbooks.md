@@ -9,7 +9,7 @@ This document shows you how to:
 
 - Prepare the VM templates
 - Create the Fedora Ansible host
-- <!-- TODO more playbooks -->
+- TODO more <!-- TODO more playbooks -->
 
 
 Deploying HPE SimpliVity hardware is specific to your environment and is not covered in this document. 

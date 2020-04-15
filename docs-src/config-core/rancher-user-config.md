@@ -1,6 +1,5 @@
 # Rancher user cluster configuration
 
-<!-- TODO Rancher user cluster config -->
 Once the admin cluster has been deployed and Rancher server has been installed, the playbooks deploy a
 user cluster based on the following configuration.
 
@@ -11,13 +10,17 @@ user cluster based on the following configuration.
 |`user_folder`|group_vars/all/vars.yml|Folder and pool name for the user cluster VMs|
 |`user_cluster.name`|group_vars/all/vars.yml|The name of the user cluster|
 |`user_cluster.vcenter_credsname`|group_vars/all/vars.yml|The name given to the generated Cloud Credentials|
+|`user_cluster.csi`|group_vars/all/vars.yml|Boolean. Set to `true` to configure the CSI driver on the user cluster|
+|`user_cluster.vm_template`|group_vars/all/vars.yml|The VM template to use when creating the nodes in the suer cluster.<br>Defaults to the admin template if none specified.|
 
+
+For more information on configuring the CSI driver for a user cluster, see the section [Container Storage Interface (CSI) configuration](csi-storage-config).
 
 <br><br>
 
 The following figure shows the generated cloud credentials in the UI, accessed via your profile:
 
-!["Cloud credentials"][cloud-credentials-png] 
+!["Cloud credentials"][cloud-credentials-png]
 
 **Figure. Cloud credentials**
 
