@@ -12,9 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-### 
+###
 ---
-- include_tasks: install_govc.yml
-  when: install_govc
-- include_tasks: provision.yml
-  when: provision
+govc_file: /usr/local/bin/govc
+govc_insecure: true
+govc_version: v0.22.1

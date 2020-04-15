@@ -26,7 +26,6 @@
     name: "{{ inventory_hostname }}"
     state: poweredon
     wait_for_ip_address: true
-  register: res
 
 - name: cloud-init-status
   become: true
@@ -37,3 +36,41 @@
   retries: 20
   until: |
     res.stdout == "status: done"
+
+- name: Wait 10s for VM state to normalize
+  delegate_to: localhost
+  wait_for:
+    timeout=10
+
+- name: Attempt to detach the cloud-init CDROM from the VM
+  delegate_to: localhost
+  vmware_guest:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: "{{ vcenter_validate_certs }}"
+    name: "{{ inventory_hostname }}"
+    cdrom:
+      type: none
+    force: yes
+  failed_when: false
+  register: vm_specs
+
+- name: Find the name of the folder containing the VM files
+  set_fact:
+    fname: "{{ fpath.split(' ')[1] }}"
+  vars:
+    fpath: "{{ vm_specs.instance.hw_files[0].split('/')[0] }}"
+
+- name: Attempt to remove cloud-init ISO from the datastore
+  delegate_to: localhost
+  vsphere_file:
+    hostname: '{{ vcenter_hostname }}'
+    username: '{{ vcenter_username }}'
+    password: '{{ vcenter_password }}'
+    validate_certs: "{{ vcenter_validate_certs }}"
+    datacenter: "{{ datacenter }}"
+    datastore: "{{ datastore }}"
+    path: "{{ fname }}/cloud-init.iso"
+    state: absent
+  failed_when: false

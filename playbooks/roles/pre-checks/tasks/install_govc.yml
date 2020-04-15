@@ -14,35 +14,44 @@
 # limitations under the License.
 ###
 ---
-- set_fact:
-    env: {}
-  when: proxy is not defined
+- name: "Check if {{ govc_file }} exists"
+  stat:
+    path: "{{ govc_file }}"
+  register: stat_result
 
-- set_fact:
-    env:
-      http_proxy: "{{ proxy.http }}"
-      https_proxy: "{{ proxy.http }}"
-      no_proxy: "{{ proxy.except }}"
-  when: proxy is defined
+- block:
 
-- name: Download govc
-  get_url:
-    url: "{{ item.url }}"
-    dest: "{{ item.dest }}"
-    mode: "{{ item.mode }}"
-    force: yes
-  with_items:
-  - url:  https://github.com/vmware/govmomi/releases/download/{{ govc_version }}/govc_linux_amd64.gz
-    dest: "{{ kits_folder }}/govc.gz"
-    mode: 644
-  environment: "{{ env }}"
+  - set_fact:
+      env: {}
+    when: proxy is not defined
 
-- name: Extract govc cli
-  shell: gzip --force --decompress "{{ kits_folder }}/govc.gz"
+  - set_fact:
+      env:
+        http_proxy: "{{ proxy.http }}"
+        https_proxy: "{{ proxy.http }}"
+        no_proxy: "{{ proxy.except }}"
+    when: proxy is defined
 
-- name: "Copy govc cli tool to {{ govc_file }}"
-  become: true
-  copy:
-    src: "{{ kits_folder }}/govc"
-    dest: "{{ govc_file }}"
-    mode: u=rwx,g=rx,o=rx
+  - name: Download govc
+    get_url:
+      url: "{{ item.url }}"
+      dest: "{{ item.dest }}"
+      mode: "{{ item.mode }}"
+      force: yes
+    with_items:
+    - url:  https://github.com/vmware/govmomi/releases/download/{{ govc_version }}/govc_linux_amd64.gz
+      dest: "{{ kits_folder }}/govc.gz"
+      mode: 644
+    environment: "{{ env }}"
+
+  - name: Extract govc cli
+    shell: gzip --force --decompress "{{ kits_folder }}/govc.gz"
+
+  - name: "Copy govc cli tool to {{ govc_file }}"
+    become: true
+    copy:
+      src: "{{ kits_folder }}/govc"
+      dest: "{{ govc_file }}"
+      mode: u=rwx,g=rx,o=rx
+
+  when: stat_result.stat.exists == false

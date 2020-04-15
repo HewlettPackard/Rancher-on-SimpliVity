@@ -1,0 +1,6 @@
+{% if proxy is defined %}
+Acquire {
+ HTTP::Proxy "{{ proxy.http }}";
+ HTTPS::Proxy "{{ proxy.https }}";
+}
+{% endif %}
