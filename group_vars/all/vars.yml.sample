@@ -95,12 +95,12 @@ rancher:
 #  tls_privateCA: true                              # if using a private root CA, default is false (ie you use a public root CA)
 #  tls_cacert_file: /home/core/certs/cacerts.pem    # file containing the root CA certificate. Relevant if tls_privateCA is true
 #  tls_certchain_file: /home/core/certs/cachain.pem # file containing the server certificate followed by the intermediate CA certs (if any)
-#  tls_certkey_file: /home/core/certs/tlskey.pem    # file containing the private key fo the Rancher server 
+#  tls_certkey_file: /home/core/certs/tlskey.pem    # file containing the private key for the Rancher server
 
 user_cluster:
 # vm_template: hpe-ubuntu-tpl     # an existing VM template, the admin template by default
   name: api                       # name of the user cluster
-  csi: false                      # true to be done
+  csi: false
   vcenter_credsname: mycreds2     # only one vCenter cluster supported at this time
   pools:
    - name: master-pool
@@ -149,6 +149,6 @@ loadbalancers:
     vip: 10.15.152.9/24
     vrrp_router_id: 51
     nginx_max_fails: 1
-    nginx_fail_timeout: 5s
-    nginx_proxy_timeout: 3s
-    nginx_proxy_connect_timeout: 2s
+    nginx_fail_timeout: 10s
+    nginx_proxy_timeout: 10m
+    nginx_proxy_connect_timeout: 60s
