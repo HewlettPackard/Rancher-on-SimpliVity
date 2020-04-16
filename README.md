@@ -149,20 +149,23 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
    ```
    [local]
-   localhost     ansible_connection=local ansible_python_interpreter=/usr/bin/python3
+   localhost            ansible_connection=local ansible_python_interpreter=/usr/bin/python3
     
    [support]
-   hpe-support1  ansible_host=10.15.152.5
+   hpe-support1         ansible_host=10.15.152.5
     
    [loadbalancer]
-   hpe-lb1       ansible_host=10.15.152.11 api_int_preferred=true
-   hpe-lb2       ansible_host=10.15.152.12
+   hpe-lb1              ansible_host=10.15.152.11 api_int_preferred=true
+   hpe-lb2              ansible_host=10.15.152.12
     
    #machines hosting Rancher Cluster
    [ranchernodes]
-   hpe-rke1      ansible_host=10.15.152.21
-   hpe-rke2      ansible_host=10.15.152.22
-   hpe-rke3      ansible_host=10.15.152.23
+   hpe-rke1             ansible_host=10.15.152.21
+   hpe-rke2             ansible_host=10.15.152.22
+   hpe-rke3             ansible_host=10.15.152.23
+
+   [template]
+   hpe-ubuntu-tpl       ansible_host=10.15.152.30
    ```
 
    **note:** The first load balancer is tagged with the variable `api_int_preferred` which means when the two load balancers are up and running, this VM will host the configured VIP.
@@ -188,19 +191,22 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    
    ```
    [local]
-   localhost     ansible_connection=local ansible_python_interpreter=/usr/bin/python3
+   localhost            ansible_connection=local ansible_python_interpreter=/usr/bin/python3
     
    [support]
-   hpe-support1  ansible_host=10.15.152.5
+   hpe-support1         ansible_host=10.15.152.5
     
    [loadbalancer]
-   hpe-lb1       ansible_host=10.15.152.9
+   hpe-lb1              ansible_host=10.15.152.9
     
    #machines hosting Rancher Cluster
    [ranchernodes]
-   hpe-rke1      ansible_host=10.15.152.21
-   hpe-rke2      ansible_host=10.15.152.22
-   hpe-rke3      ansible_host=10.15.152.23
+   hpe-rke1             ansible_host=10.15.152.21
+   hpe-rke2             ansible_host=10.15.152.22
+   hpe-rke3             ansible_host=10.15.152.23
+
+   [template]
+   hpe-ubuntu-tpl       ansible_host=10.15.152.30
    ```
 
    Finally, configure the `user_cluster` variable. To some extent, you can configure the user cluster that the playbooks will deploy. This is achieved by configuring the variable `user_cluster` in `group_vars/all/vars.yml`.  An example is provided below:
@@ -244,7 +250,7 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
    The `user_cluster.csi` variable controls whether the provisioned user cluster will include support for a CSI storage plugin. When set to `true` the cluster will deploy with CSI storage support enabled. At this time only the vSphere CSI driver is supported. Future versions of this solution will include support for other CSI plugins.
 
-   **Note:** CSI storage drivers require that the VM template used to create the user cluster be configured with **VM Hardware Compatibility version 15**. The playbooks have been designed to download the latest Ubuntu 18.04 cloud image OVA as the VM template used when provisioning the various nodes in this solution. The default Ubuntu 18.04 cloud image OVA use **hardware compatibility version 10**, which makes them incompatible with the CSI storage driver. To work around this limitation, the playbooks automatically deploy an initial VM template from the 18.04 cloud image OVA and then upgrade the hardware compatibility to version 15, making the template compatible with CSI storage. This single upgraded VM template can therefore be used for any type of node in the solution: support (DHCP), load balancer, RKE cluster and user cluster nodes. If you still wish to use a different template for the user cluster and enable CSI support, be sure to set the `user_cluster.vm_template` variable to an appropriate VM template that uses hardware compatibility version 15.
+   **Note:** CSI storage drivers require that the VM template used to create the user cluster be configured with **VM Hardware Compatibility version 15**. The playbooks have been designed to download the latest Ubuntu 18.04 cloud image OVA as the VM template used when provisioning the various nodes in this solution. The default Ubuntu 18.04 cloud image OVA use **hardware compatibility version 10**, which makes them incompatible with the CSI storage driver. To work around this limitation, the playbooks automatically deploy an initial VM template from the 18.04 cloud image OVA and then upgrade the hardware compatibility to version 15, making the template compatible with CSI storage. The `template` section of the Ansible inventory file lists the hostname and IP address that will be assigned to the VM template. This single upgraded VM template can then be used for any type of node in the solution, including: support (DHCP), load balancer, RKE cluster and user cluster nodes. If you still wish to use a different template for the user cluster and enable CSI support, be sure to set the `user_cluster.vm_template` variable to an appropriate VM template that is available in the vSphere instance and is using hardware compatibility version 15.
 
    The following variables control the CSI storage deployment:
 
