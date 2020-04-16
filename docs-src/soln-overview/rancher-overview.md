@@ -1,9 +1,25 @@
 # Rancher overview
 
-You can use Rancher to deploy production-grade Kubernetes clusters from datacenter to cloud to the edge.
-Rancher also unites all your disparate deployments with centralized authentication, access control and observability.
+Rancher can be used to deploy production-grade Kubernetes clusters from on premise datacenters to the cloud and the edge.
+It also enables you manage your multiple deployments through centralized authentication, access control and observability.
 
-You can use Helm or the App Catalog to deploy and manage applications across any or all these environments, ensuring multi-cluster consistency with a single deployment.
+-  **Unified multi-cluster management**
+
+    Rancher unites Kubernetes clusters with centralized authentication and access control, enterprise security, auditing, backups, upgrades, observability and alerts. Deploy and secure clusters consistently in minutes anywhere using an intuitive UI or powerful CLI
+
+- **Hybrid & multi-cloud support**
+
+    Manage on premise clusters and those hosted on cloud services from Microsoft (AKS), Amazon (EKS) and Google (GKE) from a single pane of glass. Centrally configure security policy, audit logs and monitor performance. Deploy multi-cluster apps consistently from the app catalog. Control access by connecting them to your internal identity provider like Active Directory, LDAP or Okta.
+
+- **Centralized App Catalog**
+
+   Leverage Helm for turnkey multi-cluster deployment of popular open source tools or apps from the partner ecosystem right within Rancher.
+
+ - **Accelerate DevOps adoption**
+
+    Rancher supports tools that DevOps teams already use like Jenkins, Gitlab or Travis for building CI/CD pipelines, Prometheus and Grafana for observability, Fluentd for logging, and Istio for service mesh.
+
+- **Free and open-source**
 
 
 ## Terminology
