@@ -28,4 +28,8 @@ disks_specs:
     type: thin
     datastore: "{{ datastore }}"
 
-customvalues: []
+customvalues:
+  - key: cdrom.showIsoLockWarning
+    value: "FALSE"
+  - key: msg.autoanswer
+    value: "TRUE"

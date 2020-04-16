@@ -1,0 +1,74 @@
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+###
+---
+- name: "Test reachability to vCenter host: {{ vcenter_hostname }}"
+  delegate_to: localhost
+  shell: ping -c 1 -w 5 "{{ vcenter_hostname }}"
+  changed_when: false
+  register: ping_vcenter
+  failed_when: ping_vcenter.rc != 0
+
+- name: Verify vCenter Credentials
+  delegate_to: localhost
+  command: "{{ govc_file }} ls"
+  changed_when: false
+  register: govc_ls_info
+
+- name: "Verify existence of Datacenter: {{ datacenter }}"
+  delegate_to: localhost
+  command: "{{ govc_file }} datacenter.info {{ datacenter }}"
+  changed_when: false
+  register: govc_dc_info
+
+- name: "Verify existence of Portgroup: {{ vm_portgroup }} in DVSwitch: {{ vm_dvswitch }}"
+  delegate_to: localhost
+  command: "{{ govc_file }} dvs.portgroup.info -pg {{ vm_portgroup }} {{ vm_dvswitch }}"
+  changed_when: false
+  register: govc_pg_info
+
+- name: Verify IP addresses for RKE Admin Cluster are not in use
+  delegate_to: localhost
+  shell: ping -c 1 -w 5 "{{ hostvars[item].ansible_host }}"
+  with_items: "{{ groups['all'] | difference (groups.local) }}"
+  changed_when: false
+  register: ping_inventory
+  failed_when: ping_inventory.rc == 0
+
+- name: "Verify DNS server(s): {{ dns_servers | join (', ') }}"
+  delegate_to: localhost
+  shell: dig @"{{ item }}"
+  with_items: "{{ dns_servers }}"
+  changed_when: false
+  register: dig_status
+  failed_when: dig_status.rc != 0
+
+- name: Install ntpdate command
+  delegate_to: localhost
+  become: true
+  package:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+    - ntpdate
+
+- name: "Verify NTP server(s): {{ ntp_servers | join (', ') }}"
+  delegate_to: localhost
+  shell: ntpdate -q "{{ item }}"
+  with_items: "{{ ntp_servers }}"
+  changed_when: false
+  register: ntp_status
+  failed_when: ntp_status.rc != 0

@@ -18,6 +18,9 @@
   gather_facts: False
   roles:
   - role: pre-checks
+    vars:
+      install_govc: yes
+      provision: yes
   environment:
     GOVC_URL: "{{ vcenter_hostname }}"
     GOVC_USERNAME: "{{ vcenter_username }}"

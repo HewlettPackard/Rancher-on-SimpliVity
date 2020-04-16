@@ -12,16 +12,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-### 
+###
 
-- include_tasks: decommission_drs.yml
-  vars:
-    drs_group: ranchernodes
-
-- include_tasks: decommission_drs.yml
-  vars:
-    drs_group: support
-
-- include_tasks: decommission_drs.yml
-  vars:
-    drs_group: loadbalancer
+- name: Populate /etc/apt/apt.conf.d/proxy.conf
+  become: true
+  template:
+    src: proxy.conf.j2
+    dest: /etc/apt/apt.conf.d/proxy.conf
+  when: proxy is defined
