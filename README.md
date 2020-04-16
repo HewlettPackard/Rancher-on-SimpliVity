@@ -244,7 +244,7 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
 
    The `user_cluster.csi` variable controls whether the provisioned user cluster will include support for a CSI storage plugin. When set to `true` the cluster will deploy with CSI storage support enabled. At this time only the vSphere CSI driver is supported. Future versions of this solution will include support for other CSI plugins.
 
-   **Note:** CSI storage drivers require that the VM template used to create the user cluster be configured with **VM Hardware Compatibility version 15**. At present the Ubuntu cloud images use hardware compatibility version 10, which makes them incompatible with the CSI storage driver. Instructions for manually creating an Ubuntu 18.04 VM with hardware compatibility version 15 will be included in the accompanying documentation. If you will be using a different template for the user cluster vs. the RKE cluster, be sure to set the `user_cluster.vm_template` variable to the appropriate VM template that uses hardware compatibility 15.
+   **Note:** CSI storage drivers require that the VM template used to create the user cluster be configured with **VM Hardware Compatibility version 15**. The playbooks have been designed to download the latest Ubuntu 18.04 cloud image OVA as the VM template used when provisioning the various nodes in this solution. The default Ubuntu 18.04 cloud image OVA use **hardware compatibility version 10**, which makes them incompatible with the CSI storage driver. To work around this limitation, the playbooks automatically deploy an initial VM template from the 18.04 cloud image OVA and then upgrade the hardware compatibility to version 15, making the template compatible with CSI storage. This single upgraded VM template can therefore be used for any type of node in the solution: support (DHCP), load balancer, RKE cluster and user cluster nodes. If you still wish to use a different template for the user cluster and enable CSI support, be sure to set the `user_cluster.vm_template` variable to an appropriate VM template that uses hardware compatibility version 15.
 
    The following variables control the CSI storage deployment:
 
@@ -297,12 +297,16 @@ The playbook `site.yml` does the following:
    - Installs client tools (rancher cli and rke cli) on the Ansible box
    - Creates required artifacts in vCenter including VM folders,  resource pools BUT NOT the VM Portgroup (`group_vars/all/vars.yml:vm_portgroup)` which you need to create manually (if not already existing)
    - loads the Ubuntu 18.04 cloud image OVA in vCenter
-   - deploys and configures the one LB (with NGINX)
-   - deploys and configure the rancher VMs (installs docker and configures the firewall with the required ports)
-   - deploys the Rancher Cluster (a Kubernetes cluster)
-   - deploys the Rancher Server on top of the Rancher Cluster
-   - performs a number of first time login  operations including changing the admin password of the Rancher server and creating an API token
-   - deploys the user cluster.
+   - Creates an initial VM template from the Ubuntu 18.04 OVA
+   - Updates the open-vm-tools and other packages in the VM template to the latest version
+   - Upgrades the Hardware Compatibility of the VM template to version 15, which is needed for CSI support
+   - Deploys and configures the support node with a DHCP server used when deploying Rancher user clusters
+   - Deploys and configures the loadbalancers (with NGINX)
+   - Deploys and configure the Rancher VMs (installs docker and configures the firewall with the required ports)
+   - Deploys the Rancher Cluster (a Kubernetes cluster)
+   - Deploys the Rancher Server on top of the Rancher Cluster
+   - Performs a number of first time login operations including changing the admin password of the Rancher server and creating an API token
+   - Deploys the user cluster
 
 # Access Rancher Server
 
@@ -359,7 +363,5 @@ Access the Rancher GUI and access the `Security -> Authentication` menu option t
   
 
    # Known issues / Work in progress
-
-By default, `getkits.yml` will pull the Ubuntu 18.04 cloud image (OVF format) but this file deploys a VM at h/w revision 10 and CPI/CSI requires a rev 15 VM.
 
 Deployment of the Rancher Cluster fails occasionally also the cluster seems to be operational after the playbook is finished (according to `kubectl get nodes`)
