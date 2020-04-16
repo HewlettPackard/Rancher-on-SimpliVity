@@ -53,7 +53,7 @@ of the pool.
 |`node_template.name`|group_vars/all/vars.yml|The name of the generated node template|
 |`node_template.cpu_count`|group_vars/all/vars.yml|The number of virtual CPUs for the node|
 |`node_template.disk_size`|group_vars/all/vars.yml|The size of disk in MB to create for the node|
-|`node_template.disk_size`|group_vars/all/vars.yml|The size of RAM in MB|
+|`node_template.memory_size`|group_vars/all/vars.yml|The size of RAM in MB|
 
 
 <br><br>

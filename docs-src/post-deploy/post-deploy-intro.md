@@ -29,7 +29,7 @@ NAME           STATUS   ROLES                      AGE    VERSION
 ```
 
 
-## Accessing the admin cluster
+## Accessing the user cluster
 
 A `kubeconfig` file will have been created for the user cluster in the installation folder. The filename starts with `kube_config.` and contains the user cluter name followed by a unique identifier:
 
