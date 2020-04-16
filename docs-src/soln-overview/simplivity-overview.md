@@ -1,13 +1,18 @@
 # HPE SimpliVity overview
 
-HPE SimpliVity is an enterprise-grade hyper-converged platform uniting best-in-class data services with the
-world's best-selling server.
+HPE SimpliVity combines IT infrastructure, advanced data services, and AI-driven operations into a single,
+integrated hyperconverged solution at a fraction of traditional offerings' costs. By infusing artificial
+intelligence (AI) into hyperconverged infrastructure (HCI) environments, HPE SimpliVity has dramatically
+simplified and changed how customers can manage and support their infrastructure with:
 
-Rapid proliferation of applications and the increasing cost of maintaining legacy infrastructure causes significant
-IT challenges for many organizations. With HPE SimpliVity, you can streamline and enable IT operations at a fraction of the
-cost of traditional and public cloud solutions, by combining your IT infrastructure and advanced data services into a
-single, integrated solution. HPE SimpliVity is a powerful, simple, and efficient hyperconverged platform that joins
-best-in-class data services with the world’s best-selling server and offers the industry’s most complete guarantee.
+- Simplified management, troubleshooting and deployment.
+- Easy to update software, hypervisor, and firmware.
+- Rapid deployment and scaling to meet demand.
+- Built-in resiliency, backup and disaster recovery for data protection.
+- Always-on deduplication and compression for reduced capacity utilization by up to 10X.
+- Reduced complexity and overhead for ROBO and edge deployments, with central management in a single interface.
+- Intelligent monitoring with HPE InfoSight for HPE SimpliVity, providing predictive analytics, proactive wellness alerts and resource utilization insights.
 
-More information about HPE SimpliVity can be found 
+
+More information about HPE SimpliVity can be found
 at [https://www.hpe.com/us/en/integrated-systems/simplivity.html](https://www.hpe.com/us/en/integrated-systems/simplivity.html)

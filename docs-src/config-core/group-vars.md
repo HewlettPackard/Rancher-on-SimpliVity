@@ -8,8 +8,8 @@ These group files facilitate more sophisticated settings, such as additional net
 
 |File|Description|
 |:---|:----------|
-|`group_vars/loadbalancer.yml`|Variables defined for all nodes in the `[loadbalancer]` group|
 |`group_vars/ranchernodes.yml`|Variables defined for all nodes in the `[ranchernodes]` group|
+|`group_vars/loadbalancer.yml`|Variables defined for all nodes in the `[loadbalancer]` group|
 |`group_vars/support.yml`|Variables defined for all nodes in the `[support]` group|
 
 
@@ -25,7 +25,12 @@ disk1_size: '60'                    # Disk size in Gbs
 
 you can override these values in the individual node entries in the `hosts` file:
 
-<!-- TODO Override group vars in hosts file-->
+```
+[ranchernodes]
+gmcgr-rke1      ansible_host=10.15.163.91 cpus=8 ram=32768
+gmgcr-rke2      ansible_host=10.15.163.92 cpus=8 ram=32768
+gmcgr-rke3      ansible_host=10.15.163.93 cpus=8 ram=32768
+```
 
 
 
