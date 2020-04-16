@@ -16,7 +16,7 @@
 
 - include_tasks: decommission_drs.yml
   vars:
-    drs_group: master
+    drs_group: ranchernodes
 
 - include_tasks: decommission_drs.yml
   vars:
