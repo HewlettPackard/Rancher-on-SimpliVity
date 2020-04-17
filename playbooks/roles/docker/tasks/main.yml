@@ -78,13 +78,19 @@
   when: proxy is defined
   notify: Restart Docker
 
-- name: Install Docker
+- name: Install Docker via Proxy
   become: true
   shell: |
     export HTTP_PROXY={{ proxy.http }}
     export HTTPS_PROXY={{ proxy.http }}
     export NO_PROXY={{ proxy.except }}
     curl {{ docker_install_script }} | sh
+  when: proxy is defined
+
+- name: Install Docker without Proxy
+  become: true
+  shell: curl {{ docker_install_script }} | sh
+  when: proxy is not defined
 
 - name: Add user to Docker group
   shell: whoami
