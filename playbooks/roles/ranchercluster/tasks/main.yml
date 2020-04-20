@@ -19,30 +19,60 @@
     src: cluster.yml.j2
     dest: "{{ install_dir }}/rancher-cluster.yml"
 
-- name: Deploy the Rancher Cluster
-  shell: |
-    cd {{ install_dir }}
-    rke up --config ./rancher-cluster.yml > {{ install_dir }}/rke-up.log
-  async: "{{ rancher_cluster_deploy_timeout }}"
-  poll: 0
-  register: res
+- block: # Deploy Rancher Cluster First attempt
 
-- name: Wait a maximum of {{ rancher_cluster_deploy_timeout | int / 60 }} mns for the Rancher Cluster API
-  async_status:
-    jid: "{{ res.ansible_job_id }}"
-  register: job_result
-  until: job_result.finished
-  delay: 5
-  retries:  "{{ ( 1 + rancher_cluster_deploy_timeout | int / 5 ) | int }}"
+  - name: Deploy the Rancher Cluster
+    shell: |
+      set -eux
+      cd {{ install_dir }}
+      rke up --config ./rancher-cluster.yml > {{ install_dir }}/rke-up.log
+    async: "{{ rancher_cluster_deploy_timeout }}"
+    poll: 0
+    register: res
 
-- debug: var=job_result
-  when: job_result.finished != 1 or job_result.rc != 0
+  - name: Wait a maximum of {{ rancher_cluster_deploy_timeout | int / 60 }} mns for the Rancher Cluster API
+    async_status:
+      jid: "{{ res.ansible_job_id }}"
+    register: job1
+    failed_when: false
+    until: job1.finished
+    delay: 5
+    retries:  "{{ ( 1 + rancher_cluster_deploy_timeout | int / 5 ) | int }}"
 
-- fail:
-    msg: "{{ job_result }}"
-  when: job_result.finished != 1 or job_result.rc != 0
+  - debug: var=job1
+  - fail:
+      msg: "First Attempt to deploy the Rancher Cluster timed out, not retrying. see {{ install_dir }}/rke-up.log"
+    when: not job1.finished
 
-# Add a loop here to wait for all nodes to be Ready - tbd
+  when: true # end of first attempt
+
+- block: # Deploy the Rancher Cluster second attempt
+
+  - name: Second Attempt to deploy the Rancher Cluster
+    shell: |
+      set -eux
+      cd {{ install_dir }}
+      rke up --config ./rancher-cluster.yml >> {{ install_dir }}/rke-up.log
+    async: "{{ rancher_cluster_deploy_timeout }}"
+    poll: 0
+    register: res
+
+  - name: Wait for the job to complete
+    async_status:
+      jid: "{{ res.ansible_job_id }}"
+    failed_when: false
+    register: job2
+    until: job2.finished
+    delay: 5
+    retries:  "{{ ( 1 + rancher_cluster_deploy_timeout | int / 5 ) | int }}"
+
+  - debug: var=job2
+  - fail:
+      msg: "Second attempt failed, please check out {{ install_dir }}/rke-up.log"
+    when: not job2.finished or job2.rc != 0
+
+  when: not job1.finished or job1.rc != 0
+
 - name: Verify Cluster Status
   shell: |
     kubectl --kubeconfig={{ install_dir }}/kube_config_rancher-cluster.yml get node -o wide

@@ -22,6 +22,7 @@
   vars:
     packages:
     - firewalld
+    - curl
   register: res
 
 - name: Enable firewall
