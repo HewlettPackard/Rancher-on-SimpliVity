@@ -15,7 +15,7 @@ The `admin-template` is used when provisioning the load balancer VMs.
 ## Deploying two load balancers
 
 With this option, two load balancers are deployed in an active-active configuration to provide highly-available access.
-<!-- TODO Load balancer affinity rules ??? -->
+
 
 Two virtual machines are configured in the `hosts` inventory file. You configure one of the VMs as the preferred VM
 for hosting the internal VIP for the Rancher API, by adding `api_int_preferred=` to the definition.

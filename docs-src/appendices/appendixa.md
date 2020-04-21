@@ -1,15 +1,17 @@
-# Appendix A: Bill of Materials
+# Appendix A: Bill of Materials (BOM)
 
-The following BOM contains electronic license to use (E-LTU) parts. Electronic software license delivery is now available in most 
-countries. HPE recommends purchasing electronic products over physical products (when available) for faster delivery and for the 
-convenience of not tracking and managing confidential paper licenses. For more information, please contact your reseller or 
+The following BOM contains electronic license to use (E-LTU) parts. Electronic software license delivery is now available in most
+countries. HPE recommends purchasing electronic products over physical products (when available) for faster delivery and for the
+convenience of not tracking and managing confidential paper licenses. For more information, please contact your reseller or
 an HPE representative.
 
-**Note:** Part numbers are at time of publication and subject to change. The bill of materials does not include complete 
-support options or other rack and power requirements. If you have questions regarding ordering, please consult 
-with your HPE Reseller or HPE Sales Representative for more details. 
+**Note:** Part numbers are at time of publication and subject to change. The bill of materials does not include complete
+support options or other rack and power requirements. If you have questions regarding ordering, please consult
+with your HPE Reseller or HPE Sales Representative for more details.
 [hpe.com/us/en/services/consulting.html](http://hpe.com/us/en/services/consulting.html).
 
+For high resiliency requirements, we recommend deploying HPE SimpliVity clusters with three (or more) nodes with
+admin and user cluster components spread across the three nodes. The following BOM is for a single HPE SimpliVity node.
 
 **Table.** Bill of Materials
 

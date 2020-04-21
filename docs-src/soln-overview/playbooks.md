@@ -9,10 +9,11 @@ This document shows you how to:
 
 - Prepare the VM templates
 - Create the Fedora Ansible host
-- TODO more <!-- TODO more playbooks -->
+- Run the playbooks to create a highly available admin cluster, deploy Rancher and then create an user cluster
+- Configure storage using CSI
 
 
-Deploying HPE SimpliVity hardware is specific to your environment and is not covered in this document. 
+Deploying HPE SimpliVity hardware is specific to your environment and is not covered in this document.
 HPE SimpliVity documentation is available in the [Hewlett Packard Enterprise Support Center](https://support.hpe.com/hpesc/public/home).
 
 
