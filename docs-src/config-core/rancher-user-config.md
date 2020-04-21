@@ -11,8 +11,12 @@ user cluster based on the following configuration.
 |`user_cluster.name`|group_vars/all/vars.yml|The name of the user cluster|
 |`user_cluster.vcenter_credsname`|group_vars/all/vars.yml|The name given to the generated Cloud Credentials|
 |`user_cluster.csi`|group_vars/all/vars.yml|Boolean. Set to `true` to configure the CSI driver on the user cluster|
-|`user_cluster.vm_template`|group_vars/all/vars.yml|The VM template to use when creating the nodes in the suer cluster.<br>Defaults to the admin template if none specified.|
+|`user_cluster.vm_template`|group_vars/all/vars.yml|The VM template to use when creating the nodes in the user cluster.<br>Defaults to the admin template if none specified.|
 
+
+If you want to use a different template for the user cluster and want to enable CSI support, be sure to set the
+`user_cluster.vm_template` variable to an appropriate VM template that is available in the vSphere instance and is using
+hardware compatibility version 15.
 
 For more information on configuring the CSI driver for a user cluster, see the section [Container Storage Interface (CSI) configuration](csi-storage-config).
 

@@ -1,7 +1,11 @@
 # Solution overview
 
 This Reference Configuration for Rancher on HPE SimpliVity is part of an overall
-solution from Hewlett Packard Enterprise. <!-- TODO Solution overview -->
+solution from Hewlett Packard Enterprise. The solution playbooks deploy Rancher on a highly available
+Kubernetes admin cluster and a number of supporting nodes, together with an
+example user cluster with optional CSI storage
+([Solution configuration](solution-configuration)).
+
 
 **Kubernetes** is an orchestration system for managing container-based applications. Kubernetes empowers developers to
 utilize new architectures like microservices and serverless that require developers to think about application operations
@@ -16,4 +20,3 @@ vSphere), while providing DevOps teams with integrated tools for running contain
 **HPE SimpliVity** is an enterprise-grade hyper-converged platform uniting best-in-class data services with the world's
 best-selling server ([HPE SimpliVity overview](simplivity-overview)).
 
-The solution deploys a Rancher admin cluster and a number of supporting nodes, together with a user cluster with optional CSI storage ([Solution configuration](solution-configuration)).
