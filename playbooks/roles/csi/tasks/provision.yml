@@ -56,9 +56,25 @@
 
 - local_action: copy content={{ kubeconfig.json.config }} dest={{ uc_kube_config_file }}
 
+- name: Get CA certificate for User cluster
+  shell: |
+    kubectl config view --kubeconfig={{ uc_kube_config_file }} --raw -o json | jq -r '.clusters[0].cluster."certificate-authority-data"' | tr -d '"' | base64 --decode
+  register: uc_ca_cert
+
+- name: Create temp file fo CA Certificate
+  tempfile:
+    path: "{{ install_dir }}"
+    state:  file
+    suffix: ".ca.pem"
+  register: temp_ca_crt
+
+- local_action: copy content={{ uc_ca_cert.stdout }} dest={{ temp_ca_crt.path }}
+
 - name: Create CSI Secret
   k8s:
     state: present
+    validate_certs: true
+    ca_cert: "{{ temp_ca_crt.path }}"
     definition:
       kind: Secret
       apiVersion: v1
@@ -73,6 +89,8 @@
 - name: Create CSI Config Map
   k8s:
     state: present
+    validate_certs: true
+    ca_cert: "{{ temp_ca_crt.path }}"
     definition:
       kind: ConfigMap
       apiVersion: v1
@@ -87,6 +105,8 @@
 - name: Create Cloud Controller Manager Roles
   k8s:
     state: present
+    validate_certs: true
+    ca_cert: "{{ temp_ca_crt.path }}"
     definition: "{{ lookup('file','cloud-controller-manager-roles.yaml') }}"
   environment:
     KUBECONFIG: "{{ uc_kube_config_file }}"
@@ -94,6 +114,8 @@
 - name: Create Cloud Controller Manager Role Bindings
   k8s:
     state: present
+    validate_certs: true
+    ca_cert: "{{ temp_ca_crt.path }}"
     definition: "{{ lookup('file','cloud-controller-manager-role-bindings.yaml') }}"
   environment:
     KUBECONFIG: "{{ uc_kube_config_file }}"
@@ -101,6 +123,8 @@
 - name: Create Cloud Controller Manager Daemon Set
   k8s:
     state: present
+    validate_certs: true
+    ca_cert: "{{ temp_ca_crt.path }}"
     definition: "{{ lookup('file','cloud-controller-manager-ds.rancher.yaml') }}"
   environment:
     KUBECONFIG: "{{ uc_kube_config_file }}"
@@ -116,6 +140,8 @@
 - name: Create Controller RBAC
   k8s:
     state: present
+    validate_certs: true
+    ca_cert: "{{ temp_ca_crt.path }}"
     definition: "{{ lookup('file','{{ csi_controller_rbac }}') }}"
   environment:
     KUBECONFIG: "{{ uc_kube_config_file }}"
@@ -123,6 +149,8 @@
 - name: Create Controller StatefulSet and Driver
   k8s:
     state: present
+    validate_certs: true
+    ca_cert: "{{ temp_ca_crt.path }}"
     definition: "{{ lookup('file','{{ csi_controller_ss }}') }}"
   environment:
     KUBECONFIG: "{{ uc_kube_config_file }}"
@@ -130,6 +158,8 @@
 - name: Create CSI DaemonSet
   k8s:
     state: present
+    validate_certs: true
+    ca_cert: "{{ temp_ca_crt.path }}"
     definition: "{{ lookup('file','{{ csi_controller_node_ds }}') }}"
   environment:
     KUBECONFIG: "{{ uc_kube_config_file }}"
@@ -138,6 +168,8 @@
   k8s_info:
     kind: StorageClass
     name: "{{ csi_storageclass_name }}"
+    validate_certs: true
+    ca_cert: "{{ temp_ca_crt.path }}"
   register: sc
   environment:
     KUBECONFIG: "{{ uc_kube_config_file }}"
@@ -162,6 +194,8 @@
   - name: Create CSI Storage Class
     k8s:
       state: present
+      validate_certs: true
+      ca_cert: "{{ temp_ca_crt.path }}"
       definition: "{{ lookup('template','csi-sc.yml.j2') }}"
     environment:
       KUBECONFIG: "{{ uc_kube_config_file }}"
