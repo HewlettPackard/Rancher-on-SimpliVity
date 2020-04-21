@@ -59,7 +59,7 @@
 - name: Get CA certificate
   shell: |
     kubectl config view --kubeconfig={{ uc_kube_config_file }} --raw -o json | jq -r '.clusters[0].cluster."certificate-authority-data"' | tr -d '"' | base64 --decode
-  register: uc_ca_cert
+  register: _ca_cert
 
 - name: Create temp file fo CA Certificate
   tempfile:
@@ -68,7 +68,7 @@
     suffix: ".ca.pem"
   register: temp_ca_crt
 
-- local_action: copy content={{ tmp_ca_cert.stdout }} dest={{ temp_ca_crt.path }}
+- local_action: copy content={{ _ca_cert.stdout }} dest={{ temp_ca_crt.path }}
 
 - name: Create CSI Secret
   k8s:
