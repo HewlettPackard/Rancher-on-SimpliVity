@@ -79,7 +79,7 @@ Install Ansible on your Workstation: tested with Fedora 31 and Ansible 2.9.5
    proxy:
      http:  "http://10.12.7.21:8080/"
      https:  "http://10.12.7.21:8080/"
-     except: "localhost,.am2.cloudra.local,.hpe.org"
+     except: "localhost,.am2.cloudra.local,.hpe.org,10.15.152.0/24"
    ```
 
    If your installation is behind a corporate proxy, you will need to configure the `proxy` variable as indicated above. if you are not behind a proxy just rename the variable `proxy` to something else (eg `fooproxy`)
