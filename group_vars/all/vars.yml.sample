@@ -81,7 +81,7 @@ simplivity_appliances:
 proxy:
   http:  "http://10.12.7.21:8080/"     #  http:  "http://user:password@10.12.7.21:8080/"
   https:  "http://10.12.7.21:8080/"
-  except: "localhost,.am2.cloudra.local,.hpe.org"
+  except: "localhost,.am2.cloudra.local,.hpe.org,10.15.152.0/24"
 
 rancher:
   url: https://rancher.hpe.org    # this the FQDN at which Rancher Server can be reached
