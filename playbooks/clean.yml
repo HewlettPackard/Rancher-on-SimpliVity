@@ -15,7 +15,7 @@
 ### 
 ---
  
-- hosts: all:!local
+- hosts: all:!local:!template
   name: Delete VMs and Templates
   gather_facts: false
   roles:
