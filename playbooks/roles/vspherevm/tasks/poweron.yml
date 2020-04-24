@@ -27,6 +27,12 @@
     state: poweredon
     wait_for_ip_address: true
 
+- name: Wait for the SSH connection
+  wait_for_connection:
+    delay: 10
+    sleep: 5
+    timeout: 300
+
 - name: cloud-init-status
   become: true
   shell: |
@@ -37,10 +43,11 @@
   until: |
     res.stdout == "status: done"
 
+# This one was an attempt to fix the missing "wait_for_connection" above, probably not needed anymore
 - name: Wait 10s for VM state to normalize
   delegate_to: localhost
   wait_for:
-    timeout=10
+    timeout: 10
 
 - name: Attempt to detach the cloud-init CDROM from the VM
   delegate_to: localhost
