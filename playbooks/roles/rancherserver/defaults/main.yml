@@ -18,7 +18,7 @@
 kubeconfig_file:  "{{ install_dir }}/kube_config_rancher-cluster.yml"
 certmanager_crds:  'https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml'  # update getkits then point to the staging area (tbd)
 cert_manager_deploy_timeout: 300  # timeout in seconds. 5mns should be more than enough
-rancherserver_deploy_timeout: 600 # timeout in seconds. 10mns should be more than enough
+rancherserver_deploy_timeout: 1200 # timeout in seconds. 20mns should be more than enough if your internet access is not too slow
 rancherserver_hostname: "{{ rancher.hostname }}"
 rancherserver_tls_source: "{{ rancher.tls_source | default('rancher') | lower }}"
 rancherserver_tls_privateCA: "{{ rancher.tls_privateCA | default('false') }}"
