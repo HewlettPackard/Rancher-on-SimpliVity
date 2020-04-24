@@ -14,4 +14,4 @@
 # limitations under the License.
 ###
 ---
-rancher_cluster_deploy_timeout: 1200 # it should not take more than 10mns to deploy the rancher cluster
+rancher_cluster_deploy_timeout: 1200 # it should not take more than 20mns to deploy the rancher cluster
