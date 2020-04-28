@@ -107,8 +107,8 @@ module.exports = {
         children: [
           '/post-deploy/post-deploy-intro',
           '/post-deploy/first-login',
-          '/post-deploy/auth-active-directory',
-          '/post-deploy/csi-storage-verification'
+          '/post-deploy/auth-active-directory'//,
+          //'/post-deploy/csi-storage-verification'
         ]
       },
       {
