@@ -5,6 +5,8 @@
     <Content class="theme-default-content" />
     <PageEdit />
 
+    <Vssue :title="$title" :key="$route.path" />
+
     <PageNav v-bind="{ sidebarItems }" />
 
     <slot name="bottom" />

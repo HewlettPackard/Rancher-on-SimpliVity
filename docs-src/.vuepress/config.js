@@ -2,7 +2,24 @@ module.exports = {
   title: 'Rancher on HPE SimpliVity',
   dest: '../MVI1/',
   base: '/Rancher-on-SimpliVity/MVI1/',   
-  plugins: ['vuepress-plugin-export'], 
+    //plugins: ['vuepress-plugin-export'], 
+  plugins: {
+    '@vssue/vuepress-plugin-vssue': {
+      // set `platform` rather than `api`
+      platform: 'github',
+
+      // all other options of Vssue are allowed
+      owner: 'gabrielmcg',
+      repo: 'Rancher-on-SimpliVity',
+      clientId: process.env.VUE_APP_VSSUE_CLIENTID,
+      clientSecret: process.env.VUE_APP_VSSUE_CLIENTSECRET,
+
+      autoCreateIssue: false,
+      prefix: '[Docs]',
+      //labels: ['FirstDraft'],
+      admins: ['gabrielmcg', 'moyni77'],
+    },
+  }, 
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
