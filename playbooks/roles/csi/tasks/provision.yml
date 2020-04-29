@@ -26,40 +26,27 @@
     timeout: 4
     status_code:
     - 200
-  register: usercluster
-
-- set_fact:
-    userclusterID: "{{ usercluster.json.data[0].id }}"
-
-- debug:
-    msg: "User Cluster ID: {{ userclusterID }}"
-
-- name: Retrieve Kubernetes Configuration for User Cluster
-  uri:
-    url:  "{{ rancher.url }}/{{ rancher.apiversion }}/clusters/{{ userclusterID }}?action=generateKubeconfig"
-    validate_certs: "{{ rancher.validate_certs }}"
-    headers:
-      Accept: application/json
-      Content-Type: application/json
-      Authorization: Bearer {{ bearer_token }}
-    method: POST
-    timeout: 4
-    status_code:
-    - 200
-  register: kubeconfig
+  register: res
 
 - set_fact:
     uc_kube_config_file: "{{ install_dir }}/kube_config.{{ user_cluster.name }}.{{ userclusterID }}"
+  vars:
+    userclusterID:  "{{ res.json.data[0].id }}"
 
-- debug:
-    msg: "User Cluster kube_config file: {{ uc_kube_config_file }}"
+- name: Verify Presence of the kubeconfig file
+  stat:
+    path: "{{ uc_kube_config_file }}"
+  register: res
 
-- local_action: copy content={{ kubeconfig.json.config }} dest={{ uc_kube_config_file }}
+- fail:
+    msg: "Cannot find the kubeconfig file {{ uc_kube_config_file }} for cluster {{ user_cluster.name }} "
+  when: not res.stat.exists
 
 - name: Create CSI Secret
   k8s:
     state: present
     validate_certs: true
+    kubeconfig: "{{ uc_kube_config_file }}"
     definition:
       kind: Secret
       apiVersion: v1
@@ -68,13 +55,12 @@
       metadata:
         name: vsphere-config-secret
         namespace: kube-system
-  environment:
-    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: Create CSI Config Map
   k8s:
     state: present
     validate_certs: true
+    kubeconfig: "{{ uc_kube_config_file }}"
     definition:
       kind: ConfigMap
       apiVersion: v1
@@ -83,32 +69,27 @@
         namespace: kube-system
       data:
         vsphere.conf: "{{ lookup('template', 'csi-vsphere.conf.j2') }}"
-  environment:
-    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: Create Cloud Controller Manager Roles
   k8s:
     state: present
     validate_certs: true
+    kubeconfig: "{{ uc_kube_config_file }}"
     definition: "{{ lookup('file','cloud-controller-manager-roles.yaml') }}"
-  environment:
-    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: Create Cloud Controller Manager Role Bindings
   k8s:
     state: present
     validate_certs: true
+    kubeconfig: "{{ uc_kube_config_file }}"
     definition: "{{ lookup('file','cloud-controller-manager-role-bindings.yaml') }}"
-  environment:
-    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: Create Cloud Controller Manager Daemon Set
   k8s:
     state: present
     validate_certs: true
+    kubeconfig: "{{ uc_kube_config_file }}"
     definition: "{{ lookup('file','cloud-controller-manager-ds.rancher.yaml') }}"
-  environment:
-    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: Set variables specific to vSphere CSI Driver
   set_fact:
@@ -122,34 +103,30 @@
   k8s:
     state: present
     validate_certs: true
+    kubeconfig: "{{ uc_kube_config_file }}"
     definition: "{{ lookup('file','{{ csi_controller_rbac }}') }}"
-  environment:
-    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: Create Controller StatefulSet and Driver
   k8s:
     state: present
     validate_certs: true
+    kubeconfig: "{{ uc_kube_config_file }}"
     definition: "{{ lookup('file','{{ csi_controller_ss }}') }}"
-  environment:
-    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: Create CSI DaemonSet
   k8s:
     state: present
     validate_certs: true
+    kubeconfig: "{{ uc_kube_config_file }}"
     definition: "{{ lookup('file','{{ csi_controller_node_ds }}') }}"
-  environment:
-    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - name: See if the CSI Storage Class exists
   k8s_info:
+    kubeconfig: "{{ uc_kube_config_file }}"
     kind: StorageClass
     name: "{{ csi_storageclass_name }}"
     validate_certs: true
   register: sc
-  environment:
-    KUBECONFIG: "{{ uc_kube_config_file }}"
 
 - debug:
     msg: "Storage Class '{{ csi_storageclass_name }}' already exists."
@@ -172,9 +149,8 @@
     k8s:
       state: present
       validate_certs: true
+      kubeconfig: "{{ uc_kube_config_file }}"
       definition: "{{ lookup('template','csi-sc.yml.j2') }}"
-    environment:
-      KUBECONFIG: "{{ uc_kube_config_file }}"
 
   - debug:
       msg: "Storage Class '{{ csi_storageclass_name }}' Created"

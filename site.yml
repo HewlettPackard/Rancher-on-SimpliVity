@@ -22,3 +22,4 @@
 - import_playbook: playbooks/rancherserver.yml
 - import_playbook: playbooks/1stlogin.yml
 - import_playbook: playbooks/ucluster.yml
+- import_playbook: playbooks/csi.yml
