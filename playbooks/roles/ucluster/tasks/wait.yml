@@ -23,13 +23,50 @@
       Content-Type: application/json
       Authorization: Bearer {{ bearer_token }}
     method: GET
-    timeout: 4
+    timeout: 8
     status_code:
     - 200
     body_format: form-urlencoded
-  retries:  "{{ ( 1 + user_cluster_deploy_timeout | int / 5 ) | int }}"
-  delay: 5
+  retries:  "{{ ( 1 + user_cluster_deploy_timeout | int / 10 ) | int }}"
+  delay: 10
   until: clusters.json.data[0].state == "active"
   register: clusters
 
-- debug: var=clusters.json.data[0].state
+- set_fact:
+    userclusterID: "{{ clusters.json.data[0].id }}"
+
+- name: Retrieve Kubernetes Configuration for User Cluster
+  uri:
+    url:  "{{ rancher.url }}/{{ rancher.apiversion }}/clusters/{{ userclusterID }}?action=generateKubeconfig"
+    validate_certs: "{{ rancher.validate_certs }}"
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Authorization: Bearer {{ bearer_token }}
+    method: POST
+    timeout: 4
+    status_code:
+    - 200
+  register: res
+  retries: 10
+  until: not res.failed
+
+- set_fact:
+    uc_kube_config_file:  "{{ install_dir }}/kube_config.{{ user_cluster.name }}.{{ userclusterID }}"
+
+- name: Generate kubeconfig file for user cluster
+  copy:
+    content: "{{ res.json.config }}"
+    dest: "{{ uc_kube_config_file }}"
+    force: yes
+
+# make sure Ingress over Rancher Server is ready 
+- name: Wait for the User cluster to be reachable via Rancher Server
+  shell: |
+    kubectl --kubeconfig {{ uc_kube_config_file }} get ns
+  register: res
+  changed_when: false
+  until: res.rc == 0
+  retries: 10
+  delay: 5
+

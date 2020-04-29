@@ -52,25 +52,11 @@
 
 #######################################################################
 #
-# Play: Provision Support VM
-#
-#######################################################################
-- name: Provision VMs
-  hosts: support
-  gather_facts: false
-  roles:
-  - role: vspherevm
-    vars:
-      provision: yes
-      poweron: yes
-
-#######################################################################
-#
 # Play: Provision Loadbalancer and Rancher VMs
 #
 #######################################################################
 - name: Provision VMs
-  hosts: all:!local:!support:!template
+  hosts: all:!local:!template
   gather_facts: false
   roles:
   - role: vspherevm
