@@ -43,12 +43,6 @@
   until: |
     res.stdout == "status: done"
 
-# This one was an attempt to fix the missing "wait_for_connection" above, probably not needed anymore
-- name: Wait 10s for VM state to normalize
-  delegate_to: localhost
-  wait_for:
-    timeout: 10
-
 - name: Attempt to detach the cloud-init CDROM from the VM
   delegate_to: localhost
   vmware_guest:
@@ -63,21 +57,26 @@
   failed_when: false
   register: vm_specs
 
-- name: Find the name of the folder containing the VM files
-  set_fact:
-    fname: "{{ fpath.split(' ')[1] }}"
-  vars:
-    fpath: "{{ vm_specs.instance.hw_files[0].split('/')[0] }}"
+- block:
 
-- name: Attempt to remove cloud-init ISO from the datastore
-  delegate_to: localhost
-  vsphere_file:
-    hostname: '{{ vcenter_hostname }}'
-    username: '{{ vcenter_username }}'
-    password: '{{ vcenter_password }}'
-    validate_certs: "{{ vcenter_validate_certs }}"
-    datacenter: "{{ datacenter }}"
-    datastore: "{{ datastore }}"
-    path: "{{ fname }}/cloud-init.iso"
-    state: absent
-  failed_when: false
+  - name: Find the name of the folder containing the VM files
+    set_fact:
+      fname: "{{ fpath.split(' ')[1] }}"
+    vars:
+      fpath: "{{ vm_specs.instance.hw_files[0].split('/')[0] }}"
+    failed_when: false
+
+  - name: Attempt to remove cloud-init ISO from the datastore
+    delegate_to: localhost
+    vsphere_file:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: "{{ vcenter_validate_certs }}"
+      datacenter: "{{ datacenter }}"
+      datastore: "{{ datastore }}"
+      path: "{{ fname }}/cloud-init.iso"
+      state: absent
+    failed_when: false
+
+  when: vm_specs is defined
