@@ -10,7 +10,7 @@ Kubernetes admin cluster along with a number of supporting nodes external to the
 
 The playbooks are avaible at [https://github.com/HewlettPackard/Rancher-on-SimpliVity](https://github.com/HewlettPackard/Rancher-on-SimpliVity).
 
-<br><br><br>
+<br>
 
 !["HPE graphic"][simplivity-hpe-graphic-jpg]
 
