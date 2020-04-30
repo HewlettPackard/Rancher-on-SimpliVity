@@ -3,7 +3,7 @@
 Rancher can be used to deploy production-grade Kubernetes clusters from on premise datacenters to the cloud and the edge.
 It also enables you manage your multiple deployments through centralized authentication, access control and observability.
 
--  **Unified multi-cluster management**
+- **Unified multi-cluster management**
 
     Rancher unites Kubernetes clusters with centralized authentication and access control, enterprise security, auditing, backups, upgrades, observability and alerts. Deploy and secure clusters consistently in minutes anywhere using an intuitive UI or powerful CLI
 
@@ -15,18 +15,17 @@ It also enables you manage your multiple deployments through centralized authent
 
    Leverage Helm for turnkey multi-cluster deployment of popular open source tools or apps from the partner ecosystem right within Rancher.
 
- - **Accelerate DevOps adoption**
+- **Accelerate DevOps adoption**
 
     Rancher supports tools that DevOps teams already use like Jenkins, Gitlab or Travis for building CI/CD pipelines, Prometheus and Grafana for observability, Fluentd for logging, and Istio for service mesh.
 
 - **Free and open-source**
 
-
 ## Terminology
 
 The **Rancher server** manages and provisions Kubernetes clusters. You can interact with downstream Kubernetes clusters through the Rancher server’s user interface.
 
-**RKE (Rancher Kubernetes Engine)** is a certified Kubernetes distribution and CLI/library which creates and manages a Kubernetes cluster.
+**RKE (Rancher Kubernetes Engine)** is a CNCF-certified Kubernetes distribution and CLI/library which creates and manages a Kubernetes cluster.
 
 The **Admin cluster** in this solution is a highly available, three-node RKE cluster with load balancers and support 
 services including DHCP. The Rancher server software is deployed on each of the nodes in the admin cluster.

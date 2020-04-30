@@ -2,7 +2,6 @@
 
 Known issues in this release of Rancher on HPE SimpliVity:
 
-TODO more
 
 <!-- TODO Known issues -->
 
