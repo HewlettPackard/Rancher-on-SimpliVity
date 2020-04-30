@@ -10,8 +10,9 @@ The software components used in this Reference Configuration are listed below.
 |**Ansible Controller**|OS|Fedora 31|
 | |Ansible|2.9.5|
 | |Python|3.7.5|
-|**Rancher**|2.3.6  <!-- TODO Rancher version -->||
-|**Docker**|19.03 <!-- TODO Docker version -->||
+|**Rancher**|Server|2.3.6|
+| |Kubernetes|1.17.2|
+| |Docker|19.03 <!-- TODO Docker version -->||
 |**VMware**|ESXi Host|6.7 Update 3 (VMware ESXi, 6.7.0, 14320388)|
 | |vCenter|6.7 Update 3b (6.7.0.42000, build 15132721)|
 | |CSI Plugin|1.0.1|
