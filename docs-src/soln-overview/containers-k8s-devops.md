@@ -56,4 +56,6 @@ Azure Kubernetes Service (AKS) and Google's own Kubernetes Engine (GKE). This ab
 cloud and hybrid deployments using a single technology and avoiding vendor lock-in, helps further confirm the grip
 Kubernetes has on the DevOps mindset.
 
+The state of a Kubernetes cluster is maintained in `etcd`. The etcd database component is a distributed key-value store used as Kubernetes storage for all cluster data, such as cluster coordination and state management. It is recommended to run etcd on a multiple, odd number of nodes so that there is always a backup available for failover.
+
 For more information on Kubernetes, refer to [https://kubernetes.io/](https://kubernetes.io/)
