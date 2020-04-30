@@ -50,11 +50,17 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+
     - run: |
         cd source
         pwd
         npm install
-    - run:  |
+
+    - shell: bash
+      env: 
+        VUE_APP_VSSUE_CLIENTID: ${{ secrets.VUE_APP_VSSUE_CLIENTID }}
+        VUE_APP_VSSUE_CLIENTSECRET: ${{ secrets.VUE_APP_VSSUE_CLIENTSECRET }}
+      run:  |
         cd source
         pwd
         npm run docs:build

@@ -62,6 +62,7 @@ It also performs datastore configuration:
 
 The `provision` stage performs the following tasks:
 
+- Provision and upgrade the template VM
 - Provision Support (DHCP) VM
 - Provision Loadbalancer VMs
 - Provision Rancher admin server VMs
