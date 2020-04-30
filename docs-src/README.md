@@ -1,10 +1,12 @@
 !["HPE logo"][simplivity-hpe-logo-jpg]
 
-# Deployment guide for Rancher on HPE SimpliVity
+# Rancher on HPE SimpliVity
 
-This Reference Configuration for Rancher on HPE SimpliVity is part of an overall
+## Deployment guide
+
+The Reference Configuration for Rancher on HPE SimpliVity is part of an overall
 solution from Hewlett Packard Enterprise. The solution playbooks deploy Rancher on a highly available
-Kubernetes admin cluster and a number of supporting nodes external to the cluster, for load balancing and DHCP services. The playbooks also deploy an example user cluster with optional CSI storage
+Kubernetes admin cluster along with a number of supporting nodes external to the cluster, for load balancing and DHCP services. The playbooks also deploy an example user cluster with optional CSI storage
 
 The playbooks are avaible at [https://github.com/HewlettPackard/Rancher-on-SimpliVity](https://github.com/HewlettPackard/Rancher-on-SimpliVity).
 
