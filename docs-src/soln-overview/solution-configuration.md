@@ -17,7 +17,7 @@ In a standard installation, Kubernetes is first installed on three nodes. Then H
 
 The Rancher server data is stored on `etcd`. The `etcd` database component is a distributed key-value store used as Kubernetes storage for all cluster data, such as cluster coordination and state management. This `etcd` database also runs on all three nodes, and requires an odd number of nodes so that it can always elect a leader with a majority of the etcd cluster. If the `etcd` database cannot elect a leader, `etcd` can fail, requiring the cluster to be restored from backup.
 
-A DNS record to map a URL to the load balancer. This will become the Rancher server URL, and downstream Kubernetes clusters will need to reach it.
+A DNS record is required to map a URL to the load balancer. This will become the Rancher server URL, and downstream Kubernetes clusters will need to reach it.
 
 RKE will need to connect to each node over SSH, and it will look for a private key in the default location of `~/.ssh/id_rsa`.
 

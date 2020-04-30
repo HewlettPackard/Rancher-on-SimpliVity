@@ -11,9 +11,6 @@ The variables used for network configuration include:
 |`dns_servers`|group_vars/all/vars.yml|List of DNS servers to be used, in list format. For example, `['10.10.173.1','10.10.173.2'...]`<br><br>The DNS services deployed by the solution forwards unresolved requests to these DNS servers.|
 |`dns_suffixes`|group_vars/all/vars.yml|List of DNS suffixes|
 
-
-
-
 ## DHCP related settings
 
 The variables used to configure the DHCP service on a support VM include:
@@ -25,8 +22,6 @@ The variables used to configure the DHCP service on a support VM include:
 |`dhcp_default_lease_time`|group_vars/all/vars.yml|DHCP default lease time. Default is 86400 (24 hours)|
 |`dhcp_max_lease_time`|group_vars/all/vars.yml|DHCP maximum lease time. Default is 2592000 (30 days)|
 |`domain_name`|group_vars/all/vars.yml|DNS domain name for cluster. For example, `rancher-demo.org`|
-|`support_template`|group_vars/all/vars.yml|Name of VM template used for the support node running DHCP. For example, `hpe-ubuntu-tpl`|
-
 
 The `dhcp_subnet` variable denotes the subnet where DHCP leases will be provided. This is normally the same subnet as `rancher_subnet`.
 
@@ -36,15 +31,10 @@ The `dhcp_default_lease_time` and `dhcp_max_lease_time` variables specify the mi
 
 The `domain_name` variable denotes the DNS domain name used for the rancher/DHCP subnet.
 
-The `support_template` variable defines the name of the VM template used when deploying the support VM. By default this is set to the same value as the `admin_template` variable, which is the template used when creating the VMs in the admin cluster.
-
-
-
+The VM template used when deploying the support VMs is the same one used when creating the VMs in the admin cluster, specified using the `admin_template` variable.
 
 ## SSH configuration
 
 |Variable|File|Description|
 |:-------|:---|:----------|
 |`ssh_key`|group_vars/all/vars.yml|SSH public key for which you have the corresponding SSH private key. Currently the playbooks use the default ID of the user who is running the playbook.  So, the SSH public key to specify here is the one in the file `~/.ssh/id_rsa.pub`|
-
-

@@ -26,7 +26,9 @@ module.exports = {
       { text: 'Blog', link: '/blog/' }
     ],
 
-    repo: 'Rancher-on-SimpliVity',
+    logo: '/assets/images/hpe-logo-nav.jpg',
+
+    repo: 'HewlettPackard/Rancher-on-SimpliVity',
     // Customising the header label
     // Defaults to "GitHub"/"GitLab"/"Bitbucket" depending on `themeConfig.repo`
     repoLabel: 'Contribute!',

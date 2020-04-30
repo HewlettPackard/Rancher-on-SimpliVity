@@ -23,7 +23,7 @@ dhcp_range: '10.15.152.100 10.15.152.150'                 # DHCP range to use on
 dhcp_default_lease_time: 86400                            # DHCP default lease time (24 hours)
 dhcp_max_lease_time: 2592000                              # DHCP maximum lease time (30 days)
 domain_name: hpe.org                                      # DNS domain name
-support_template: hpe-ubuntu-tpl                          # Name of VM template used for Support Node running DHCP
+
 
 #
 # vcenter related settings
