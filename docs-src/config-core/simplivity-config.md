@@ -32,7 +32,7 @@ otherwise it will default to 1024 GiB.
 |`datastore_size`|group_vars/all/vars.yml|Optional size of datastore, specified in GiB. Defaults to 1024 GiB.|
 
 You can take advantage of this functionality when provisioning persistent volumes for Container Storage
-Interface (CSI). For more information, see the section on [Container Storage Interface](../storage/csi).
+Interface (CSI). For more information, see the section on [Container Storage Interface](csi-storage-config).
 
 
 
