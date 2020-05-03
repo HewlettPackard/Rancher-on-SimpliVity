@@ -26,6 +26,11 @@ module.exports = {
       { text: 'Blog', link: '/blog/' }
     ],
 
+    algolia: {
+      apiKey: process.env.VUE_APP_OPENSHIFT_ALGOLIA_APIKEY,
+      indexName: process.env.VUE_APP_OPENSHIFT_ALGOLIA_INDEXNAME
+    },
+    
     logo: '/assets/images/hpe-logo-nav.jpg',
 
     repo: 'HewlettPackard/Rancher-on-SimpliVity',
