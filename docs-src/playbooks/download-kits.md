@@ -26,7 +26,7 @@ The versions at the time of writing are as follows:
 kits_rke_version: v1.0.4
 kits_rancher_cli_version: v2.3.2
 kits_kubectl_cli_version: v1.17.2
-kits_helm_cli_version: v3.1.1
+kits_helm_cli_version: v3.1.2
 ```
 
 The software is downloaded to the folder determined by the `kits_folder` variable, specified in the

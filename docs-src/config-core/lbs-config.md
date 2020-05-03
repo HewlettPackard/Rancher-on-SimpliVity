@@ -10,7 +10,7 @@ for `rancher.hostname` and  `rancher.url` variables should resolve to the addres
 If you configure a single load balancer, you don't need a floating IP and the `rancher.hostname` should resolve
 to the IP of the standalone load balancer.
 
-The `admin-template` is used when provisioning the load balancer VMs.
+The `admin_template` is used when provisioning the load balancer VMs.
 
 ## Deploying two load balancers
 
@@ -26,8 +26,8 @@ inventory file shows the entries defining the nodes used for the load balancers:
 
 ```
 [loadbalancer]
-gmcgr-lb1       ansible_host=10.15.163.96 api_int_preferred=true
-gmcgr-lb2       ansible_host=10.15.163.97
+hpe-lb1              ansible_host=10.15.152.11 api_int_preferred=true
+hpe-lb2              ansible_host=10.15.152.12
 ```
 
 
@@ -36,20 +36,22 @@ This extract from the configuration file `group_vars/all/vars.yml` shows the con
 the two load balancer scenario:
 
 ```
-rancher_subnet: 10.15.163.0/24
+rancher_subnet: 10.15.152.0/24
 
 rancher:
-  url: https://rancher.gmcg-rancher.org
-  hostname: rancher.gmcg-rancher.org
+  url: https://rancher.hpe.org
+  hostname: rancher.hpe.org
+
 
 loadbalancers:
   backend:
-    vip: 10.15.163.94/24
-    vrrp_router_id: 54
+    vip: 10.15.152.9/24
+    vrrp_router_id: 51
     nginx_max_fails: 1
-    nginx_fail_timeout: 5s
-    nginx_proxy_timeout: 3s
-    nginx_proxy_connect_timeout: 2s
+    nginx_fail_timeout: 10s
+    nginx_proxy_timeout: 10m
+    nginx_proxy_connect_timeout: 60s
+
 ```
 
 
@@ -58,8 +60,8 @@ The `vrrp_router_id` is used to differentiate between multiple deployments
 on the same networking infrastructure, for example, in proof of concepts. If you have multiple deployments, ensure that
 each deployment uses unique VRRP router IDs.
 
-You must configure DNS to resolve the value of the `rancher.hostname` (in this case `rancher.gmcg-rancher.org`)
-to the value of the `loadbalancers.backend.vip` variable (in this case, `10.15.163.94`). Note that this VIP
+You must configure DNS to resolve the value of the `rancher.hostname` (in this case `rancher.hpe.org`)
+to the value of the `loadbalancers.backend.vip` variable (in this case, `10.15.152.9`). Note that this VIP
 address **must** be in the Rancher subnet and outside the DHCP range, like any other IP address in the hosts inventory.
 
 
@@ -70,29 +72,30 @@ requirements. In this instance, you only specify a single entry in the `[loadbal
 
 ```
 [loadbalancer]
-gmcgr-lb1       ansible_host=10.15.163.96
+hpe-lb1              ansible_host=10.15.152.11
 ```
 
 Simply comment out the `vip` and `vrrp_router_id` variables in
 the `loadbalancers.backend` structure. You must configure DNS to resolve the value of the `rancher.hostname`
-(in this case `rancher.gmcg-rancher.org`) to the value of the IP addess of the single load balancer VM (in this case
-`10.15.163.96`).
+(in this case `rancher.hpe.org`) to the value of the IP addess of the single load balancer VM (in this case
+`10.15.152.11`).
 
 ```
-rancher_subnet: 10.15.163.0/24
+rancher_subnet: 10.15.152.0/24
 
 rancher:
-  url: https://rancher.gmcg-rancher.org
-  hostname: rancher.gmcg-rancher.org
+  url: https://rancher.hpe.org
+  hostname: rancher.hpe.org
 
 loadbalancers:
   backend:
-#    vip: 10.15.163.94/24
-#    vrrp_router_id: 54
+#    vip: 10.15.152.9/24
+#    vrrp_router_id: 51
     nginx_max_fails: 1
-    nginx_fail_timeout: 5s
-    nginx_proxy_timeout: 3s
-    nginx_proxy_connect_timeout: 2s
+    nginx_fail_timeout: 10s
+    nginx_proxy_timeout: 10m
+    nginx_proxy_connect_timeout: 60s
+
 ```
 
 

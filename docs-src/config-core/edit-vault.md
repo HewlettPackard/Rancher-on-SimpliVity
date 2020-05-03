@@ -11,3 +11,4 @@ A sample vault file is provided named `group_vars/all/vault.sample`. You can use
 |:-------|:---|:----------|
 |`vault_vcenter_password`|**group_vars/all/vault.yml**|The password for the `vcenter_username` user|
 |`vault_rancher_password`|**group_vars/all/vault.yml**|The password for the Rancher admin cluster|
+|`vault_ad_service_account_password`|**group_vars/all/vault.yml**|The password used to authenticate to your Active Directory service account. <br><br>See the section [Active Directory Integration](../post-deploy/auth-active-directory).|

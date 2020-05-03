@@ -9,7 +9,7 @@ This document shows you how to:
 
 - Prepare the VM templates
 - Create the Fedora Ansible host
-- Run the playbooks to create a highly available admin cluster, deploy Rancher and then create an user cluster
+- Run the playbooks to create a highly available admin cluster, deploy Rancher and then create a user cluster
 - Configure storage using CSI
 
 

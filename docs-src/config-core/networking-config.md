@@ -31,8 +31,6 @@ The `dhcp_default_lease_time` and `dhcp_max_lease_time` variables specify the mi
 
 The `domain_name` variable denotes the DNS domain name used for the rancher/DHCP subnet.
 
-The VM template used when deploying the support VMs is the same one used when creating the VMs in the admin cluster, specified using the `admin_template` variable.
-
 ## SSH configuration
 
 |Variable|File|Description|

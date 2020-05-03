@@ -41,8 +41,8 @@ An example `rancher` structure is shown below:
 
 ```
 rancher:
-  url: https://lb1.hpe.org
-  hostname: lb1.hpe.org
+  url: https://rancher.hpe.org
+  hostname: rancher.hpe.org
   validate_certs: False
   apiversion: v3
   engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'

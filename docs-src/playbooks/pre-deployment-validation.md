@@ -10,7 +10,7 @@ elsewhere in the environment.
 
 ```
 $ cd ~/Rancher-on-SimpliVity
-$ ansible-playbook -i hosts playbooks/pre-checks.yml
+$ ansible-playbook -i hosts playbooks/pre-checks.yml --vault-password-file .vault_pass
 ```
 
 

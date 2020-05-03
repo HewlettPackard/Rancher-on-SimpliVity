@@ -8,4 +8,4 @@ SimpliVity systems with at least 14 CPU cores per socket (28 total cores per sys
 during HA failover scenarios. Since the HPE SimpliVity technology relies on VMware virtualization, the servers are
 managed using vCenter.
 
-For more details, see the Bill of Materials in `Appendix A`.
+For more details, see the Bill of Materials in [Appendix A](../appendices/appendixa).

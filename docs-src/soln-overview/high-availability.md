@@ -1,6 +1,6 @@
 # High availability
 
-Anti-affinity rules are created to ensure VMs ruuning similar loads are deployed on different ESXi hosts.
+Anti-affinity rules are created to ensure VMs running similar workloads are deployed on different ESXi hosts.
 
 ## Admin cluster
 
@@ -12,7 +12,7 @@ through the use of an anti-affinity rule named
 {{ cluster_name }}-ranchernodes-anti-affinity-rule-001
 ```
 
-where cluster_name is the name of your cluster, as defined in the group_vars/all/vars.yml file.
+where `cluster_name` is the name of your cluster, as defined in the `group_vars/all/vars.yml` file.
 
 
 ## Deploying two load balancers

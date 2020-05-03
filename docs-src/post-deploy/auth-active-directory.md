@@ -12,7 +12,7 @@ All variables relating to Active Directory integration are described in the tabl
 | ad_login_domain                          | group_vars/all/vars.yml      | The Domain name served by your Active Directory service. |
 | ad_server_name                           | group_vars/all/vars.yml      | The name of your Active Directory server. |
 | ad_service_account_username              | group_vars/all/vars.yml      | The username used to authenticate to your Active Directory service account. |
-| ad_service_account_password              | group_vars/all/vault.yml     | The password used to authenticate to your Active Directory service account. |
+| ad_service_account_password              | **group_vars/all/vault.yml**     | The password used to authenticate to your Active Directory service account. |
 | ad_tls                                   | group_vars/all/vars.yml      | A value of 'true' indicates your Active Directory service requires the use of TLS. A value of 'false' indicates your Active Directory service does not require TLS.     |
 | ad_port                                  | group_vars/all/vars.yml      | The port number used to access your Active Directory service. |
 | ad_group_search_base                     | group_vars/all/vars.yml      | String defining the AD search parameters for Group lookups.   |

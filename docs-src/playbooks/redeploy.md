@@ -14,3 +14,8 @@ in a proof-of-concept environment, where you may want to regularly tear down and
     ```
 
 The playbook will delete VMs and templates.
+
+**Note:** The `clean.yml` playbook does not remove any VMs associated with the user cluster since those are created by Rancher.  Those VMs must be either deleted by deleting the user cluster in the Rancher UI or manually powering them off and deleting them from vCenter.
+
+
+

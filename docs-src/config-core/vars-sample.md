@@ -24,7 +24,6 @@ dhcp_default_lease_time: 86400                            # DHCP default lease t
 dhcp_max_lease_time: 2592000                              # DHCP maximum lease time (30 days)
 domain_name: hpe.org                                      # DNS domain name
 
-
 #
 # vcenter related settings
 #
@@ -32,7 +31,7 @@ vcenter_hostname: vcentergen10.am2.cloudra.local          # name of your vCenter
 vcenter_username: Administrator@vsphere.local             # Admin user for your vCenter environment
 vcenter_password: "{{ vault_vcenter_password }}"          # Encrypted in group_vars/all/vault.yml
 vcenter_validate_certs: false                             # true not implemented/tested
-vcenter_cluster: Rancher                                  # Name of your SimpliVity Cluster (must exist)
+vcenter_cluster: OCP                                      # Name of your SimpliVity Cluster (must exist)
 vm_dvswitch: dvsMgmt2960                                  # Distributed Virtual Switch containing vm_portgroup (must exist)
 vm_portgroup: hpe2964                                     # portgroup that the VMS connect to (must exist)
 datacenter: DEVOPS                                        # Name of your DATACENTER (must exist)
@@ -59,6 +58,7 @@ ssh_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUAPiKRsniRNFeAsbwxY1/dfAG6Bhhsc
 csi_datastore_name: hpecsi
 csi_storageclass_name: csivols
 csi_datastore_size: 20
+csi_driver: vsphere
 
 
 #
@@ -74,20 +74,26 @@ simplivity_appliances:
 proxy:
   http:  "http://10.12.7.21:8080/"     #  http:  "http://user:password@10.12.7.21:8080/"
   https:  "http://10.12.7.21:8080/"
-  except: "localhost,.am2.cloudra.local,.hpe.org"
-
+  except: "localhost,.am2.cloudra.local,.hpe.org,10.15.152.0/24"
 
 rancher:
-  url: https://lb1.hpe.org        # this the FQDN at which Rancher Server can be reached
-  hostname: lb1.hpe.org           # generally same fqdn as the one in the url above but not necessarily
+  url: https://rancher.hpe.org    # this the FQDN at which Rancher Server can be reached
+  hostname: rancher.hpe.org       # generally same fqdn as the one in the url above but not necessarily
+  version: 2.3.6                  # version of rancher server 2.3.6 tested, defaults to 'latest' in rancher-stable
   validate_certs: False           #
   apiversion: v3                  # Playbooks designed for v3 of the API
   engineInstallURL: 'https://releases.rancher.com/install-docker/19.03.sh'    # All node templates use the same version of Docker
+# If user supplied certificate wanted
+#  tls_source: secret                               # either rancher or secret, letsEncrypt unsupported (See doc), rancher is the default
+#  tls_privateCA: true                              # if using a private root CA, default is false (ie you use a public root CA)
+#  tls_cacert_file: /home/core/certs/cacerts.pem    # file containing the root CA certificate. Relevant if tls_privateCA is true
+#  tls_certchain_file: /home/core/certs/cachain.pem # file containing the server certificate followed by the intermediate CA certs (if any)
+#  tls_certkey_file: /home/core/certs/tlskey.pem    # file containing the private key for the Rancher server
 
 user_cluster:
 # vm_template: hpe-ubuntu-tpl     # an existing VM template, the admin template by default
   name: api                       # name of the user cluster
-  csi: false                      # true to be done
+  csi: false
   vcenter_credsname: mycreds2     # only one vCenter cluster supported at this time
   pools:
    - name: master-pool
@@ -112,4 +118,32 @@ user_cluster:
        cpu_count: 2
        disk_size: 40000
        memory_size: 4096
+
+#
+# Active Directory Integration
+#
+#ad_ca_file: "path to your AD CA certificate in pem format"                # A default file is provided in playbooks/roles/ad-auth/files/ca.pem
+ad_login_domain: AM2                                                      # Name of the AD Domain
+ad_server_name: mars-adds.am2.cloudra.local                               # Name of the AD Server
+ad_service_account_username: adreader                                     # AD service account username
+ad_service_account_password: "{{ vault_ad_service_account_password }}"    # AD service account password
+ad_tls: true                                                              # Use TLS for AD
+ad_port: 636                                                              # Port number to access AD service
+ad_group_search_base: ""                                                  # Search base string used for group lookups
+ad_group_search_filter: ""                                                # Search filter for group lookups
+ad_user_search_base: "cn=Users,dc=am2,dc=cloudra,dc=local"                # Search base string used for user lookups
+ad_user_search_filter: ""                                                 # Search filer for user lookups
+
+#
+# Loadbalancer Variables
+#
+loadbalancers:
+  backend:
+    vip: 10.15.152.9/24
+    vrrp_router_id: 51
+    nginx_max_fails: 1
+    nginx_fail_timeout: 10s
+    nginx_proxy_timeout: 10m
+    nginx_proxy_connect_timeout: 60s
+
 ```       

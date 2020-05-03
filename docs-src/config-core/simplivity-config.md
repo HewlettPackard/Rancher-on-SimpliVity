@@ -28,7 +28,7 @@ otherwise it will default to 1024 GiB.
 
 |Variable|File|Description|
 |:-------|:---|:----------|
-|`datastore`|group_vars/all/vars.yml|The datastores for storing VMs. For example, ['Rancher_HPE']|
+|`datastore`|group_vars/all/vars.yml|The datastores for storing VMs. For example, `Rancher_HPE`|
 |`datastore_size`|group_vars/all/vars.yml|Optional size of datastore, specified in GiB. Defaults to 1024 GiB.|
 
 You can take advantage of this functionality when provisioning persistent volumes for Container Storage

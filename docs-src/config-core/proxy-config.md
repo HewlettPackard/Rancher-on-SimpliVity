@@ -28,24 +28,5 @@ A sample proxy configuration is provided in the file `group_vars/all/vars.yml.sa
 proxy:
   http:  "http://10.12.7.21:8080/"
   https:  "http://10.12.7.21:8080/"
-  except: "localhost,.am2.cloudra.local,.rancher-demo.org"
+  except: "localhost,.am2.cloudra.local,.rancher-demo.org,10.15.155.0/24"
 ```
-
-
-
-## Configuring the Ansible controller
-
-The Ansible controller should be configured to match the proxy requirements for your environment. The only **required** proxy configuration on the Ansible node is to ensure that the solution playbooks can install any necessary software packages, such as a local HTTP server. This can be done, for example, by adding a proxy entry to the `/etc/dnf/dnf.conf` file or by setting system-wide proxy settings in the `/etc/environment` file.
-
-The following is an example of how to configure a proxy server in the `/etc/dnf/dnf.conf` file:
-
-```
-[main]
-gpgcheck=1
-installonly_limit=3
-clean_requirements_on_remove=True
-best=False
-skip_if_unavailable=True
-proxy=http://web-proxy.hpecloud.org:8080
-```
-

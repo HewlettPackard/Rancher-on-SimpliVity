@@ -72,15 +72,15 @@ The following figure shows the generated node templates in the UI, accessed via 
 ## Sample user cluster definition
 
 The sample definition has one master pool, with a single node containing the master and etcd components. There is also
-a single worker pool, with 2 nodes that only run worker components. In this example, the VM template is not specified 
-so the default is to use the same template as that used for the Rancher admin cluster
+a single worker pool, with 2 nodes that only run worker components. In this example, the VM template is commented out, 
+so the default is to use the same template as that used for the Rancher admin cluster.
 
 ```
 user_cluster:
-# vm_template: hpe-ubuntu-tpl     # an existing VM template, the admin template by default
-  name: api                       # name of the user cluster
-  csi: false                      # true to be done
-  vcenter_credsname: mycreds2     # only one vCenter cluster supported at this time
+# vm_template: hpe-ubuntu-tpl
+  name: api
+  csi: false
+  vcenter_credsname: gmcg-creds
   pools:
    - name: master-pool
      etcd: true
