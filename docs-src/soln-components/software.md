@@ -8,8 +8,8 @@ The software components used in this Reference Configuration are listed below.
 |Component|Software|Tested version|
 |:-------|:-------|:---|
 |**Ansible Controller**|OS|Fedora 31|
-| |Ansible|2.9.5|
-| |Python|3.7.5|
+| |Ansible|2.9.5+|
+| |Python|3.7.5+|
 |**Rancher**|Server|2.3.6|
 | |Kubernetes|1.17.2|
 | |Docker|19.03 <!-- TODO Docker version -->||

@@ -111,7 +111,7 @@ In this stage, a number of first-time log in operations are performed, including
 
 - Create cloud credentials
 - Create node template, from user (or the default admin) template using configuration specified in `user-template` variable in the `group_vars/all/vars.yml` file
-- Deploy the user cluster with the Rancher API, using the node template and the configuration in the `cluster.yml.j2` Jinga template file.
+- Deploy the user cluster with the Rancher API, using the node template.
 
 In the current release, the user cluster deploys with a `kubernetesVersion` of  `v1.17.2-rancher1-2`.
 

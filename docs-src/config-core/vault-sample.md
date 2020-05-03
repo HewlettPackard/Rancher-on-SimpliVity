@@ -12,4 +12,5 @@ own vault file. To create a vault, you create a new file called `group_vars/all/
 ---
 vault_vcenter_password: 'PasswordForYourVcenter'
 vault_rancher_password: 'PasswordForRancher'
+vault_ad_service_account_password: 'PasswordForActiveDirectoryServiceAccount'
 ```

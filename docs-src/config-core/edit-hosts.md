@@ -3,9 +3,9 @@
 The `hosts` file consists of definitions for:
 
 - `Cluster` nodes for the Rancher admin cluster
-- `Support` node(s) for DHCP
+- `Support` node for DHCP
 - `Load balancer` node(s)
-- `template` for the Ubuntu template
+- `Template` for the Ubuntu template
 
 
 ## Rancher admin cluster nodes
@@ -34,6 +34,7 @@ information in the `loadbalancer` group.
 ```
 [loadbalancer]
 hpe-lb1       ansible_host=10.15.152.11
+hpe-lb1       ansible_host=10.15.152.12
 ```
 
 ## Template

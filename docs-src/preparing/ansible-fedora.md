@@ -58,9 +58,28 @@ Log in to the Ansible controller node as the `rancher` user and run the followin
 and the required Python dependencies:
 
 ```
-$ sudo dnf update -y --exclude=ansible
+$ sudo dnf update -y 
 $ sudo dnf install -y git ansible python3-netaddr python3-requests python3-pyvmomi
 ```
+
+## Configuring proxy for the Ansible controller
+
+The Ansible controller should be configured to match the proxy requirements for your environment. 
+This can be done, for example, by adding a proxy entry to the `/etc/dnf/dnf.conf` file or by setting
+system-wide proxy settings in the `/etc/environment` file.
+
+The following is an example of how to configure a proxy server in the `/etc/dnf/dnf.conf` file:
+
+```
+[main]
+gpgcheck=1
+installonly_limit=3
+clean_requirements_on_remove=True
+best=False
+skip_if_unavailable=True
+proxy=http://web-proxy.hpecloud.org:8080
+```
+
 
 
 
