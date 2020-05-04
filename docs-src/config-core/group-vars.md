@@ -40,7 +40,6 @@ The following variables apply to all node groups:
 
 |Variable|Scope|Description|
 |:-------|:----|:----------|
-|`ip_addr`|All nodes|IP address in CIDR format to be given to a node|
 |`cpus`|All nodes/groups|Number of virtual CPU cores to assign to a VM or a group of VMs|
 |`ram`|All nodes/groups|Amount of RAM in MB to assign to a VM or a group of VMs|
 |`disk1_size`|All nodes/groups|Size of the disk in GB to attach to a VM or a group of VMs. |
