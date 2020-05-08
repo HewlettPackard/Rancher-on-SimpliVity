@@ -36,4 +36,4 @@ running on HPE SimpliVity hardware.
 
 The terminology can be better visualized with below high lever architecture diagram
 
-![rancher-highlevel-architecture-png]:<../images/racher_highlevel_arch.png> "Figure. Rancher high level architecture"
+![rancher-highlevel-architecture-png](../images/racher_highlevel_arch.png) "Figure. Rancher high level architecture"
