@@ -1,7 +1,7 @@
 # Download required software
 
 Once you have satisfied the prerequisites and configured all of the variables to match your environment,
-you need to download the required software by running the `playbooks/getkits.yml` :
+you need to download the required software by running the `playbooks/getkits.yml`:
 
 ```
 $ cd ~/Rancher-on-SimpliVity
@@ -19,7 +19,7 @@ The following software is downloaded:
 
 ## Software versions
 
-The version of software downloaded is determined by the settings in the file `playbooks/roles/kits/defaults/main.yml.
+The version of software downloaded is determined by the settings in the file `playbooks/roles/kits/defaults/main.yml`.
 The versions at the time of writing are as follows:
 
 ```
