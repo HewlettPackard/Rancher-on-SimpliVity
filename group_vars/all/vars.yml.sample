@@ -85,6 +85,7 @@ proxy:
 rancher:
   url: https://rancher.hpe.org    # this the FQDN at which Rancher Server can be reached
   hostname: rancher.hpe.org       # generally same fqdn as the one in the url above but not necessarily
+#  channel: stable                # latest, stable or alpha, default 'stable'
   version: 2.3.6                  # version of rancher server 2.3.6 tested, defaults to 'latest' in rancher-stable
   validate_certs: False           #
   apiversion: v3                  # Playbooks designed for v3 of the API
