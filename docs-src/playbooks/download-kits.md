@@ -13,7 +13,7 @@ The following software is downloaded:
 
 - The `rke` command line tool
 - The `rancher` command line tool
-- The Ubuntu 10.04 cloud image from Ubuntu (OVA)
+- The Ubuntu 18.04 cloud image from Ubuntu (OVA)
 - The `kubectl` command line tool
 - The `helm` command line tool
 
