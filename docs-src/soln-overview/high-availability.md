@@ -18,7 +18,7 @@ where `cluster_name` is the name of your cluster, as defined in the `group_vars/
 ## Deploying two load balancers
 
 You can configure the playbooks to deploy two load balancers in an active-active configuration to provide high
-availability access. These nodes run `keepalived` and `HAproxy`. The load balancers are hosted on two VMs that
+availability access. These nodes run `keepalived` and `nginx`. The load balancers are hosted on two VMs that
 are guaranteed to run on two different ESXi host through using an anti-affinity rule named
 
 ```
