@@ -27,9 +27,7 @@ jobs:
     - run: |
         pwd
         ls
-        cd source
-        pwd
-        ls
+
 
 
 
@@ -41,9 +39,7 @@ jobs:
     - run: |
         pwd
         ls
-        cd dest
-        pwd
-        ls
+
 
 
     - name: Use Node.js ${{ matrix.node-version }}
@@ -66,10 +62,8 @@ jobs:
         cd source
         pwd
         npm run docs:build
-        ls
-        cd ..
-        pwd
-        ls
+
+
 
         
     - run: |
