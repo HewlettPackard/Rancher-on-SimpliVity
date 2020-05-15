@@ -16,13 +16,22 @@
 ---
  
 - hosts: all:!local:!template
-  name: Delete VMs and Templates
+  name: Delete VMs but the template
   gather_facts: false
   roles:
   - role: vspherevm
     vars:
       decommission: yes
- 
+
+- hosts: template
+  name: Delete Template
+  gather_facts: false
+  roles:
+  - role: vspherevm
+    vars:
+      decommission: yes
+    when: delete_templates | bool
+
 - hosts: localhost
   name: Delete Local artifact
   roles:

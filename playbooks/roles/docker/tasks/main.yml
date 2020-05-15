@@ -85,6 +85,7 @@
     export HTTP_PROXY={{ proxy.http }}
     export HTTPS_PROXY={{ proxy.http }}
     export NO_PROXY={{ proxy.except }}
+    swapoff -a
     curl {{ docker_install_script }} | sh
   when: proxy is defined
 

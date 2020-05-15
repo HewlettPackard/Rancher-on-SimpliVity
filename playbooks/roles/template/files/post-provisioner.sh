@@ -1,3 +1,4 @@
+#!/bin/bash -eux
 ###
 # Copyright (2020) Hewlett Packard Enterprise Development LP
 #
@@ -12,26 +13,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-###
+### 
+apt-get -y autoremove
+apt-get -y update
+apt-get -y install cloud-init
+rm /etc/netplan/*
+cat <<EOF >/etc/netplan/50-cloud-init.yaml
+network:
+    ethernets:
+        enp0s3:
+            dhcp4: true
+    version: 2
+EOF
 
-#
-# Don't change anything in this file unless you know what you are doing
-#
+: > /etc/machine-id
+history -c
 
-#
-# Rely on DRS to place VMs, if DRS is not enabled, this variable can be specified in the inventory file for each host
-#
-esxi_host: ''
-
-#
-# name of the ansible/backend interface as seen be the OS
-#
-rancher_iface: ansible0  # cloud-init will rename the first interface like this
-
-#
-#
-# 
-install_dir: "{{ lookup('env','HOME') }}/.svtrancher" 
-kits_folder: "{{ lookup('env','HOME') }}/kits"
-admin_ova_path: "{{ kits_folder }}/ubuntu1804.ova"
-admin_template: "{{ groups['template'][0] }}"
