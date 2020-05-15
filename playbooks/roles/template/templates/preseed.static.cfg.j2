@@ -30,8 +30,16 @@ d-i clock-setup/ntp-server string {{ ntp_servers[0] }}
 d-i finish-install/reboot_in_progress note
 d-i grub-installer/only_debian boolean true
 d-i grub-installer/with_other_os boolean true
+
+d-i partman-basicfilesystems/no_swap boolean false
+d-i partman-auto/expert_recipe string myroot :: 1000 50 -1 ext4 \
+     $primary{ } $bootable{ } method{ format } \
+     format{ } use_filesystem{ } filesystem{ ext4 } \
+     mountpoint{ / } \
+    .
+d-i partman-auto/choose_recipe select myroot
 d-i partman-auto/disk string /dev/sda
-d-i partman-auto/choose_recipe select atomic
+#d-i partman-auto/choose_recipe select atomic
 d-i partman-auto/method string regular
 d-i partman/choose_partition select finish
 d-i partman/confirm boolean true
