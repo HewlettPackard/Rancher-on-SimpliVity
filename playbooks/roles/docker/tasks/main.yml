@@ -79,6 +79,14 @@
   when: proxy is defined
   notify: Restart Docker
 
+- name: Verify Docker status
+  become: true
+  shell: |
+    docker version
+  register: res
+  changed_when: false
+  failed_when: false
+
 - name: Install Docker via Proxy
   become: true
   shell: |
@@ -87,12 +95,25 @@
     export NO_PROXY={{ proxy.except }}
     swapoff -a
     curl {{ docker_install_script }} | sh
-  when: proxy is defined
+  when:
+  - proxy is defined
+  - res.rc != 0
 
 - name: Install Docker without Proxy
   become: true
-  shell: curl {{ docker_install_script }} | sh
-  when: proxy is not defined
+  shell: 
+    swapoff -a
+    curl {{ docker_install_script }} | sh
+  when: 
+  - proxy is not defined
+  - res.rc != 0
+
+- name: Disable SWAP in fstab
+  become: true
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1'
 
 - name: Add user to Docker group
   shell: whoami
