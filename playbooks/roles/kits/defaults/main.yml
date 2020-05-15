@@ -27,22 +27,24 @@ kits_bom:
     script: |
       cd {{ kits_folder }}
       tar -xvf helm-{{ kits_helm_cli_version }}-linux-amd64.tar.gz linux-amd64/helm
-    file: "{{ kits_folder }}/linux-amd64/helm"
+      mv ./linux-amd64/helm .
 
   - name: kubectlcli
+    clienttool: yes
     url: https://storage.googleapis.com/kubernetes-release/release/{{ kits_kubectl_cli_version }}/bin/linux/amd64/kubectl
-    file: "{{ kits_folder }}/kubectl"
 
   - name: ranchercli
     url:  https://github.com/rancher/cli/releases/download/{{ kits_rancher_cli_version }}/rancher-linux-amd64-{{ kits_rancher_cli_version }}.tar.gz
     script: |
       cd {{ kits_folder }}
       tar -xvf rancher-linux-amd64-{{ kits_rancher_cli_version }}.tar.gz  ./rancher-{{ kits_rancher_cli_version }}/rancher
-    file: "{{ kits_folder }}/rancher-{{ kits_rancher_cli_version }}/rancher"
+      mv  ./rancher-{{ kits_rancher_cli_version }}/rancher . 
 
   - name: rkecli
     url: https://github.com/rancher/rke/releases/download/{{ kits_rke_version }}/rke_linux-amd64
-    file: "{{ kits_folder }}/rke_linux-amd64"
+    script: |
+      cd {{ kits_folder }}
+      mv ./rke_linux-amd64 ./rke
 
   - name: packer
     url: https://releases.hashicorp.com/packer/1.5.6/packer_1.5.6_linux_amd64.zip
@@ -50,7 +52,6 @@ kits_bom:
     script: |
       cd {{ kits_folder }}
       unzip -o packer_1.5.6_linux_amd64.zip
-    file: "{{ kits_folder }}/packer"
 
   - name: os_iso
     url: "http://cdimage.ubuntu.com/releases/18.04/release/ubuntu-18.04.4-server-amd64.iso"
