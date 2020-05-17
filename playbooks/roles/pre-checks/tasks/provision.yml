@@ -14,6 +14,19 @@
 # limitations under the License.
 ###
 ---
+- name: Check if proxy is difined or not.
+  set_fact:
+    env: {}
+  when: proxy is not defined
+
+- name: Ensure no_proxy is set for local adddress.
+  set_fact:
+    env:
+      http_proxy: "{{ proxy.http }}"
+      https_proxy: "{{ proxy.http }}"
+      no_proxy: "{{ proxy.except }}"
+  when: proxy is defined
+
 - name: "Test reachability to vCenter host: {{ vcenter_hostname }}"
   delegate_to: localhost
   shell: ping -c 1 -w 5 "{{ vcenter_hostname }}"
@@ -26,18 +39,21 @@
   command: "{{ govc_file }} ls"
   changed_when: false
   register: govc_ls_info
+  environment: "{{ env }}"
 
 - name: "Verify existence of Datacenter: {{ datacenter }}"
   delegate_to: localhost
   command: "{{ govc_file }} datacenter.info {{ datacenter }}"
   changed_when: false
   register: govc_dc_info
+  environment: "{{ env }}"
 
 - name: "Verify existence of Portgroup: {{ vm_portgroup }} in DVSwitch: {{ vm_dvswitch }}"
   delegate_to: localhost
   command: "{{ govc_file }} dvs.portgroup.info -pg {{ vm_portgroup }} {{ vm_dvswitch }}"
   changed_when: false
   register: govc_pg_info
+  environment: "{{ env }}"
 
 - name: Verify IP addresses for RKE Admin Cluster are not in use
   delegate_to: localhost
@@ -64,6 +80,7 @@
   vars:
     packages:
     - ntpdate
+  environment: "{{ env }}"
 
 - name: "Verify NTP server(s): {{ ntp_servers | join (', ') }}"
   delegate_to: localhost
