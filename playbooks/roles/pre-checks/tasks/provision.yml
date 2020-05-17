@@ -14,6 +14,17 @@
 # limitations under the License.
 ###
 ---
+- name: Check if proxy is difined or not.
+  set_fact:
+    env: {}
+  when: proxy is not defined
+
+- name: Ensure no_proxy is set for local adddress.
+  set_fact:
+    env:
+      no_proxy: "{{ proxy.except }}"
+  when: proxy is defined
+
 - name: "Test reachability to vCenter host: {{ vcenter_hostname }}"
   delegate_to: localhost
   shell: ping -c 1 -w 5 "{{ vcenter_hostname }}"
