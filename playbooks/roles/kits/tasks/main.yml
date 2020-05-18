@@ -33,15 +33,15 @@
 
 - name: Download files
   get_url:
-    url: "{{ item.url }}"
+    url: "{{ item.value.url }}"
     dest: "{{ kits_folder }}"
-    checksum: "{{ item.hash | default('') }}"
-  with_items: "{{ kits_bom }}"
+    checksum: "{{ item.value.hash | default('') }}"
+  loop: "{{ kits_bom | dict2items }}"
   environment: "{{ env }}"
 
 - name: Run kit specific scripts
-  shell: "{{ item.script }}"
-  when: item.script is defined
-  with_items: "{{ kits_bom }}"
+  shell: "{{ item.value.script }}"
+  when: item.value.script is defined
+  loop: "{{ kits_bom | dict2items }}"
   environment: "{{ env }}"
 

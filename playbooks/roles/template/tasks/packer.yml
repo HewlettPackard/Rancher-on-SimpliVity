@@ -51,5 +51,7 @@
   delegate_to: localhost
   shell: |
     packer build {{ switch_on_error }} {{ install_dir }}/{{ packer_template }}.packer.json >{{ install_dir }}/{{ packer_template }}.packer.log
+  args:
+    chdir: "{{ install_dir }}"
   vars:
     switch_on_error: "{% if packer_debug is defined %}--on-error=abort{% else %}{% endif %}"

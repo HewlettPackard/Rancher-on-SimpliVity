@@ -14,8 +14,16 @@
 # limitations under the License.
 ### 
 ---
-- name: Generate Ubuntu Template
-  hosts: template
-  gather_facts: false
-  roles:
-  - role: template
+- name: See if VM template already loaded
+  delegate_to: localhost
+  vmware_guest_info:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    datacenter: "{{ datacenter }}"
+    folder: "{{ datacenter }}/vm/{{ admin_folder }}"
+    validate_certs: "{{ vcenter_validate_certs }}"
+    name: "{{ template }}"
+  failed_when: false
+  register: template_facts
+
