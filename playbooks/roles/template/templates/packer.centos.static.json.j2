@@ -1,0 +1,58 @@
+{
+
+  "builders": [
+    {
+      "type": "vsphere-iso",
+      "vcenter_server":      "{{ vcenter_hostname }}",
+      "username":            "{{ vcenter_username }}",
+      "password":            "{{ vcenter_password }}",
+      "insecure_connection": "true",
+
+      "datacenter": "{{ datacenter }}",
+      "vm_name": "{{ packer_template }}",
+      "folder": "{{ admin_folder }}",
+      "cluster": "{{ vcenter_cluster }}",
+      "datastore": "{{ datastore }}",
+
+      "network": "{{ vm_portgroup }}",
+      "iso_urls": "{{ packer_iso_urls }}",
+      "iso_checksum": "{{ packer_iso_checksum }}",
+      "iso_checksum_type": "{{ packer_iso_checksum_type }}",
+      "floppy_files": [
+        "{{ install_dir }}/{{ packer_template }}.preseed.static.cfg"
+      ],
+
+      
+      "boot_wait": "10s",
+      "boot_order": "disk,cdrom,floppy",
+      "guest_os_type": "centos7_64Guest",
+      "vm_version": 15,
+
+      "ssh_username": "root",
+      "ssh_password": "server",
+
+      "CPUs": 2,
+      "RAM": 4096,
+      "RAM_reserve_all": false,
+      "disk_controller_type": "pvscsi",
+      "disk_size":        8192,
+      "disk_thin_provisioned": true,
+      "network_card": "vmxnet3",
+
+      "boot_command": [
+        "<esc><wait>",
+        "linux ks=hd:fd0:/{{ packer_template }}.preseed.static.cfg<enter>"
+      ]
+    }
+  ],
+  
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo yum install -y cloud-init",
+        "sudo yum install -y cloud-utils-growpart"
+      ]
+    }
+  ]
+}

@@ -14,11 +14,32 @@
 # limitations under the License.
 ###
 ---
+
 kits_folder: "{{ lookup('env','HOME') }}/kits"
+
+# the version number below are helpers and only helpers. They are used to make the kits_bom array look better and
+# they rely on naming conventions which is beyond the control of HPE. 
+
 kits_rke_version: v1.0.4
 kits_rancher_cli_version: v2.3.2
 kits_kubectl_cli_version: v1.17.2
 kits_helm_cli_version: v3.1.2
+
+ubuntu_iso:
+  url: "http://cdimage.ubuntu.com/releases/18.04/release/ubuntu-18.04.4-server-amd64.iso"
+  hash: "sha256:e2ecdace33c939527cbc9e8d23576381c493b071107207d2040af72595f8990b"
+
+centos_everything_iso:
+  url: "http://centos.mirror.constant.com/7.8.2003/isos/x86_64/CentOS-7-x86_64-Everything-2003.iso"
+  hash: "sha256:4120aff542c2f9a30bcf90d4d79e39511e5d9eabdf202566a94ff24ea7f0974c"
+
+centos_min_iso:
+  url: "http://centos.mirror.constant.com/7.8.2003/isos/x86_64/CentOS-7-x86_64-Minimal-2003.iso"
+  hash: "sha256:659691c28a0e672558b003d223f83938f254b39875ee7559d1a4a14c79173193"
+
+os_iso: "{% if packer_os_flavor is defined and packer_os_flavor == 'centos' %}{{ centos_min_iso }}{% else %}{{ ubuntu_iso }}{% endif %}"
+# end of helpers
+
 
 kits_bom:
   helmcli:
@@ -52,6 +73,4 @@ kits_bom:
       cd {{ kits_folder }}
       unzip -o packer_1.5.6_linux_amd64.zip
 
-  os_iso:
-    url: "http://cdimage.ubuntu.com/releases/18.04/release/ubuntu-18.04.4-server-amd64.iso"
-    hash: "sha256:e2ecdace33c939527cbc9e8d23576381c493b071107207d2040af72595f8990b"
+  os_iso: "{{ os_iso }}"

@@ -35,7 +35,7 @@
   vars:
     packages:
     - firewalld
-    - dhcp-server
+    - dhcp
   when: ansible_distribution == "CentOS"
 
 - name: Enable firewall

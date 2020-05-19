@@ -20,14 +20,15 @@
       "ssh_username": "{{ ansible_user }}",
       "ssh_password": "ThisIsATemporaryPassword",
 
-      "CPUs":             1,
-      "RAM":              1024,
+      "CPUs":             2,
+      "RAM":              4096,
 
       "disk_controller_type":  "pvscsi",
       "disk_size":        8192,
       "disk_thin_provisioned": true,
 
       "network_card": "vmxnet3",
+      "convert_to_template": true,
       "network": "{{ vm_portgroup }}",
       "iso_urls": "{{ packer_iso_urls }}",
       "iso_checksum": "{{ packer_iso_checksum }}",

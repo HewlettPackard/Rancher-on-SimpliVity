@@ -1,3 +1,4 @@
+#!/bin/bash -eux
 ###
 # Copyright (2020) Hewlett Packard Enterprise Development LP
 #
@@ -13,9 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ### 
----
-packer_template: "{{ admin_template | default('template') }}"
-packer_iso_urls: "{{ kits_folder }}/{{ kits_bom.os_iso.url | basename }}"
-packer_iso_checksum: "{{ kits_bom.os_iso.hash.split(':')[1] }}"
-packer_iso_checksum_type: "{{ kits_bom.os_iso.hash.split(':')[0] }}"
-packer_os_flavor: ubuntu
+

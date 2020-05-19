@@ -34,7 +34,7 @@
 - name: Download files
   get_url:
     url: "{{ item.value.url }}"
-    dest: "{{ kits_folder }}"
+    dest: "{{ kits_folder }}/{{ item.value.url | basename }}"
     checksum: "{{ item.value.hash | default('') }}"
   loop: "{{ kits_bom | dict2items }}"
   environment: "{{ env }}"

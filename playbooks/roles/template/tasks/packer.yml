@@ -29,22 +29,22 @@
     mode: u=rwx,g=rx,o=rx
   with_items: "{{ packer_client_tools }}"
 
-- name: Generate preseed file for Ubuntu
+- name: "Generate preseed file for {{ packer_os_flavor }}"
   delegate_to: localhost
   template:
-    src: preseed.static.cfg.j2
+    src: "preseed.{{ packer_os_flavor }}.cfg.j2"
     dest: "{{ install_dir }}/{{ packer_template }}.preseed.static.cfg"
 
 - name: Copy post install shell
   delegate_to: localhost
   copy:
-     src: post-provisioner.sh
+     src: "{{ packer_os_flavor }}-post-provisioner.sh"
      dest: "{{ install_dir }}/{{ packer_template }}.post-provisioner.sh"
 
 - name: Generate Packer Build File
   delegate_to: localhost
   template:
-    src: packer.ubuntu.static.json.j2
+    src: "packer.{{ packer_os_flavor }}.static.json.j2"
     dest: "{{ install_dir }}/{{ packer_template }}.packer.json"
 
 - name: Generate Template using packer
