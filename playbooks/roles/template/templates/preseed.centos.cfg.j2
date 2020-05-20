@@ -13,7 +13,7 @@ rootpw --iscrypted $6$rhel6usgcb$aS6oPGXcPKp3OtFArSrhRwu6sN8q2.yEGY7AIwDOQd23YCt
 # --enabled	reject incoming connections that are not in response to outbound requests
 # --ssh		allow sshd service through the firewall
 # firewall --enabled --ssh
-firewall --enabled --ssh
+firewall --disabled
 
 # Set up the authentication options for the system (required)
 # --enableshadow	enable shadowed passwords by default
