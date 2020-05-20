@@ -50,9 +50,7 @@ cluster_name: hpe                                         # Name of the K8S Clus
 #
 user_folder: hpe                                          # folder and pool name for the user cluster VMs, created if they are not found
 admin_folder: hpeRancher                                  # Folder and pool name for Rancher Cluster VMs and  Templates
-admin_template: hpe-ubuntu-tpl
-#admin_template: hpe-centos-tpl
-
+#packer_os_flavor: ubuntu                                 # OS flavor of the template, can be ubuntu (default) or centos. case sensitive
 #
 # Public key to use for login in the rancher nodes (the VM hosting the Rancher Cluster)
 #
