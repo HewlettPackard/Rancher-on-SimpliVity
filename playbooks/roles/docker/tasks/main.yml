@@ -101,7 +101,7 @@
 
 - name: Install Docker without Proxy
   become: true
-  shell: 
+  shell: |
     swapoff -a
     curl {{ docker_install_script }} | sh
   when: 

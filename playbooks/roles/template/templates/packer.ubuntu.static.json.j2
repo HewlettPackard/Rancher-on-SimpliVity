@@ -64,11 +64,13 @@
         "DEBIAN_FRONTEND=noninteractive",
         "UPDATE=true",
         "DISABLE_IPV6=true",
-        "SSH_USERNAME={{ ansible_user }}",
-        "SSH_PASSWORD=ThisIsATemporaryPassword",
+{% if proxy is defined %}
         "http_proxy={{ proxy.http }}",
         "https_proxy={{ proxy.https }}",
-        "no_proxy={{ proxy.except }}"
+        "no_proxy={{ proxy.except }}",
+{% endif %}
+        "SSH_USERNAME={{ ansible_user }}",
+        "SSH_PASSWORD=ThisIsATemporaryPassword"
         ],
       "execute_command": "echo 'ThisIsATemporaryPassword'|{{ '{{' }}.Vars{{ '}}' }} sudo -E -S bash '{{ '{{' }}.Path{{ '}}' }}'",
       "expect_disconnect": true,
