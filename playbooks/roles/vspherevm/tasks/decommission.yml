@@ -40,24 +40,3 @@
     name: "{{ inventory_hostname }}"
     state: absent
 
--  name: Compile List of templates
-   delegate_to: localhost
-   set_fact: 
-     list_of_templates: "{{ play_hosts | map ('extract', hostvars, ['template'] ) | list | unique }}"
-
-# run once to avoid race conditions with all nodes initiating a VM delete
-- name: Delete Templates
-  run_once: true
-  delegate_to: localhost
-  vmware_guest:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
-    validate_certs: "{{ vcenter_validate_certs }}"
-    datacenter: "{{ datacenter }}"
-    folder: "{{ datacenter }}/vm/{{ admin_folder }}"
-    name: "{{ item }}"
-    state: absent
-  with_items:
-  - "{{ list_of_templates }}"
-  when: delete_templates | bool

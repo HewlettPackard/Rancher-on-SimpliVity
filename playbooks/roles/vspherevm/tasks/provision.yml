@@ -14,5 +14,4 @@
 # limitations under the License.
 ### 
 ---
-- include_tasks: provision_template.yml
 - include_tasks: provision_vm.yml

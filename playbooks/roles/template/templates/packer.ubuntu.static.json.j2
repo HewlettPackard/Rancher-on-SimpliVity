@@ -1,0 +1,83 @@
+{
+  "builders": [
+    {
+      "type": "vsphere-iso",
+
+      "vcenter_server":      "{{ vcenter_hostname }}",
+      "username":            "{{ vcenter_username }}",
+      "password":            "{{ vcenter_password }}",
+      "insecure_connection": "true",
+      "datacenter": "{{ datacenter }}",
+
+      "vm_name": "{{ packer_template }}",
+      "folder": "{{ admin_folder }}",
+      "cluster": "{{ vcenter_cluster }}",
+      "datastore": "{{ datastore }}",
+
+      "guest_os_type": "ubuntu64Guest",
+      "vm_version": 15,
+
+      "ssh_username": "{{ ansible_user }}",
+      "ssh_password": "ThisIsATemporaryPassword",
+
+      "CPUs":             2,
+      "RAM":              4096,
+
+      "disk_controller_type":  "pvscsi",
+      "disk_size":        8192,
+      "disk_thin_provisioned": true,
+
+      "network_card": "vmxnet3",
+      "convert_to_template": true,
+      "network": "{{ vm_portgroup }}",
+      "iso_urls": "{{ packer_iso_urls }}",
+      "iso_checksum": "{{ packer_iso_checksum }}",
+      "iso_checksum_type": "{{ packer_iso_checksum_type }}",
+      "floppy_files": [
+        "{{ install_dir }}/{{ packer_template }}.preseed.static.cfg"
+      ],
+      "boot_command": [
+        "<enter><wait><f6><wait><esc><wait>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs>",
+        "/install/vmlinuz",
+        " initrd=/install/initrd.gz",
+        " priority=critical",
+        " locale=en_US",
+        " file=/media/{{ packer_template }}.preseed.static.cfg",
+        "<enter>"
+      ]
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "environment_vars": [
+        "DEBIAN_FRONTEND=noninteractive",
+        "UPDATE=true",
+        "DISABLE_IPV6=true",
+{% if proxy is defined %}
+        "http_proxy={{ proxy.http }}",
+        "https_proxy={{ proxy.https }}",
+        "no_proxy={{ proxy.except }}",
+{% endif %}
+        "SSH_USERNAME={{ ansible_user }}",
+        "SSH_PASSWORD=ThisIsATemporaryPassword"
+        ],
+      "execute_command": "echo 'ThisIsATemporaryPassword'|{{ '{{' }}.Vars{{ '}}' }} sudo -E -S bash '{{ '{{' }}.Path{{ '}}' }}'",
+      "expect_disconnect": true,
+      "scripts": [
+        "{{ install_dir }}/{{ packer_template }}.post-provisioner.sh"
+        ]
+     }
+  ]
+}
+

@@ -19,4 +19,3 @@ kits_rke_version: v1.0.4
 kits_rancher_cli_version: v2.3.2
 kits_kubectl_cli_version: v1.17.2
 kits_helm_cli_version: v3.1.2
-admin_ova_path: "{{ kits_folder }}/ubuntu1804.ova"

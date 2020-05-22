@@ -3,7 +3,7 @@
 users:
   - name: {{ ansible_user }}
     gecos: HPE Rancher on SimpliVity ansible account
-    lock-passwd: false
+    lock-passwd: true
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
       - {{ ssh_key }}

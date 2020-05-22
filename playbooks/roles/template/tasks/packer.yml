@@ -1,0 +1,57 @@
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+### 
+---
+- name: Create cloud-init folder
+  delegate_to: localhost
+  file:
+    path: "{{ install_dir }}"
+    state: directory
+
+- name: Install client tools
+  delegate_to: localhost
+  become: true
+  copy:
+    src: "{{ item }}"
+    dest: /usr/local/bin/
+    mode: u=rwx,g=rx,o=rx
+  with_items: "{{ packer_client_tools }}"
+
+- name: "Generate preseed file for {{ packer_os_flavor }}"
+  delegate_to: localhost
+  template:
+    src: "preseed.{{ packer_os_flavor }}.cfg.j2"
+    dest: "{{ install_dir }}/{{ packer_template }}.preseed.static.cfg"
+
+- name: Copy post install shell
+  delegate_to: localhost
+  copy:
+     src: "{{ packer_os_flavor }}-post-provisioner.sh"
+     dest: "{{ install_dir }}/{{ packer_template }}.post-provisioner.sh"
+
+- name: Generate Packer Build File
+  delegate_to: localhost
+  template:
+    src: "packer.{{ packer_os_flavor }}.static.json.j2"
+    dest: "{{ install_dir }}/{{ packer_template }}.packer.json"
+
+- name: Generate Template using packer
+  delegate_to: localhost
+  shell: |
+    packer build {{ switch_on_error }} {{ install_dir }}/{{ packer_template }}.packer.json >{{ install_dir }}/{{ packer_template }}.packer.log
+  args:
+    chdir: "{{ install_dir }}"
+  vars:
+    switch_on_error: "{% if packer_debug is defined %}--on-error=abort{% else %}{% endif %}"

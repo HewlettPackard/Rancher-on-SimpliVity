@@ -33,4 +33,4 @@ rancher_iface: ansible0  # cloud-init will rename the first interface like this
 # 
 install_dir: "{{ lookup('env','HOME') }}/.svtrancher" 
 kits_folder: "{{ lookup('env','HOME') }}/kits"
-admin_ova_path: "{{ kits_folder }}/ubuntu1804.ova"
+admin_template: "{{ groups['template'][0] }}"

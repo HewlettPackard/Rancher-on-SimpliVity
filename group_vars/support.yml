@@ -19,7 +19,6 @@ ram: '8192'                              # RAM size in MBs
 disk1_size: '60'                         # Disk size in Gbs
 folder: "{{ admin_folder }}"             # Where the VM will be stored
 template: "{{ admin_template }}"         # Must be the same template as the admin_template
-ova_path: "{{ admin_ova_path }}"         # Must use the same OVA as the one used for the admin template
 
 networks:
   - name: '{{ vm_portgroup }}'

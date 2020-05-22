@@ -1,3 +1,4 @@
+#!/bin/bash -eux
 ###
 # Copyright (2020) Hewlett Packard Enterprise Development LP
 #
@@ -12,23 +13,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-###
+### 
+apt-get -y autoremove
+apt-get -y update
+apt-get -y install cloud-init
+rm /etc/netplan/*
+cat <<EOF >/etc/netplan/50-cloud-init.yaml
+network:
+    ethernets:
+        enp0s3:
+            dhcp4: true
+    version: 2
+EOF
 
-cpus: '2'                                # Number of vCPUs
-ram: '8192'                              # RAM size in MBs
-disk1_size: '60'                         # Disk size in Gbs
-folder: "{{ admin_folder }}"             # Where the VM will be stored
-template: "{{ admin_template }}"         # Override the default CoreOS template
+: > /etc/machine-id
+history -c
 
-networks:
-  - name: '{{ vm_portgroup }}'
-disks_specs:
-  - size_gb:  '{{ disk1_size }}'
-    type: thin
-    datastore: "{{ datastore }}"
-
-customvalues:
-  - key: cdrom.showIsoLockWarning
-    value: "FALSE"
-  - key: msg.autoanswer
-    value: "TRUE"

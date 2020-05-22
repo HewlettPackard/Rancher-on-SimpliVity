@@ -12,23 +12,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-###
-
-cpus: '2'                                # Number of vCPUs
-ram: '8192'                              # RAM size in MBs
-disk1_size: '60'                         # Disk size in Gbs
-folder: "{{ admin_folder }}"             # Where the VM will be stored
-template: "{{ admin_template }}"         # Override the default CoreOS template
-
-networks:
-  - name: '{{ vm_portgroup }}'
-disks_specs:
-  - size_gb:  '{{ disk1_size }}'
-    type: thin
-    datastore: "{{ datastore }}"
-
-customvalues:
-  - key: cdrom.showIsoLockWarning
-    value: "FALSE"
-  - key: msg.autoanswer
-    value: "TRUE"
+### 
+---
+packer_template: "{{ admin_template | default('template') }}"
+packer_iso_urls: "{{ kits_folder }}/{{ kits_bom.os_iso.url | basename }}"
+packer_iso_checksum: "{{ kits_bom.os_iso.hash.split(':')[1] }}"
+packer_iso_checksum_type: "{{ kits_bom.os_iso.hash.split(':')[0] }}"
+packer_os_flavor: ubuntu

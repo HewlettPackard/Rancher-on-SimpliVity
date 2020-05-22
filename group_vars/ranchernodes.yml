@@ -16,10 +16,9 @@
 
 cpus: '2'                           # Number of vCPUs
 ram: '8192'                         # RAM size in MBs
-disk1_size: '60'                    # Disk size in Gbs
+disk1_size: '80'                    # Disk size in Gbs
 folder: "{{ admin_folder }}"        # Where the VM will be stored
 template: "{{ admin_template }}"    # Override the default CoreOS template
-ova_path: "{{ admin_ova_path }}"    # Name of the OVA used to import the template
 
 networks:
   - name: '{{ vm_portgroup }}'

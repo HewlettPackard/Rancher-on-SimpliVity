@@ -1,0 +1,76 @@
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+###
+---
+
+kits_folder: "{{ lookup('env','HOME') }}/kits"
+
+# the version number below are helpers and only helpers. They are used to make the kits_bom array look better and
+# they rely on naming conventions which is beyond the control of HPE. 
+
+kits_rke_version: v1.0.4
+kits_rancher_cli_version: v2.3.2
+kits_kubectl_cli_version: v1.17.2
+kits_helm_cli_version: v3.1.2
+
+ubuntu_iso:
+  url: "http://cdimage.ubuntu.com/releases/18.04/release/ubuntu-18.04.4-server-amd64.iso"
+  hash: "sha256:e2ecdace33c939527cbc9e8d23576381c493b071107207d2040af72595f8990b"
+
+centos_everything_iso:
+  url: "http://centos.mirror.constant.com/7.8.2003/isos/x86_64/CentOS-7-x86_64-Everything-2003.iso"
+  hash: "sha256:4120aff542c2f9a30bcf90d4d79e39511e5d9eabdf202566a94ff24ea7f0974c"
+
+centos_min_iso:
+  url: "http://centos.mirror.constant.com/7.8.2003/isos/x86_64/CentOS-7-x86_64-Minimal-2003.iso"
+  hash: "sha256:659691c28a0e672558b003d223f83938f254b39875ee7559d1a4a14c79173193"
+
+os_iso: "{% if packer_os_flavor is defined and packer_os_flavor == 'centos' %}{{ centos_min_iso }}{% else %}{{ ubuntu_iso }}{% endif %}"
+# end of helpers
+
+
+kits_bom:
+  helmcli:
+    url:  https://get.helm.sh/helm-{{ kits_helm_cli_version }}-linux-amd64.tar.gz
+    script: |
+      cd {{ kits_folder }}
+      tar -xvf helm-{{ kits_helm_cli_version }}-linux-amd64.tar.gz linux-amd64/helm
+      mv ./linux-amd64/helm .
+
+  kubectlcli:
+    clienttool: yes
+    url: https://storage.googleapis.com/kubernetes-release/release/{{ kits_kubectl_cli_version }}/bin/linux/amd64/kubectl
+
+  ranchercli:
+    url:  https://github.com/rancher/cli/releases/download/{{ kits_rancher_cli_version }}/rancher-linux-amd64-{{ kits_rancher_cli_version }}.tar.gz
+    script: |
+      cd {{ kits_folder }}
+      tar -xvf rancher-linux-amd64-{{ kits_rancher_cli_version }}.tar.gz  ./rancher-{{ kits_rancher_cli_version }}/rancher
+      mv  ./rancher-{{ kits_rancher_cli_version }}/rancher . 
+
+  rkecli:
+    url: https://github.com/rancher/rke/releases/download/{{ kits_rke_version }}/rke_linux-amd64
+    script: |
+      cd {{ kits_folder }}
+      mv ./rke_linux-amd64 ./rke
+
+  packer:
+    url: https://releases.hashicorp.com/packer/1.5.6/packer_1.5.6_linux_amd64.zip
+    hash: 'sha256:2abb95dc3a5fcfb9bf10ced8e0dd51d2a9e6582a1de1cab8ccec650101c1f9df'
+    script: |
+      cd {{ kits_folder }}
+      unzip -o packer_1.5.6_linux_amd64.zip
+
+  os_iso: "{{ os_iso }}"

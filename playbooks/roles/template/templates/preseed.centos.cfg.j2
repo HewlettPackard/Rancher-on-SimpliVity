@@ -1,0 +1,60 @@
+install
+cdrom
+lang en_US.UTF-8
+keyboard us
+
+network --bootproto=static --ip={{ hostvars[inventory_hostname].ansible_host }} --netmask={{ rancher_subnet | ipaddr('netmask') }} --gateway={{ gateway }} --nameserver {{ dns_servers[0] }}
+
+# Set the system's root password (required)
+# Plaintext password is: server
+rootpw --iscrypted $6$rhel6usgcb$aS6oPGXcPKp3OtFArSrhRwu6sN8q2.yEGY7AIwDOQd23YCtiz9c5mXbid1BzX9bmXTEZi.hCzTEXFosVBI5ng0
+
+# Configure firewall settings for the system (optional)
+# --enabled	reject incoming connections that are not in response to outbound requests
+# --ssh		allow sshd service through the firewall
+# firewall --enabled --ssh
+firewall --disabled
+
+# Set up the authentication options for the system (required)
+# --enableshadow	enable shadowed passwords by default
+# --passalgo		hash / crypt algorithm for new passwords
+# See the manual page for authconfig for a complete list of possible options.
+authconfig --enableshadow --passalgo=sha512
+
+# State of SELinux on the installed system (optional)
+# Defaults to enforcing
+selinux --permissive
+
+# Set the system time zone (required)
+timezone --utc Etc/UTC
+
+# Specify how the bootloader should be installed (required)
+# Plaintext password is: password
+bootloader --location=mbr --append="crashkernel=auto rhgb quiet" --password=$6$rhel6usgcb$kOzIfC4zLbuo3ECp1er99NRYikN419wxYMmons8Vm/37Qtg0T8aB9dKxHwqapz8wWAFuVkuI/UJqQBU92bA5C0
+autopart --type=plain
+# Initialize all disks
+
+clearpart --linux --initlabel
+
+# Packages selection
+%packages --ignoremissing
+@^minimal
+@core
+chrony
+%end 
+
+%addon com_redhat_kdump --disable --reserve-mb='auto'
+%end
+
+%post --log=/root/ks-post.log
+{% if proxy is defined %}
+echo proxy={{ proxy.https }} >>/etc/yum.conf
+{% endif %}
+yum install -y epel-release
+yum install -y open-vm-tools
+yum install -y perl
+%end
+
+# Reboot after the installation is complete (optional)
+# --eject	attempt to eject CD or DVD media before rebooting
+reboot --eject

@@ -12,23 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-###
-
-cpus: '2'                                # Number of vCPUs
-ram: '8192'                              # RAM size in MBs
-disk1_size: '60'                         # Disk size in Gbs
-folder: "{{ admin_folder }}"             # Where the VM will be stored
-template: "{{ admin_template }}"         # Override the default CoreOS template
-
-networks:
-  - name: '{{ vm_portgroup }}'
-disks_specs:
-  - size_gb:  '{{ disk1_size }}'
-    type: thin
-    datastore: "{{ datastore }}"
-
-customvalues:
-  - key: cdrom.showIsoLockWarning
-    value: "FALSE"
-  - key: msg.autoanswer
-    value: "TRUE"
+### 
+---
+- include_tasks: pre_check.yml
+- include_tasks: vm_facts.yml
+- include_tasks: packer.yml
+  when: template_facts.instance is not defined
