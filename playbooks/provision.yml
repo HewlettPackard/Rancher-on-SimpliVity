@@ -21,6 +21,7 @@
 #######################################################################
 - name: Generate vSphere Template
   hosts: template
+  force_handlers: true
   gather_facts: false
   roles:
   - role: template

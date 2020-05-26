@@ -14,9 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ### 
-apt-get -y autoremove
 apt-get -y update
 apt-get -y install cloud-init
+apt-get -y autoremove
+
 rm /etc/netplan/*
 cat <<EOF >/etc/netplan/50-cloud-init.yaml
 network:
@@ -26,6 +27,18 @@ network:
     version: 2
 EOF
 
+#
+# clear the machine ID
+#
 : > /etc/machine-id
+
+#
+# lock the password of the account created by the Ubuntu installer
+#
+passwd -l {{ ansible_user }}
+
+#
+# Clear the history
+#
 history -c
 
