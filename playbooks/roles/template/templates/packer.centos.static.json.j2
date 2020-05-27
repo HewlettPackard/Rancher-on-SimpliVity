@@ -1,11 +1,17 @@
 {
 
+  "_comment": "Copyright (2020) Hewlett Packard Enterprise Development LP", 
+
+  "variables": {
+      "vcenter_password": ""
+  },
+
   "builders": [
     {
       "type": "vsphere-iso",
       "vcenter_server":      "{{ vcenter_hostname }}",
       "username":            "{{ vcenter_username }}",
-      "password":            "{{ vcenter_password }}",
+       "password":            "{{ '{{' }}user `vcenter_password`{{ '}}' }}",
       "insecure_connection": "true",
 
       "datacenter": "{{ datacenter }}",
@@ -51,7 +57,8 @@
       "type": "shell",
       "inline": [
         "sudo yum install -y cloud-init",
-        "sudo yum install -y cloud-utils-growpart"
+        "sudo yum install -y cloud-utils-growpart",
+        "sudo passwd -l root"
       ]
     }
   ]

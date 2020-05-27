@@ -14,4 +14,9 @@
 # limitations under the License.
 ### 
 ---
-# handlers file for template
+- name: Delete Packer Variables
+  delegate_to: localhost
+  file:
+    path: "{{ packer_variables.path }}"
+    state: absent
+  when: packer_variables.path is defined
