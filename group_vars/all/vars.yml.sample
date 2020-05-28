@@ -100,6 +100,17 @@ user_cluster:
   name: api                       # name of the user cluster
   csi: false
   vcenter_credsname: mycreds2     # only one vCenter cluster supported at this time
+  scheduledClusterScan:           # If you dont want to schedule CSI Scans simply rename this dictionary (eg NoscheduledClusterScan)
+    enabled: true                 # Refer to the Rancher Documentation for more info
+    scanConfig:
+      cisScanConfig:
+        debugMaster: false
+        debugWorker: false
+        overrideBenchmarkVersion: rke-cis-1.4
+        profile: permissive
+    scheduleConfig:
+      cronSchedule: "0 0 * * *"
+      retention: 24
   pools:
    - name: master-pool
      etcd: true
@@ -123,6 +134,7 @@ user_cluster:
        cpu_count: 2
        disk_size: 40000
        memory_size: 4096
+
 
 #
 # Active Directory Integration
