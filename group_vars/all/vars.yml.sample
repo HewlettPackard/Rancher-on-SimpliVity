@@ -100,8 +100,8 @@ user_cluster:
   name: api                       # name of the user cluster
   csi: false
   vcenter_credsname: mycreds2     # only one vCenter cluster supported at this time
-  scheduledClusterScan:           # If you dont want to schedule CSI Scans simply rename this dictionary (eg NoscheduledClusterScan)
-    enabled: true                 # Refer to the Rancher Documentation for more info
+  scheduledClusterScan:           # If you dont want to schedule CIS Scans simply rename this dictionary to (eg) NoscheduledClusterScan
+    enabled: true                 # Refer to the Rancher Documentation for more info about this datastructure
     scanConfig:
       cisScanConfig:
         debugMaster: false
