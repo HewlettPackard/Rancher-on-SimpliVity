@@ -47,3 +47,7 @@ rancherKubernetesEngineConfig:
     kubeproxy: {}
     scheduler: {}
 windowsPreferedCluster: false
+{% if user_cluster.scheduledClusterScan is defined %}
+scheduledClusterScan: {{ user_cluster.scheduledClusterScan  }}
+{% endif %}
+
