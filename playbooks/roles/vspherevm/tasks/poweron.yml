@@ -33,15 +33,21 @@
     sleep: 5
     timeout: 300
 
-- name: cloud-init-status
+- name: Disable Cloud-init
   become: true
-  shell: |
-    cloud-init status
-  changed_when: false
-  register: res
-  retries: 20
-  until: |
-    res.stdout == "status: done"
+  file:
+    state: touch
+    path: /etc/cloud/cloud-init.disabled
+
+#- name: cloud-init-status
+#  become: true
+#  shell: |
+#    cloud-init status
+#  changed_when: false
+#  register: res
+#  retries: 20
+#  until: |
+#    res.stdout == "status: done" or 
 
 - name: Attempt to detach the cloud-init CDROM from the VM
   delegate_to: localhost
