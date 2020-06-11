@@ -36,3 +36,15 @@
     state: latest
   when: ansible_distribution == "CentOS"
 
+# https://bugs.launchpad.net/netplan/+bug/1768827
+- name: Work around for Ubuntu netplan bug 1768827
+  become: true
+  shell: |
+    set -eux
+    netplan apply
+    cp /run/systemd/network/*.link /etc/systemd/network/
+    update-initramfs -u
+    touch /etc/netplan.fix
+  args:
+    creates: /etc/netplan.fix
+  when: ansible_distribution == "Ubuntu"
