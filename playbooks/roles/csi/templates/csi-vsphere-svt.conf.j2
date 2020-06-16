@@ -1,14 +1,13 @@
 [Global]
-cluster-id = "{{ vcenter_cluster }}_{{ vm_portgroup }}"
+insecure-flag = "{{ not vcenter_validate_certs }}"
 [VirtualCenter "{{ vcenter_hostname }}"]
-insecure-flag = "true"
 user = "{{ vcenter_username }}"
-password = "{{ vault_vcenter_password }}"
+password = "{{ vcenter_password }}"
 port = "443"
 datacenters = "{{ datacenter }}"
-{% if csi_driver == 'svt' %}
 [HPESimpliVity]
 ip =  "{{ simplivity_appliances[0] }}"
-user = "{{ simplivity_username }}"
+user = "{{ simplivity_username }}"  
 password = "{{ simplivity_password }}"
-{% endif %}
+[Network]
+public-network = "{{ vm_portgroup }}"
