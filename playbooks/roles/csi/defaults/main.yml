@@ -18,3 +18,25 @@ csi_datastore_name: hpecsi
 csi_storageclass_name: csivols
 csi_datastore_size: 20
 csi_driver: vsphere
+
+cloud_controller_manager_image:              "gcr.io/cloud-provider-vsphere/cpi/release/manager:latest"
+setup_snapshot_controller_image:             "quay.io/k8scsi/snapshot-controller:v2.0.1"
+
+svt_csi_controller_attacher_image:           "quay.io/k8scsi/csi-attacher:v2.2.0"
+svt_csi_controller_snapshotter_image:        "quay.io/k8scsi/csi-snapshotter:v2.1.0"
+svt_csi_controller_driver_image:             "docker.io/hpesimplivity/vsphere-csi-driver:v1.0-rc4"
+svt_csi_controller_livenessprobe_image:      "quay.io/k8scsi/livenessprobe:v2.0.0"
+svt_csi_controller_syncer_image:             "docker.io/hpesimplivity/vsphere-csi-syncer:v1.0-rc4"
+svt_csi_controller_provisioner_image:        "quay.io/k8scsi/csi-provisioner:v1.6.0"
+svt_csi_node_driver_registrar_image:         "quay.io/k8scsi/csi-node-driver-registrar:v1.3.0"
+svt_csi_node_driver_image:                   "docker.io/hpesimplivity/vsphere-csi-driver:v1.0-rc4"
+svt_csi_node_driver_livenessprobe_image:     "quay.io/k8scsi/livenessprobe:v2.0.0"
+
+vsphere_csi_controller_attacher_image:       "quay.io/k8scsi/csi-attacher:v1.1.1"
+vsphere_csi_controller_driver_image:         "gcr.io/cloud-provider-vsphere/csi/release/driver:v1.0.2"
+vsphere_csi_controller_livenessprobe_image:  "quay.io/k8scsi/livenessprobe:v1.1.0"
+vsphere_csi_controller_syncer_image:         "gcr.io/cloud-provider-vsphere/csi/release/syncer:v1.0.2"
+vsphere_csi_controller_provisioner_image:    "quay.io/k8scsi/csi-provisioner:v1.2.2"
+vsphere_csi_node_driver_registrar_image:     "quay.io/k8scsi/csi-node-driver-registrar:v1.1.0"
+vsphere_csi_node_driver_image:               "gcr.io/cloud-provider-vsphere/csi/release/driver:v1.0.2"
+vsphere_csi_node_driver_livenessprobe_image: "quay.io/k8scsi/livenessprobe:v1.1.0"

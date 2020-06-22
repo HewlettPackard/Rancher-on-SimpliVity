@@ -43,7 +43,7 @@ spec:
       serviceAccountName: cloud-controller-manager
       containers:
         - name: vsphere-cloud-controller-manager
-          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:latest
+          image: "{{ cloud_controller_manager_image }}"
           args:
             - --v=2
             - --cloud-provider=vsphere

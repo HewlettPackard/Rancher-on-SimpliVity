@@ -28,7 +28,7 @@ spec:
       dnsPolicy: "Default"
       containers:
         - name: csi-attacher
-          image: quay.io/k8scsi/csi-attacher:v2.2.0
+          image: "{{ svt_csi_controller_attacher_image }}"
           args:
             - "--v=4"
             - "--timeout=300s"
@@ -41,7 +41,7 @@ spec:
             - mountPath: /csi
               name: socket-dir
         - name: csi-snapshotter
-          image: quay.io/k8scsi/csi-snapshotter:v2.1.0
+          image: "{{ svt_csi_controller_snapshotter_image }}"
           args:
             - "--v=5"
             - "--csi-address=$(ADDRESS)"
@@ -54,7 +54,7 @@ spec:
             - name: socket-dir
               mountPath: /csi
         - name: svt-csi-controller
-          image: docker.io/hpesimplivity/vsphere-csi-driver:v1.0-rc3
+          image: "{{ svt_csi_controller_driver_image }}"
           args:
             - "--v=4"
           imagePullPolicy: "Always"
@@ -84,7 +84,7 @@ spec:
             periodSeconds: 2
             failureThreshold: 5
         - name: liveness-probe
-          image: quay.io/k8scsi/livenessprobe:v2.0.0
+          image: "{{ svt_csi_controller_livenessprobe_image }}"
           args:
             - "--csi-address=$(ADDRESS)"
           env:
@@ -94,7 +94,7 @@ spec:
             - mountPath: /csi
               name: socket-dir
         - name: vsphere-syncer
-          image: docker.io/hpesimplivity/vsphere-csi-syncer:v1.0-rc3
+          image: "{{ svt_csi_controller_syncer_image }}"
           args:
             - "--v=2"
             - "--leader-election"
@@ -109,7 +109,7 @@ spec:
               name: svt-config-volume
               readOnly: true
         - name: csi-provisioner
-          image: quay.io/k8scsi/csi-provisioner:v1.6.0
+          image: "{{ svt_csi_controller_provisioner_image }}"
           args:
             - "--v=4"
             - "--timeout=300s"
