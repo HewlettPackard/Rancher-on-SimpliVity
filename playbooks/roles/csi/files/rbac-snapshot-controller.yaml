@@ -5,7 +5,6 @@
 # namespace for components implementing base system functionality. For installing with
 # Vanilla Kubernetes, kube-system makes sense for the namespace.
 
----
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -84,3 +83,4 @@ roleRef:
   kind: Role
   name: snapshot-controller-leaderelection
   apiGroup: rbac.authorization.k8s.io
+

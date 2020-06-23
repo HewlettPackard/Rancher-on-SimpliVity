@@ -39,22 +39,22 @@
   register: res
 
 - fail:
-    msg: "Cannot find the kubeconfig file {{ uc_kube_config_file }} for cluster {{ user_cluster.name }} "
+    msg: "Cannot find the kubeconfig file {{ uc_kube_config_file }} for cluster {{ user_cluster.name }}"
   when: not res.stat.exists
 
 - name: Set variables specific to vSphere CSI Driver
   set_fact:
     csi_controller_rbac: "vsphere-csi-controller-rbac.yaml"
-    csi_controller_ss: "vsphere-csi-controller-ss.yaml"
-    csi_controller_node_ds: "vsphere-csi-node-ds.yaml"
+    csi_controller_deployment: "vsphere-csi-controller-ss.yaml.j2"
+    csi_controller_node_ds: "vsphere-csi-node-ds.yaml.j2"
     csi_provisioner: "csi.vsphere.vmware.com"
   when: csi_driver == "vsphere"
 
 - name: Set variables specific to SVT CSI Driver
   set_fact:
     csi_controller_rbac: "svt-csi-controller-rbac.yaml"
-    csi_controller_ss: "svt-csi-controller-deployment.yaml"
-    csi_controller_node_ds: "svt-csi-node-ds.yaml"
+    csi_controller_deployment: "svt-csi-controller-deployment.yaml.j2"
+    csi_controller_node_ds: "svt-csi-node-ds.yaml.j2"
     csi_provisioner: "csi.simplivity.hpe.com"
   when: csi_driver == "svt"
 
@@ -91,49 +91,49 @@
     state: present
     validate_certs: true
     kubeconfig: "{{ uc_kube_config_file }}"
-    definition: "{{ lookup('file','cloud-controller-manager-roles.yaml') }}"
+    definition: "{{ lookup('file', 'cloud-controller-manager-roles.yaml') }}"
 
 - name: Create Cloud Controller Manager Role Bindings
   k8s:
     state: present
     validate_certs: true
     kubeconfig: "{{ uc_kube_config_file }}"
-    definition: "{{ lookup('file','cloud-controller-manager-role-bindings.yaml') }}"
+    definition: "{{ lookup('file', 'cloud-controller-manager-role-bindings.yaml') }}"
 
-- name: Create Cloud Controller Manager Daemon Set
+- name: Create Cloud Controller Manager DaemonSet
   k8s:
     state: present
     validate_certs: true
     kubeconfig: "{{ uc_kube_config_file }}"
-    definition: "{{ lookup('file','cloud-controller-manager-ds.rancher.yaml') }}"
+    definition: "{{ lookup('template', 'cloud-controller-manager-ds.rancher.yaml.j2') }}"
 
 - name: Create Controller RBAC
   k8s:
     state: present
     validate_certs: true
     kubeconfig: "{{ uc_kube_config_file }}"
-    definition: "{{ lookup('file','{{ csi_controller_rbac }}') }}"
+    definition: "{{ lookup('file', '{{ csi_controller_rbac }}') }}"
 
-- name: Create Controller StatefulSet and Driver
+- name: Create Controller Deployment and Driver
   k8s:
     state: present
     validate_certs: true
     kubeconfig: "{{ uc_kube_config_file }}"
-    definition: "{{ lookup('file','{{ csi_controller_ss }}') }}"
+    definition: "{{ lookup('template', '{{ csi_controller_deployment }}') }}"
 
 - name: Create CSI DaemonSet
   k8s:
     state: present
     validate_certs: true
     kubeconfig: "{{ uc_kube_config_file }}"
-    definition: "{{ lookup('file','{{ csi_controller_node_ds }}') }}"
+    definition: "{{ lookup('template', '{{ csi_controller_node_ds }}') }}"
 
 - name: Install CSI Snapshot Class CRD
   k8s:
     state: present
     validate_certs: true
     kubeconfig: "{{ uc_kube_config_file }}"
-    definition: "{{ lookup('file','snapshot.storage.k8s.io_volumesnapshotclasses.yaml') }}"
+    definition: "{{ lookup('file', 'snapshot.storage.k8s.io_volumesnapshotclasses.yaml') }}"
   when: csi_driver == "svt"   ## This should work with vsphere too
 
 - name: Install CSI Snapshot Content CRD
@@ -141,7 +141,7 @@
     state: present
     validate_certs: true
     kubeconfig: "{{ uc_kube_config_file }}"
-    definition: "{{ lookup('file','snapshot.storage.k8s.io_volumesnapshotcontents.yaml') }}"
+    definition: "{{ lookup('file', 'snapshot.storage.k8s.io_volumesnapshotcontents.yaml') }}"
   when: csi_driver == "svt"
 
 - name: Install CSI VolumeSnapshot CRD
@@ -149,7 +149,7 @@
     state: present
     validate_certs: true
     kubeconfig: "{{ uc_kube_config_file }}"
-    definition: "{{ lookup('file','snapshot.storage.k8s.io_volumesnapshots.yaml') }}"
+    definition: "{{ lookup('file', 'snapshot.storage.k8s.io_volumesnapshots.yaml') }}"
   when: csi_driver == "svt"
 
 - name: Create snapshot-controller RBAC
@@ -157,7 +157,7 @@
     state: present
     validate_certs: true
     kubeconfig: "{{ uc_kube_config_file }}"
-    definition: "{{ lookup('file','rbac-snapshot-controller.yaml') }}"
+    definition: "{{ lookup('file', 'rbac-snapshot-controller.yaml') }}"
   when: csi_driver == "svt"
 
 - name: Deploy snapshot-controller
@@ -165,7 +165,7 @@
     state: present
     validate_certs: true
     kubeconfig: "{{ uc_kube_config_file }}"
-    definition: "{{ lookup('file','setup-snapshot-controller.yaml') }}"
+    definition: "{{ lookup('template', 'setup-snapshot-controller.yaml.j2') }}"
   when: csi_driver == "svt"
 
 - name: Create SVT Snapshot Class
@@ -173,7 +173,7 @@
     state: present
     validate_certs: true
     kubeconfig: "{{ uc_kube_config_file }}"
-    definition: "{{ lookup('file','svt-snapshot-class.yaml') }}"
+    definition: "{{ lookup('file', 'svt-snapshot-class.yaml') }}"
   when: csi_driver == "svt"
 
 - name: See if the CSI Storage Class exists
