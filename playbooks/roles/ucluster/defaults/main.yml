@@ -14,3 +14,4 @@
 # limitations under the License.
 ###
 user_cluster_deploy_timeout: 1200 # allow 20mns for the user cluster to become "Active"
+user_cluster_monitoring: true

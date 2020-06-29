@@ -4,7 +4,7 @@ azureKubernetesServiceConfig: null
 description: mycluster
 dockerRootDir: /var/lib/docker
 enableClusterAlerting: false
-enableClusterMonitoring: true
+enableClusterMonitoring: {{ user_cluster_monitoring }}
 enableNetworkPolicy: false
 googleKubernetesEngineConfig: null
 localClusterAuthEndpoint:
