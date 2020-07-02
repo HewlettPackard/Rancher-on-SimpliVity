@@ -91,7 +91,7 @@
   blockinfile:
     path: /etc/hosts
     block: |
-      {{ hostvars[item].ansible_host }} {{ hostvars[item].inventory_hostname }}
+      {{ hostvars[item].ansible_host }} {{ hostvars[item].inventory_hostname }} {{ hostvars[item].inventory_hostname }}.{{ domain_name }}
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ hostvars[item].inventory_hostname }}"
   with_items:
   - "{{ groups['all'] | difference (groups.local) }}"
