@@ -39,33 +39,43 @@
 
   - name: Configure Active Directory Authentication
     uri:
-      url: "{{ rancher.url }}/{{ rancher.apiversion }}/activeDirectoryConfigs/activedirectory"
+      url: "{{ rancher.url }}/{{ rancher.apiversion }}/activeDirectoryConfigs/activedirectory?action=testAndApply"
       validate_certs: "{{ rancher.validate_certs }}"
       headers:
         Accept: application/json
         Content-Type: application/json
         Authorization: Bearer {{ bearer_token }}
-      method: PUT
+      method: POST
       timeout: 4
       status_code:
       - 200
       body_format: json
       body:
-        accessMode: unrestricted
-        certificate: "{{ lookup ('file', ad_ca_file) }}"
-        defaultLoginDomain: "{{ ad_login_domain }}"
+        activeDirectoryConfig:
+          accessMode: unrestricted
+          baseType: authConfig
+          connectionTimeout: 5000
+          enabled: false
+          id: activedirectory
+          name: activedirectory
+          nestedGroupMembershipEnabled: false
+          port: "{{ ad_port }}"
+          tls: "{{ ad_tls }}"
+          type: activeDirectoryConfig
+          servers: [
+            "{{ ad_server_name }}"
+          ]
+          certificate: "{{ lookup ('file', ad_ca_file) }}"
+          serviceAccountUsername: "{{ ad_service_account_username }}"
+          serviceAccountPassword: "{{ ad_service_account_password }}"
+          defaultLoginDomain: "{{ ad_login_domain }}"
+          groupSearchBase: "{{ ad_group_search_base }}"
+          groupSearchFilter: "{{ ad_group_search_filter }}"
+          userSearchBase: "{{ ad_user_search_base }}"
+          userSearchFilter: "{{ ad_user_search_filter }}"
         enabled: true
-        port: "{{ ad_port }}"
-        servers: [
-           "{{ ad_server_name }}"
-        ]
-        serviceAccountPassword: "{{ ad_service_account_password }}"
-        serviceAccountUsername: "{{ ad_service_account_username }}"
-        tls: "{{ ad_tls }}"
-        groupSearchBase: "{{ ad_group_search_base }}"
-        groupSearchFilter: "{{ ad_group_search_filter }}"
-        userSearchBase: "{{ ad_user_search_base }}"
-        userSearchFilter: "{{ ad_user_search_filter }}"
+        username: "{{ ad_test_username }}"
+        password: "{{ ad_test_password }}"
 
   - name: Verify the AD Authentication configured successfully
     uri:
@@ -80,10 +90,10 @@
       status_code:
       - 200
     register: ad_auth2
-  
+
   - name: Fail if Active Directory Authentication was not configured successfully
     fail:
       msg: "Active Directory Authentication did not configure successfully"
     when: ad_auth2.json.enabled == false
-  
+
   when: ad_configured == false

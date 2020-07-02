@@ -2,3 +2,4 @@
 vault_vcenter_password: 'PasswordForYourVcenter'
 vault_rancher_password: 'PasswordForRancher'
 vault_ad_service_account_password: 'PasswordForActiveDirectoryServiceAccount'
+vault_ad_test_password: 'PasswordForActiveDirectoryTestAccount'
