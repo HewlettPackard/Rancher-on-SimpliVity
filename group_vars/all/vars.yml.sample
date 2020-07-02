@@ -91,9 +91,9 @@ rancher:
 # If user supplied certificate wanted
 #  tls_source: secret                               # either rancher or secret, letsEncrypt unsupported (See doc), rancher is the default
 #  tls_privateCA: true                              # if using a private root CA, default is false (ie you use a public root CA)
-#  tls_cacert_file: /home/core/certs/cacerts.pem    # file containing the root CA certificate. Relevant if tls_privateCA is true
-#  tls_certchain_file: /home/core/certs/cachain.pem # file containing the server certificate followed by the intermediate CA certs (if any)
-#  tls_certkey_file: /home/core/certs/tlskey.pem    # file containing the private key for the Rancher server
+#  tls_cacert_file: /home/chris/certs/cacerts.pem    # file containing the root CA certificate. Relevant if tls_privateCA is true
+#  tls_certchain_file: /home/chris/certs/cachain.pem # file containing the server certificate followed by the intermediate CA certs (if any)
+#  tls_certkey_file: /home/chris/certs/tlskey.pem    # file containing the private key for the Rancher server
 
 user_cluster:
 # vm_template: hpe-ubuntu-tpl     # an existing VM template, the admin template by default
@@ -162,3 +162,10 @@ loadbalancers:
     nginx_fail_timeout: 10s
     nginx_proxy_timeout: 10m
     nginx_proxy_connect_timeout: 60s
+
+registry:
+  tls_cacert_file: /home/chris/certs/registry/ca.crt                  # Certificate of Root CA who signed the registry certificate
+  tls_certchain_file: /home/chris/certs/registry/registry-cachain.pem # certificate chain including the registry certificate and (possibly) those of the intermediate CAs
+  tls_certkey_file: /home/chris/certs/registry/registry-key.pem       # key used by the registry
+  hostname: registry.hpe.org                                          # name under which the registry is accessed, must be one of the SANs listed in the certificate
+
