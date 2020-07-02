@@ -25,5 +25,3 @@ ad_group_search_base: ""
 ad_group_search_filter: ""
 ad_user_search_base: "cn=Users,dc=am2,dc=cloudra,dc=local"
 ad_user_search_filter: ""
-ad_test_username: hpetest
-ad_test_password: "{{ vault_ad_test_password }}"

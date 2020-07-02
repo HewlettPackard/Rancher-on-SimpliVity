@@ -74,8 +74,8 @@
           userSearchBase: "{{ ad_user_search_base }}"
           userSearchFilter: "{{ ad_user_search_filter }}"
         enabled: true
-        username: "{{ ad_test_username }}"
-        password: "{{ ad_test_password }}"
+        username: "{{ ad_service_account_username }}"
+        password: "{{ ad_service_account_password }}"
 
   - name: Verify the AD Authentication configured successfully
     uri:
