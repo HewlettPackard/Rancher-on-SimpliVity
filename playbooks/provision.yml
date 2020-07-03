@@ -16,6 +16,20 @@
 ---
 #######################################################################
 #
+# Play: Generate self-signed certs
+#
+#######################################################################
+- name: Provision Certs
+  hosts: local
+  gather_facts: no
+  roles:
+  - role: certs
+    vars:
+      generate_cacert: true
+      generate_servercert: true
+
+#######################################################################
+#
 # Play: Generate vSphere template
 #
 #######################################################################
