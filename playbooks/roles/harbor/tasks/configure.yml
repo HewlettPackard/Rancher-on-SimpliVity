@@ -23,7 +23,7 @@
     state: enabled
   with_items:
   - 443/tcp
-  - 4443/udp
+  - 4443/tcp
   - 80/tcp
 
 - name: Copy Harbor Installer

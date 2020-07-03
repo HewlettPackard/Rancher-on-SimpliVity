@@ -1,0 +1,51 @@
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+###
+---
+
+- name: Assert persence of the registry certificate
+  stat:
+    path: "{{ install_dir }}/certs/registry.crt"
+  register: registrycert
+
+- name: Generate a Private Key for the registry
+  openssl_privatekey:
+    path:  "{{ install_dir }}/certs/registry.key"
+  when: not registrycert.stat.exists | bool
+
+- name: Generate the registry Certificate Signing Request
+  openssl_csr:
+    path: "{{ install_dir }}/certs/registry.csr"
+    privatekey_path:  "{{ install_dir }}/certs/registry.key"
+    common_name: registry.hpe.org
+    subject_alt_name: "DNS:registry.hpe.org"
+    key_usage_critical: yes
+    key_usage:
+    - digitalSignature
+    - keyAgreement
+    - keyEncipherment
+    extendedKeyUsage:
+    - serverAuth
+  when: not registrycert.stat.exists | bool
+
+- name: Generate the Certificate for the registry
+  openssl_certificate:
+    path: "{{ install_dir }}/certs/registry.crt"
+    csr_path: "{{ install_dir }}/certs/registry.csr"
+    provider: ownca
+    ownca_path:  "{{ install_dir }}/certs/rootCA.crt"
+    ownca_privatekey_path: "{{ install_dir }}/certs/rootCA.key"
+  when: not registrycert.stat.exists | bool
+

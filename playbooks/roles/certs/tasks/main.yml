@@ -12,27 +12,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-### 
+###
 ---
-#######################################################################
-#
-# Play: Install Harbor
-#
-#######################################################################
-- name: Install Harbor
-  hosts: support
-  gather_facts: yes
-  roles:
-  - role: harbor
-    vars:
-      configure: true
-#
-#  no longer needed since the cert is configured with cloud-init but we may need
-#   it in other circumstance
-#
-#- name: Push registry root CA certificate
-#  hosts: ranchernodes
-#  roles:
-#  - role: harbor
-#    vars:
-#      push_cacert: true
+- import_tasks: rootca.yml
+  when:
+  - generate_cacert is defined
+  - generate_cacert | bool
+
+- import_tasks: server.yml
+  when:
+  - generate_servercert is defined
+  - generate_servercert | bool

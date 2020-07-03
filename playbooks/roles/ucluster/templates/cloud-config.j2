@@ -14,3 +14,10 @@ write_files:
     https_proxy={{ proxy.https }}
     no_proxy={{ proxy.except }},{{ rancher_subnet }}
 {% endif %}
+
+ca-certs:
+  trusted: 
+{% for ca in additional_cas %}
+  - |
+    {{ lookup('file',ca) | indent(width=4, indentfirst=false) }}
+{% endfor %}
