@@ -1,4 +1,11 @@
 #cloud-config
+users:
+  - name: {{ ansible_user }}
+    gecos: HPE Rancher on SimpliVity ansible account
+    lock-passwd: true
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - {{ ssh_key }}
 {% if proxy is defined %}
 apt:
   http_proxy: {{ proxy.http }}
@@ -16,7 +23,7 @@ write_files:
 {% endif %}
 
 ca-certs:
-  trusted: 
+  trusted:
 {% for ca in additional_cas %}
   - |
     {{ lookup('file',ca) | indent(width=4, indentfirst=false) }}

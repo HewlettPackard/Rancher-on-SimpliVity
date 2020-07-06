@@ -25,8 +25,9 @@
   roles:
   - role: certs
     vars:
-      generate_cacert: true
-      generate_servercert: true
+      certs_generate_cacert: true
+      certs_generate_servercert: true
+      certs_fqdn: "{{ registry.fqdn | default(default_registry_fqdn) }}"
 
 #######################################################################
 #

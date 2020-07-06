@@ -27,8 +27,7 @@
     vars:
       configure: true
 #
-#  no longer needed since the cert is configured with cloud-init but we may need
-#   it in other circumstance
+# the registry certificates are pushed to all VMs using cloud-init
 #
 #- name: Push registry root CA certificate
 #  hosts: ranchernodes

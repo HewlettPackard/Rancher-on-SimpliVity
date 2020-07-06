@@ -14,13 +14,7 @@
 # limitations under the License.
 ###
 ---
-#harbor_tls_cacert_file: "{% if registry is defined %}{{ registry.tls_cacert_file | default('') }}{% else %}{% endif %}"
-#harbor_tls_servercert_file: "{% if registry is defined %}{{ registry.tls_certchain_file | default('') }}{% else %}{% endif %}"
-#harbor_tls_serverkey_file: "{% if registry is defined %}{{ registry.tls_certkey_file | default('') }}{% else %}{% endif %}"
-#harbor_hostname: "{% if registry is defined %}{{ registry.hostname | default(groups.support[0]) }}{% else %}{{ groups.support[0] }}{% endif %}"
-
-
-harbor_tls_cacert_file: "{{ registry.tls_cacert_file | default('') }}"
-harbor_tls_servercert_file: "{{ registry.tls_certchain_file | default('') }}"
-harbor_tls_serverkey_file: "{{ registry.tls_certkey_file | default('') }}"
-harbor_hostname: "{{ registry.hostname | default(groups.support[0]) }}"
+harbor_tls_cacert_file: "{{ registry.tls_cacert_file | default(default_registry_tls_cacert_file) }}"
+harbor_tls_servercert_file: "{{ registry.tls_certchain_file | default(default_registry_tls_servercert_file) }}"
+harbor_tls_serverkey_file: "{{ registry.tls_certkey_file | default(default_registry_tls_serverkey_file) }}"
+harbor_fqdn: "{{ registry.fqdn | default(default_registry_fqdn) }}"

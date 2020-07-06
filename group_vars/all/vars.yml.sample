@@ -163,9 +163,16 @@ loadbalancers:
     nginx_proxy_timeout: 10m
     nginx_proxy_connect_timeout: 60s
 
-registry:
-  tls_cacert_file: /home/chris/certs/registry/ca.crt                  # Certificate of Root CA who signed the registry certificate
-  tls_certchain_file: /home/chris/certs/registry/registry-cachain.pem # certificate chain including the registry certificate and (possibly) those of the intermediate CAs
-  tls_certkey_file: /home/chris/certs/registry/registry-key.pem       # key used by the registry
-  hostname: registry.hpe.org                                          # name under which the registry is accessed, must be one of the SANs listed in the certificate
+#registry:
+#  tls_cacert_file: /home/chris/certs/registry/rootCA.crt
+#  tls_certchain_file: /home/chris/certs/registry/registry.crt
+#  tls_certkey_file: /home/chris/certs/registry/registry.key
+#  fqdn: registry.hpe.org
+
+# If you bring your own certs for the registry,
+#  1- define additional_cas as an array of file paths (see below)
+#  2- add an entry in the array specifying the path to the root CA certificate. This shouild be the same as registry.tls_cacert_file
+#  3- you may add additional CA certificates if needed
+#additional_cas:
+# - /home/chris/certs/registry/rootCA.crt
 
