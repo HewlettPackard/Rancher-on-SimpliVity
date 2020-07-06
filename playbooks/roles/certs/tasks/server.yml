@@ -15,22 +15,22 @@
 ###
 ---
 
-- name: Assert persence of the registry certificate
+- name: "Assert presence of the server certificate {{ certs_fdqn }}"
   stat:
-    path: "{{ install_dir }}/certs/registry.crt"
-  register: registrycert
+    path: "{{ install_dir }}/certs/{{ certs_fqdn }}.crt"
+  register: servercert
 
-- name: Generate a Private Key for the registry
+- name: "Generate a private key for the {{ certs_fqdn }}"
   openssl_privatekey:
-    path:  "{{ install_dir }}/certs/registry.key"
-  when: not registrycert.stat.exists | bool
+    path:  "{{ install_dir }}/certs/{{ certs_fqdn }}.key"
+  when: not servercert.stat.exists | bool
 
-- name: Generate the registry Certificate Signing Request
+- name: "Generate the Certificate Signing Request for {{ certs_fqdn }}"
   openssl_csr:
-    path: "{{ install_dir }}/certs/registry.csr"
-    privatekey_path:  "{{ install_dir }}/certs/registry.key"
-    common_name: registry.hpe.org
-    subject_alt_name: "DNS:registry.hpe.org"
+    path: "{{ install_dir }}/certs/{{ certs_fqdn }}.csr"
+    privatekey_path:  "{{ install_dir }}/certs/{{ certs_fqdn }}.key"
+    common_name: "{{ certs_fqdn }}"
+    subject_alt_name: "DNS:{{ certs_fqdn }}"
     key_usage_critical: yes
     key_usage:
     - digitalSignature
@@ -38,14 +38,14 @@
     - keyEncipherment
     extendedKeyUsage:
     - serverAuth
-  when: not registrycert.stat.exists | bool
+  when: not servercert.stat.exists | bool
 
-- name: Generate the Certificate for the registry
+- name: Generate the Certificate for {{ certs_fqdn }}"
   openssl_certificate:
-    path: "{{ install_dir }}/certs/registry.crt"
-    csr_path: "{{ install_dir }}/certs/registry.csr"
+    path: "{{ install_dir }}/certs/{{ certs_fqdn }}.crt"
+    csr_path: "{{ install_dir }}/certs/{{ certs_fqdn }}.csr"
     provider: ownca
     ownca_path:  "{{ install_dir }}/certs/rootCA.crt"
     ownca_privatekey_path: "{{ install_dir }}/certs/rootCA.key"
-  when: not registrycert.stat.exists | bool
+  when: not servercert.stat.exists | bool
 

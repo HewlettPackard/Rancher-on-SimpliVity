@@ -34,3 +34,14 @@ rancher_iface: ansible0  # cloud-init will rename the first interface like this
 install_dir: "{{ lookup('env','HOME') }}/.svtrancher" 
 kits_folder: "{{ lookup('env','HOME') }}/kits"
 admin_template: "{{ groups['template'][0] }}"
+
+#
+# default file paths for certificate registry
+#
+default_registry_fqdn: "{{ registry.fqdn | default (groups.support[0]+'.'+domain_name) }}"
+default_registry_tls_cacert_file: "{{ install_dir }}/certs/rootCA.crt"
+default_registry_tls_servercert_file: "{{ install_dir }}/certs/{{ default_registry_fqdn }}.crt"
+default_registry_tls_serverkey_file: "{{ install_dir }}/certs/{{ default_registry_fqdn }}.key"
+additional_cas:
+- "{{ default_registry_tls_cacert_file }}"
+

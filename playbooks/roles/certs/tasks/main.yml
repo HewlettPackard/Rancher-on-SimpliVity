@@ -16,10 +16,10 @@
 ---
 - import_tasks: rootca.yml
   when:
-  - generate_cacert is defined
-  - generate_cacert | bool
+  - certs_generate_cacert is defined
+  - certs_generate_cacert | bool
 
 - import_tasks: server.yml
   when:
-  - generate_servercert is defined
-  - generate_servercert | bool
+  - certs_generate_servercert is defined
+  - certs_generate_servercert | bool

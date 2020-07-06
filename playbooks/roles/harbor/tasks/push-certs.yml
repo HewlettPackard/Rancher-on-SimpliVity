@@ -1,7 +1,7 @@
 - name: Create Docker Certificate directory for our private repo
   become: true
   file:
-    path: "/etc/docker/certs.d/{{ harbor_hostname }}"
+    path: "/etc/docker/certs.d/{{ harbor_fqdn }}"
     state: directory
   notify: Restart Docker for CA Cert
   register: res
@@ -10,7 +10,7 @@
   become: true
   copy:
     src: "{{ harbor_tls_cacert_file }}"
-    dest:  "/etc/docker/certs.d/{{ harbor_hostname }}/ca.crt"
+    dest:  "/etc/docker/certs.d/{{ harbor_fqdn }}/ca.crt"
   notify: Restart Docker for CA Cert
   register: res
 
