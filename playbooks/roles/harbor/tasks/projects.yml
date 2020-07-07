@@ -1,0 +1,49 @@
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+###
+---
+- set_fact:
+    harbor_api_url: "https://{{ harbor_fqdn }}/api"
+
+- name: "Creating users..."
+  uri:
+    url: "{{ harbor_api_url }}/users"
+    method: POST
+    user: "admin"
+    password: "{{ vault_harbor_admin_password }}"
+    status_code:
+      - 201
+      - 409 # already created
+    body_format: json
+    force_basic_auth: yes
+    return_content: yes
+    body: "{{ lookup('template', 'templates/create_user.j2') }}"
+  with_items: "{{ harbor_users }}"
+
+- name: "Creating project"
+  uri:
+    url: "{{ harbor_api_url }}/projects"
+    method: POST
+    user: "admin"
+    password: "{{ vault_harbor_admin_password  }}"
+    status_code:
+      - 201
+      - 409 # already created
+    body_format: json
+    force_basic_auth: yes
+    return_content: yes
+    body: "{{ lookup('template', 'create_project.j2') }}"
+  with_items: "{{ harbor_projects }}"
+

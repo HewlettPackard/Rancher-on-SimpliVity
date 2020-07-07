@@ -16,5 +16,7 @@
 ---
 - include_tasks: configure.yml
   when: configure is defined
+- include_tasks: projects.yml
+  when: create_projects is defined
 - include_tasks: push-certs.yml
   when: push_cacert is defined

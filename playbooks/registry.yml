@@ -26,6 +26,7 @@
   - role: harbor
     vars:
       configure: true
+      create_projects: true
 #
 # the registry certificates are pushed to all VMs using cloud-init
 #
