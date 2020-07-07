@@ -163,11 +163,27 @@ loadbalancers:
     nginx_proxy_timeout: 10m
     nginx_proxy_connect_timeout: 60s
 
-#registry:
-#  tls_cacert_file: /home/chris/certs/registry/rootCA.crt
-#  tls_certchain_file: /home/chris/certs/registry/registry.crt
-#  tls_certkey_file: /home/chris/certs/registry/registry.key
-#  fqdn: registry.hpe.org
+registry:
+#  tls_cacert_file: /home/chris/certs/registry/ca.crt
+#  tls_certchain_file: /home/chris/certs/registry/registry-cachain.pem
+#  tls_certkey_file: /home/chris/certs/registry/registry-key.pem
+  fqdn: registry.hpe.org
+  projects:
+  - project_name:  nginxplus
+    is_public: false
+    content_trust: false
+    prevent_vul: true
+    severity: high
+    auto_scan: true
+    members:
+    - chris
+#  users:
+#  - username: user1
+#    email: user1@example.com
+#    realname: Firstname Lastname
+#    role_id: 2
+#    has_admin_role: true
+
 
 # If you bring your own certs for the registry,
 #  1- define additional_cas as an array of file paths (see below)
@@ -175,4 +191,3 @@ loadbalancers:
 #  3- you may add additional CA certificates if needed
 #additional_cas:
 # - /home/chris/certs/registry/rootCA.crt
-
