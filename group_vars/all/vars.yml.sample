@@ -175,14 +175,6 @@ registry:
     prevent_vul: true
     severity: high
     auto_scan: true
-    members:
-    - chris
-#  users:
-#  - username: user1
-#    email: user1@example.com
-#    realname: Firstname Lastname
-#    role_id: 2
-#    has_admin_role: true
 
 
 # If you bring your own certs for the registry,
