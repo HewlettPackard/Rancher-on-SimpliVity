@@ -45,6 +45,7 @@ os_iso: "{% if packer_os_flavor is defined and packer_os_flavor == 'centos' %}{{
 kits_bom:
   docker_compose:
     url: "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-linux-x86_64"
+    hash: "sha256:ff6816932a57eab448798105926adbe4363b82f217802b105ade2edad95706cb"
     target:  "{{ kits_folder }}/docker-compose-linux-x86_64"
 
   harbor:
