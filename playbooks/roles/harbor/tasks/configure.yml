@@ -62,7 +62,7 @@
     creates:  "{{ ansible_user_dir }}/.harbor_installed"
   register: res
 
-- name: Make sure Harbor is started
+- name: Start Harbor
   become: true
   shell: |
     cd {{ ansible_user_dir }}/harbor

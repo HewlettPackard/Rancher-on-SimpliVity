@@ -20,3 +20,4 @@ harbor_tls_serverkey_file: "{{ registry.tls_certkey_file | default(default_regis
 harbor_fqdn: "{{ registry.fqdn | default(default_registry_fqdn) }}"
 harbor_projects: "{{ registry.projects | default('[]') }}"
 harbor_users: "{{ registry.users | default('[]') }}"
+harbor_api_timeout: 300 # Wait a maximum if 300 seconds for the Harbor API

@@ -17,6 +17,22 @@
 - set_fact:
     harbor_api_url: "https://{{ harbor_fqdn }}/api"
 
+- name: Wait for the API
+  uri:
+    url: "{{ harbor_api_url }}/health"
+    method: GET
+    status_code:
+      - 200 # API is answering
+      - 404 # Probably not installed
+      - 502 # Bad gateway
+      - 503 # API is not answering
+  register: res
+  retries: "{{ ( 1 + harbor_api_timeout | int / 10 ) | int }}"
+  delay: 10
+  until:
+  - res.json.status is defined 
+  - res.json.status == "healthy"
+
 - name: "Creating users..."
   uri:
     url: "{{ harbor_api_url }}/users"
