@@ -10,3 +10,10 @@ users:
 ntp:
   enabled: true
   servers: {{ ntp_servers }}
+
+ca-certs:
+  trusted:
+{% for ca in additional_cas %}
+  - |
+    {{ lookup('file',ca) | indent(width=4, indentfirst=false) }}
+{% endfor %}

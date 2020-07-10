@@ -47,6 +47,7 @@
   hosts: support
   gather_facts: yes
   roles:
+  - role: docker
   - role: dhcp
     vars:
       configure: yes

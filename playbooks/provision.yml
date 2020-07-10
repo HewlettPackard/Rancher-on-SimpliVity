@@ -16,6 +16,21 @@
 ---
 #######################################################################
 #
+# Play: Generate self-signed certs
+#
+#######################################################################
+- name: Provision Certs
+  hosts: local
+  gather_facts: no
+  roles:
+  - role: certs
+    vars:
+      certs_generate_cacert: true
+      certs_generate_servercert: true
+      certs_fqdn: "{{ registry.fqdn | default(default_registry_fqdn) }}"
+
+#######################################################################
+#
 # Play: Generate vSphere template
 #
 #######################################################################

@@ -91,9 +91,9 @@ rancher:
 # If user supplied certificate wanted
 #  tls_source: secret                               # either rancher or secret, letsEncrypt unsupported (See doc), rancher is the default
 #  tls_privateCA: true                              # if using a private root CA, default is false (ie you use a public root CA)
-#  tls_cacert_file: /home/core/certs/cacerts.pem    # file containing the root CA certificate. Relevant if tls_privateCA is true
-#  tls_certchain_file: /home/core/certs/cachain.pem # file containing the server certificate followed by the intermediate CA certs (if any)
-#  tls_certkey_file: /home/core/certs/tlskey.pem    # file containing the private key for the Rancher server
+#  tls_cacert_file: /home/alan/certs/cacerts.pem    # file containing the root CA certificate. Relevant if tls_privateCA is true
+#  tls_certchain_file: /home/alan/certs/cachain.pem # file containing the server certificate followed by the intermediate CA certs (if any)
+#  tls_certkey_file: /home/alan/certs/tlskey.pem    # file containing the private key for the Rancher server
 
 user_cluster:
 # vm_template: hpe-ubuntu-tpl     # an existing VM template, the admin template by default
@@ -162,3 +162,24 @@ loadbalancers:
     nginx_fail_timeout: 10s
     nginx_proxy_timeout: 10m
     nginx_proxy_connect_timeout: 60s
+
+registry:
+#  tls_cacert_file: /home/alan/certs/registry/ca.crt
+#  tls_certchain_file: /home/alan/certs/registry/registry-cachain.pem
+#  tls_certkey_file: /home/alan/certs/registry/registry-key.pem
+  fqdn: registry.hpe.org
+  projects:
+  - project_name:  nginxplus
+    is_public: false
+    content_trust: false
+    prevent_vul: true
+    severity: high
+    auto_scan: true
+
+
+# If you bring your own certs for the registry,
+#  1- define additional_cas as an array of file paths (see below)
+#  2- add an entry in the array specifying the path to the root CA certificate. This shouild be the same as registry.tls_cacert_file
+#  3- you may add additional CA certificates if needed
+#additional_cas:
+# - /home/alan/certs/registry/ca.crt

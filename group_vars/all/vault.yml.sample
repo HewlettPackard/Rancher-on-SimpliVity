@@ -2,3 +2,5 @@
 vault_vcenter_password: 'PasswordForYourVcenter'
 vault_rancher_password: 'PasswordForRancher'
 vault_ad_service_account_password: 'PasswordForActiveDirectoryServiceAccount'
+vault_harbor_admin_password: 'PasswordForPortalAdminUser'
+vault_harbor_db_password: 'PasswordForDB'

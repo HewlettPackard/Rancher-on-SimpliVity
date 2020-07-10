@@ -24,6 +24,7 @@ kits_rke_version: v1.0.4
 kits_rancher_cli_version: v2.3.2
 kits_kubectl_cli_version: v1.17.2
 kits_helm_cli_version: v3.1.2
+kits_harbor_version: v1.10.3
 
 ubuntu_iso:
   url: "http://cdimage.ubuntu.com/releases/18.04/release/ubuntu-18.04.4-server-amd64.iso"
@@ -42,6 +43,15 @@ os_iso: "{% if packer_os_flavor is defined and packer_os_flavor == 'centos' %}{{
 
 
 kits_bom:
+  docker_compose:
+    url: "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-linux-x86_64"
+    hash: "sha256:ff6816932a57eab448798105926adbe4363b82f217802b105ade2edad95706cb"
+    target:  "{{ kits_folder }}/docker-compose-linux-x86_64"
+
+  harbor:
+    url: https://github.com/goharbor/harbor/releases/download/{{ kits_harbor_version }}/harbor-online-installer-{{ kits_harbor_version }}.tgz
+    target: "{{ kits_folder }}/harbor-online-installer-{{ kits_harbor_version }}.tgz"
+
   helmcli:
     url:  https://get.helm.sh/helm-{{ kits_helm_cli_version }}-linux-amd64.tar.gz
     script: |

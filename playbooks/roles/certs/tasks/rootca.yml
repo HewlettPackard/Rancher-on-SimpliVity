@@ -1,0 +1,54 @@
+###
+# Copyright (2020) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+###
+---
+- name: Create Certs directory
+  file:
+    path: "{{ install_dir }}/certs"
+    state: directory
+
+- name: Assert presence of Root CA Certificate
+  stat:
+    path: "{{ install_dir }}/certs/rootCA.crt"
+  register: rootcacert
+
+- name: Generate a Private Key for the root CA
+  openssl_privatekey:
+    path:  "{{ install_dir }}/certs/rootCA.key"
+  when: not rootcacert.stat.exists | bool
+
+- name: Generate the Root CA Certificate Signing Request
+  openssl_csr:
+    path: "{{ install_dir }}/certs/rootCA.csr"
+    privatekey_path:  "{{ install_dir }}/certs/rootCA.key"
+    common_name: "Rancher on HPE Simplivity"
+    backup: yes
+    basic_constraints_critical: true
+    basic_constraints:
+    - CA:TRUE
+    key_usage_critical: true
+    key_usage:
+    - keyCertSign
+    - cRLSign
+  when: not rootcacert.stat.exists | bool
+
+- name: Self Sign the Root CA Certificate
+  openssl_certificate:
+    path: "{{ install_dir }}/certs/rootCA.crt" 
+    privatekey_path:  "{{ install_dir }}/certs/rootCA.key"
+    csr_path: "{{ install_dir }}/certs/rootCA.csr"
+    provider: selfsigned
+  when: not rootcacert.stat.exists | bool
+

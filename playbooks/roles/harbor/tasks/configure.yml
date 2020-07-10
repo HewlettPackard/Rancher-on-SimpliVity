@@ -1,0 +1,86 @@
+###
+# Copyright (2019) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+### 
+---
+- name: Open firewall ports
+  become: true
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  with_items:
+  - 443/tcp
+  - 4443/tcp
+  - 80/tcp
+
+- name: Copy Harbor Installer
+  unarchive:
+    src: "{{ kits_bom.harbor.target }}"
+    dest: "{{ ansible_user_dir }}"
+
+- name: Copy Certs
+  copy:
+    src: "{{ item }}"
+    dest: "{{ ansible_user_dir }}/"
+  with_items:
+    - "{{ harbor_tls_cacert_file }}"
+    - "{{ harbor_tls_servercert_file }}"
+    - "{{ harbor_tls_serverkey_file }}"
+
+- name: Create Harbor Configuration File
+  template:
+    src: harbor.yml.j2
+    dest:  "{{ ansible_user_dir }}/harbor/harbor.yml"
+
+- name: Copy docker-compose
+  become: true
+  copy:
+    src: "{{ kits_bom.docker_compose.target }}"
+    dest: /usr/local/bin/docker-compose
+    mode: 0755
+
+- name: Run the Installer
+  become: true
+  shell: |
+    set -eux
+    {{ ansible_user_dir }}/harbor/install.sh
+    touch  "{{ ansible_user_dir }}/.harbor_installed"
+  args:
+    creates:  "{{ ansible_user_dir }}/.harbor_installed"
+  register: res
+
+- name: Start Harbor
+  become: true
+  shell: |
+    cd {{ ansible_user_dir }}/harbor
+    docker-compose up -d
+  register: res
+
+- debug: var=res
+
+- name: Create a Linux Service for Harbor
+  become: true
+  template:
+    src: systemd-harbor.j2
+    dest: /etc/systemd/system/harbor.service
+
+- name: Enable Harbor service
+  become: true
+  systemd:
+    name: harbor
+    enabled: yes
+
+

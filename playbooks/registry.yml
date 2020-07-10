@@ -12,16 +12,27 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-###
-
+### 
 ---
-- import_playbook: playbooks/prepare.yml
-- import_playbook: playbooks/provision.yml
-- import_playbook: playbooks/configure.yml
-- import_playbook: playbooks/registry.yml
-- import_playbook: playbooks/ranchercluster.yml
-- import_playbook: playbooks/rancherserver.yml
-- import_playbook: playbooks/1stlogin.yml
-- import_playbook: playbooks/admin-monitoring.yml
-- import_playbook: playbooks/ucluster.yml
-- import_playbook: playbooks/csi.yml
+#######################################################################
+#
+# Play: Install Harbor
+#
+#######################################################################
+- name: Install Harbor
+  hosts: support
+  gather_facts: yes
+  roles:
+  - role: harbor
+    vars:
+      configure: true
+      create_projects: true
+#
+# the registry certificates are pushed to all VMs using cloud-init
+#
+#- name: Push registry root CA certificate
+#  hosts: ranchernodes
+#  roles:
+#  - role: harbor
+#    vars:
+#      push_cacert: true

@@ -13,15 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###
-
 ---
-- import_playbook: playbooks/prepare.yml
-- import_playbook: playbooks/provision.yml
-- import_playbook: playbooks/configure.yml
-- import_playbook: playbooks/registry.yml
-- import_playbook: playbooks/ranchercluster.yml
-- import_playbook: playbooks/rancherserver.yml
-- import_playbook: playbooks/1stlogin.yml
-- import_playbook: playbooks/admin-monitoring.yml
-- import_playbook: playbooks/ucluster.yml
-- import_playbook: playbooks/csi.yml
+harbor_tls_cacert_file: "{{ registry.tls_cacert_file | default(default_registry_tls_cacert_file) }}"
+harbor_tls_servercert_file: "{{ registry.tls_certchain_file | default(default_registry_tls_servercert_file) }}"
+harbor_tls_serverkey_file: "{{ registry.tls_certkey_file | default(default_registry_tls_serverkey_file) }}"
+harbor_fqdn: "{{ registry.fqdn | default(default_registry_fqdn) }}"
+harbor_projects: "{{ registry.projects | default('[]') }}"
+harbor_users: "{{ registry.users | default('[]') }}"
+harbor_api_timeout: 300 # Wait a maximum if 300 seconds for the Harbor API
