@@ -15,12 +15,13 @@
 ###
 ---
 - set_fact:
-    harbor_api_url: "https://{{ harbor_fqdn }}/api"
+    harbor_api_url: "https://{{ harbor_fqdn }}/api/v2.0"
 
 - name: Wait for the API
   uri:
     url: "{{ harbor_api_url }}/health"
     method: GET
+    validate_certs: no
     status_code:
       - 200 # API is answering
       - 404 # Probably not installed
@@ -37,6 +38,7 @@
   uri:
     url: "{{ harbor_api_url }}/users"
     method: POST
+    validate_certs: no
     user: "admin"
     password: "{{ vault_harbor_admin_password }}"
     status_code:
@@ -52,6 +54,7 @@
   uri:
     url: "{{ harbor_api_url }}/projects"
     method: POST
+    validate_certs: no
     user: "admin"
     password: "{{ vault_harbor_admin_password  }}"
     status_code:

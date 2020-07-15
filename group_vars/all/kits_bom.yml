@@ -17,14 +17,25 @@
 
 kits_folder: "{{ lookup('env','HOME') }}/kits"
 
-# the version number below are helpers and only helpers. They are used to make the kits_bom array look better and
-# they rely on naming conventions which is beyond the control of HPE. 
+#
+# IMPORTANT: 
+#   If you change the version number you also MUST change the hash (checksum) for the corresponding file. The checksums specified
+#   with each element in the kits_bom array are for the versions specified below. If you change the version, you will have to
+#   change the hash field as well.
+#  
+#   For a production deployment, make sure you have a hash specified for each and every element in the kits_bom array below
+#   For testing purposes, you may comment out the hash property of one of the element and experiment with another vesion number.
+#
+#   The value / format of the version is used to form the URL which is used to download the component. There is no guarantee that
+#     the formatting of this URL will stay the same in the future.
 
-kits_rke_version: v1.0.4
-kits_rancher_cli_version: v2.3.2
-kits_kubectl_cli_version: v1.17.2
-kits_helm_cli_version: v3.1.2
-kits_harbor_version: v1.10.3
+kits_rke_version: v1.1.3
+kits_rancher_cli_version: v2.4.5
+kits_kubectl_cli_version: v1.18.5
+kits_helm_cli_version: v3.2.4
+kits_harbor_version: v2.0.1              # only v2+ tested/supported
+kits_compose_version: 1.26.0
+kits_nginxplus_version: v1.7.2
 
 ubuntu_iso:
   url: "http://cdimage.ubuntu.com/releases/18.04/release/ubuntu-18.04.4-server-amd64.iso"
@@ -43,28 +54,36 @@ os_iso: "{% if packer_os_flavor is defined and packer_os_flavor == 'centos' %}{{
 
 
 kits_bom:
+  nginxplus:
+    url: "https://github.com/nginxinc/kubernetes-ingress/archive/{{ kits_nginxplus_version }}.tar.gz"
+    hash: "sha256:e0087bb32162ce0545a3a02a0e9e4d69e8339ddb563c60ab1883f52fc75b3028"        # checksum for v1.7.2
+    target:  "{{ kits_folder }}/{{ kits_nginxplus_version }}.tar.gz"
+
   docker_compose:
-    url: "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-linux-x86_64"
-    hash: "sha256:ff6816932a57eab448798105926adbe4363b82f217802b105ade2edad95706cb"
+    url: "https://github.com/docker/compose/releases/download/{{ kits_compose_version }}/docker-compose-linux-x86_64"
+    hash: "sha256:ff6816932a57eab448798105926adbe4363b82f217802b105ade2edad95706cb"        # checksum for 1.26.0
     target:  "{{ kits_folder }}/docker-compose-linux-x86_64"
 
   harbor:
-    url: https://github.com/goharbor/harbor/releases/download/{{ kits_harbor_version }}/harbor-online-installer-{{ kits_harbor_version }}.tgz
+    url: "https://github.com/goharbor/harbor/releases/download/{{ kits_harbor_version }}/harbor-online-installer-{{ kits_harbor_version }}.tgz"
+    hash: "md5:a7e541d625fcf3297aabfb994c63d9a5" # checksum for v2.0.1
     target: "{{ kits_folder }}/harbor-online-installer-{{ kits_harbor_version }}.tgz"
 
   helmcli:
     url:  https://get.helm.sh/helm-{{ kits_helm_cli_version }}-linux-amd64.tar.gz
+    hash: "sha256:8eb56cbb7d0da6b73cd8884c6607982d0be8087027b8ded01d6b2759a72e34b1"        # checksum for 3.2.4
     script: |
       cd {{ kits_folder }}
       tar -xvf helm-{{ kits_helm_cli_version }}-linux-amd64.tar.gz linux-amd64/helm
       mv ./linux-amd64/helm .
 
   kubectlcli:
-    clienttool: yes
     url: https://storage.googleapis.com/kubernetes-release/release/{{ kits_kubectl_cli_version }}/bin/linux/amd64/kubectl
+    hash: "sha256:69d9b044ffaf544a4d1d4b40272f05d56aaf75d7e3c526d5418d1d3c78249e45"        # checksum for 1.18.5
 
   ranchercli:
     url:  https://github.com/rancher/cli/releases/download/{{ kits_rancher_cli_version }}/rancher-linux-amd64-{{ kits_rancher_cli_version }}.tar.gz
+    hash: "sha256:ed03829bdbb8c3102af0820c662efdeafafbf431e7e24948702b1f34f1f0ae6f"        # checksum for v2.4.5
     script: |
       cd {{ kits_folder }}
       tar -xvf rancher-linux-amd64-{{ kits_rancher_cli_version }}.tar.gz  ./rancher-{{ kits_rancher_cli_version }}/rancher
@@ -72,6 +91,7 @@ kits_bom:
 
   rkecli:
     url: https://github.com/rancher/rke/releases/download/{{ kits_rke_version }}/rke_linux-amd64
+    hash: "sha256:fcbffe476afc21ca27b86f6b29d4009338436846b79abe41d6e075e1b788186a"        # checksum for v1.1.3
     script: |
       cd {{ kits_folder }}
       mv ./rke_linux-amd64 ./rke
