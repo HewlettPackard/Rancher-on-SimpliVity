@@ -9,7 +9,7 @@ users:
       - {{ ssh_key }}
 ntp:
   enabled: true
-  servers: {{ ntp_servers }}
+  servers: [ {{ ntp_servers | list | join (', ') }} ]
 
 ca-certs:
   trusted:
